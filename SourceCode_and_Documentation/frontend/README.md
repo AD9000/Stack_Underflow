@@ -1,4 +1,4 @@
-# Frontend for the Project
+# Frontend
 
 ## Tech stack:
 - React

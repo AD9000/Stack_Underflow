@@ -1,4 +1,4 @@
-# Backend for the Project
+# Backend
 
 ## Tech Stack
 - FastAPI
