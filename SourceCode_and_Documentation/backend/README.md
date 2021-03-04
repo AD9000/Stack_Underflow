@@ -11,14 +11,12 @@ Serving out the API goodness
 ## Setup Steps
 
 ### Requirements
-1. Python3.8 - Make sure you have python **v3.8** installed, could try out pyenv
-
-1. Navigate to the backend folder 
+- Navigate to the backend folder 
 ```sh
 cd ~/Stack_Underflow/SourceCode_and_Documentation/backend
 ```
 
-2. Set up your virtual environment
+- Set up your virtual environment
 ```sh
 # install if you don't have one yet
 python3 -m pip install virtualenv
@@ -30,7 +28,7 @@ python3 -m virtualenv venv
 . venv/bin/activate
 ```
 
-3. Install requirements
+- Install requirements
 ```sh
 pip install -r requirements.txt
 ```
