@@ -10,7 +10,6 @@ Serving out the API goodness
 
 ## Setup Steps
 
-### Requirements
 - Navigate to the backend folder 
 ```sh
 cd ~/Stack_Underflow/SourceCode_and_Documentation/backend
