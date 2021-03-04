@@ -1,6 +1,38 @@
 # Backend
+Serving out the API goodness
 
 ## Tech Stack
-- FastAPI
-- SQLite
-- SQLAlchemy
+- FastAPI (https://fastapi.tiangolo.com/)
+- SQLite (https://docs.python.org/3/library/sqlite3.html)
+- SQLAlchemy (https://www.sqlalchemy.org/)
+- Python3.8
+- pip
+
+## Setup Steps
+
+### Requirements
+1. Python3.8 - Make sure you have python **v3.8** installed, could try out pyenv
+
+1. Navigate to the backend folder 
+```sh
+cd ~/Stack_Underflow/SourceCode_and_Documentation/backend
+```
+
+2. Set up your virtual environment
+```sh
+# install if you don't have one yet
+python3 -m pip install virtualenv
+
+# create the env
+python3 -m virtualenv venv
+
+# start up the venv
+. venv/bin/activate
+```
+
+3. Install requirements
+```sh
+pip install -r requirements.txt
+```
+
+## Backend Directory Structure (to be added)
