@@ -33,4 +33,11 @@ python3 -m virtualenv venv
 pip install -r requirements.txt
 ```
 
+- Run the server
+```sh
+uvicorn main:app --reload
+```
+
+Note, the reload flag makes it development only, might add in a deployment script at some point
+
 ## Backend Directory Structure (to be added)
