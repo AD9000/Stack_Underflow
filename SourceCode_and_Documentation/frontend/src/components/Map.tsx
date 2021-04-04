@@ -1,6 +1,7 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { makeStyles } from "@material-ui/styles";
+import { LatLngTuple } from "leaflet";
 
 const useStyles = makeStyles({
   fullScreen: {
@@ -8,12 +9,14 @@ const useStyles = makeStyles({
   },
 });
 
+const position: LatLngTuple = [-33.86785, 151.20732];
+
 const Map = () => {
   const classes = useStyles();
   return (
     <MapContainer
       className={classes.fullScreen}
-      center={[51.505, -0.09]}
+      center={position}
       zoom={13}
       scrollWheelZoom={true}
     >
