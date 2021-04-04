@@ -1,7 +1,16 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useEffect } from "react";
+import { LatLngTuple, Map as Lmap } from "leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  useMapEvent,
+} from "react-leaflet";
+import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
-import { LatLngTuple } from "leaflet";
+
+const defaultPosition: LatLngTuple = [-33.86785, 51.20732];
 
 const useStyles = makeStyles({
   fullScreen: {
@@ -9,28 +18,68 @@ const useStyles = makeStyles({
   },
 });
 
-const position: LatLngTuple = [-33.86785, 151.20732];
+const Animation = () => {
+  const map = useMapEvent("click", (e) => {
+    map.setView(e.latlng, map.getZoom(), {
+      animate: true,
+    });
+  });
+  return null;
+};
 
-const Map = () => {
+const getPosition = async () => {
+  if (!navigator.geolocation) {
+    return;
+  }
+  return new Promise((res: PositionCallback, reject: PositionErrorCallback) =>
+    navigator.geolocation.getCurrentPosition(res, reject)
+  );
+};
+
+const MapWrapper = () => {
   const classes = useStyles();
   return (
     <MapContainer
       className={classes.fullScreen}
-      center={position}
-      zoom={13}
+      center={defaultPosition}
+      zoom={3}
       scrollWheelZoom={true}
     >
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={[51.505, -0.09]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker>
+      <Map />
     </MapContainer>
   );
 };
 
-export { Map };
+const Map = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const pos = await getPosition();
+        if (!pos) {
+          return;
+        }
+        map.setView([pos.coords.latitude, pos.coords.longitude]);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+
+  return (
+    <>
+      <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <Marker position={defaultPosition}>
+        <CustomPopup />
+      </Marker>
+      <Animation />
+    </>
+  );
+};
+
+export { MapWrapper };
