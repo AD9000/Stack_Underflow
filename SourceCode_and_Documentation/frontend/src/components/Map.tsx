@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { LatLngTuple, Map as Lmap } from "leaflet";
+import { LatLngTuple } from "leaflet";
 import {
   MapContainer,
   TileLayer,
@@ -65,7 +65,7 @@ const Map = () => {
         console.error(err);
       }
     })();
-  }, []);
+  }, [map]);
 
   return (
     <>
