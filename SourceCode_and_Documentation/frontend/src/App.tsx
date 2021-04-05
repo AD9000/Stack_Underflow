@@ -2,11 +2,15 @@ import React from "react";
 import { MapWrapper } from "./components/Map";
 import "./App.css";
 
+import { HomePage } from "./pages/HomePage";
+
 const App = () => {
   return (
-    <div style={{ height: "100%" }}>
+    <HomePage></HomePage>
+
+    /* <div style={{ height: "100%" }}>
       <MapWrapper />
-    </div>
+    </div> */
   );
 };
 
