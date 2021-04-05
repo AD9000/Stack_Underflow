@@ -6,6 +6,7 @@ import globe from '../assets/globe.png';
 import { makeStyles } from '@material-ui/styles';
 //import { MenuIcon } from '@material-ui/core/MenuIcon';
 
+// NOTE SIZES ARE HARDCODED
 const useStyles = makeStyles({
     background: {
         backgroundImage: `url(${globe})`,
@@ -13,7 +14,28 @@ const useStyles = makeStyles({
         width: '100%'
     },
     whiteText: {
-        color: 'white'
+        color: 'white',
+        fontFamily: 'farro',
+        fontWeight: 'bold'
+    },
+    btn: {
+        textTransform: 'none',
+        fontFamily: "farro",
+        fontSize: 'x-large',
+        margin: '0.5rem'
+    },
+    secondaryBtn: {
+        textTransform: 'none',
+        fontFamily: "farro",
+        backgroundColor: '#262626',
+        color: 'white',
+        fontSize: 'x-large'
+    },
+    intro: {
+        width: '20rem',
+        position: 'relative',
+        top: '9rem',
+        left: '50rem'
     }
 });
 
@@ -24,14 +46,17 @@ export function HomePage() {
         <div className={styles.background}>
             <Container>
                 <HomeTopNav/>
-                <Button>HEY</Button>
-                <Typography className={styles.whiteText}>
-                Use your Spotify favourites to connect and share your stories with people all around the world.
-                </Typography>
-                <Typography className={styles.whiteText}>
-                Register now for free!
-                </Typography>
-
+                <div className={styles.intro}>
+                    <Typography className={styles.whiteText} style={{fontSize: 'xxx-large'}}>DISCOVER.<br></br> PLAY.</Typography>
+                    <Typography className={styles.whiteText}>
+                    Use your Spotify favourites to connect and share your stories with people all around the world.
+                    </Typography>
+                    <Typography className={styles.whiteText} style={{margin: '1rem 0'}}>
+                    Register now for free!
+                    </Typography>
+                    <Button variant="contained" color="primary" className={styles.btn}><b>Register</b></Button>
+                    <Button color="primary" className={styles.secondaryBtn}><b>More Info</b></Button>
+                </div>
                 
                 {/* <img src="../" */}
             </Container>
