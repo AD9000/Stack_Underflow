@@ -15,6 +15,10 @@ class UserRegister(BaseModel):
     password : str
     email : str
 
+class UserLogin(Basemodel):
+    username : str
+    password : str
+
 def get_db():
     try:
         db = SessionLocal()
@@ -22,19 +26,13 @@ def get_db():
     finally: 
         db.close()
 
+# Homepage
 @app.get("/")
 async def root():
+    # insert stuff here
     return {"message": "Hello World"}
     
-#@app.get("/items/{item_id}")
-#async def read_item(item_id: int):
-#    return {"recieved item_id": item_id}
-
-#@app.put("/items/{item_id}")
-#def update_item(item_id: int, item: Item):
-#    return {"item_name": item.name, "item_id": item_id, "pr": item.price}
-
-# Authentication Functions:
+# AUTHENTICATION:
 
 # Sign Up 
 @app.post("/register")
@@ -47,10 +45,17 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     return {"user created": userReg.username}
 
+# Log In
+@app.post("/login")
+async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
+    db.execute(f"SELECT FROM users WHERE username = \'{login.username}\' and password = \'{login.password}\'''")
+    # not complete (check if it fetches empty)
+    db.commit()
+    return {"user created": userReg.username}
+
 # Delete user (not needed to implement until after deliverable 3)
 @app.post("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    register = Users()
     # no security checking etc (function to remove any users you implement into database)
     db.execute(f"DELETE FROM users WHERE username = \'{userReg.username}\'")
     db.commit()

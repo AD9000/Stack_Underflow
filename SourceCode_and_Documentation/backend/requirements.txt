@@ -44,3 +44,5 @@ uvloop==0.15.2
 virtualenv==20.4.2
 watchgod==0.7
 websockets==8.1
+sqlalchemy
+sqlite3
