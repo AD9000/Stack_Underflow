@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundImage: `url(${globe})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
+    height: "100vh",
+    width: "100%",
     display: "flex",
-    flexGrow: 1,
     flexDirection: "column",
   },
   whiteText: {
