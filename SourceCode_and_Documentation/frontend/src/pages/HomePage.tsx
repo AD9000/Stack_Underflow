@@ -4,9 +4,10 @@ import "@fontsource/farro";
 import { HomeTopNav } from '../components/HomeTopNav';
 import globe from '../assets/globe.png';
 import { makeStyles } from '@material-ui/styles';
+import RegisterDialogue from '../components/RegisterDialogue';
 //import { MenuIcon } from '@material-ui/core/MenuIcon';
 
-// NOTE SIZES ARE HARDCODED
+// NOTE SIZES ARE HARDCODED TODO
 const useStyles = makeStyles({
     background: {
         backgroundImage: `url(${globe})`,
@@ -36,6 +37,10 @@ const useStyles = makeStyles({
         position: 'relative',
         top: '9rem',
         left: '50rem'
+    },
+    horizontalFlex: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 });
 
@@ -54,8 +59,11 @@ export function HomePage() {
                     <Typography className={styles.whiteText} style={{margin: '1rem 0'}}>
                     Register now for free!
                     </Typography>
-                    <Button variant="contained" color="primary" className={styles.btn}><b>Register</b></Button>
-                    <Button color="primary" className={styles.secondaryBtn}><b>More Info</b></Button>
+                    <div className={styles.horizontalFlex}>
+                        <RegisterDialogue/>
+                        <Button color="primary" className={styles.secondaryBtn}><b>More Info</b></Button>
+                    </div>
+                    
                 </div>
                 
                 {/* <img src="../" */}
