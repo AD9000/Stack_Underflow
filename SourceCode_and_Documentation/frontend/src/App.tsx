@@ -8,9 +8,9 @@ const App = () => {
   return (
     <HomePage></HomePage>
 
-    /* <div style={{ height: "100%" }}>
-      <MapWrapper />
-    </div> */
+    //   {/* <div style={{ height: "100%" }}>
+    //   <MapWrapper />
+    // </div>  */}
   );
 };
 
