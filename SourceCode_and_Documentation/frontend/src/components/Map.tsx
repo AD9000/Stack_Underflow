@@ -39,14 +39,16 @@ const getPosition = async () => {
 const MapWrapper = () => {
   const classes = useStyles();
   return (
-    <MapContainer
-      className={classes.fullScreen}
-      center={defaultPosition}
-      zoom={3}
-      scrollWheelZoom={true}
-    >
-      <Map />
-    </MapContainer>
+    <div className={classes.fullScreen}>
+      <MapContainer
+        className={classes.fullScreen}
+        center={defaultPosition}
+        zoom={3}
+        scrollWheelZoom={true}
+      >
+        <Map />
+      </MapContainer>
+    </div>
   );
 };
 
