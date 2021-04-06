@@ -52,7 +52,7 @@ export function HomePage() {
             <Container>
                 <HomeTopNav/>
                 <div className={styles.intro}>
-                    <Typography className={styles.whiteText} style={{fontSize: 'xxx-large'}}>DISCOVER.<br></br> PLAY.</Typography>
+                    <Typography className={styles.whiteText} style={{fontSize: 'xxx-large'}}>WorldPlay</Typography>
                     <Typography className={styles.whiteText}>
                     Use your Spotify favourites to connect and share your stories with people all around the world.
                     </Typography>
