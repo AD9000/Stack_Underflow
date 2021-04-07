@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     color:'white'
   },
   tagTitle: {
-    fontSize: 'x-large',
+    fontSize: 'xx-large',
     color: 'white',
     textAlign: 'center',
     margin: '1rem 0 0 0 '
