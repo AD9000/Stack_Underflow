@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: "#262626",
     color: "white",
     fontSize: "x-large",
+    margin: '0.5rem'
   },
   intro: {
     paddingTop: theme.spacing(10),
