@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   popoverContent: {
     backgroundColor: '#0f214a',
     width:'25rem',
-    height: '21.5rem',
+    height: '21rem',
     margin: 'auto',
     color:'white'
   },
