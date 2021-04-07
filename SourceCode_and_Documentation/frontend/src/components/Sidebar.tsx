@@ -13,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { TagView } from "./TagView";
+import { TagList } from "./TagList";
 
 const drawerWidth = 540;
 
@@ -31,8 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 1,
       whiteSpace: "nowrap",
+      overflow: "hidden",
       "&>*": {
-        height: "50%",
+        height: "48%",
         borderRadius: "10px 0px 0px 10px",
         top: 150,
         backgroundColor: "#0D204B",
@@ -73,7 +75,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Sidebar = () => {
   const classes = useStyles();
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = () => {
@@ -102,13 +103,12 @@ const Sidebar = () => {
       anchor="right"
       onClick={openDrawer}
     >
-      <div>
-        <IconButton onClick={toggleDrawer} style={{ color: "white" }}>
+      <div style={{ cursor: "pointer" }} onClick={toggleDrawer}>
+        <IconButton style={{ color: "white" }}>
           {open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </div>
-      <Divider />
-      {open && <TagView />}
+      {open ? <TagList /> : <div style={{ flex: 1, cursor: "pointer" }}></div>}
     </Drawer>
   );
 };

@@ -1,11 +1,21 @@
-import { Container, makeStyles, Theme, Typography } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
+import { tpp } from "./Interfaces";
+
+const imgurl =
+  "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
 
 const useStyles = makeStyles((theme: Theme) => ({
   cardi: {
     display: "flex",
     flexDirection: "column",
-    margin: theme.spacing(5),
+    margin: theme.spacing(2),
     padding: theme.spacing(2),
     borderRadius: "10px",
     backgroundColor: "#405B99",
@@ -63,35 +73,34 @@ const useStyles = makeStyles((theme: Theme) => ({
 //   );
 // };
 
-const TagView = () => {
+const TagView = ({ title, location, album, desc, imgurl, sstate }: tpp) => {
   const classes = useStyles();
   return (
     <Container>
-      {/* <Cardi
-        title={}
-        text={""}
-        imgurl={"https://source.unsplash.com/random"}
-      /> */}
+      <Button
+        onClick={() => sstate(-1)}
+        style={{
+          color: "white",
+          border: "1px solid white",
+          marginLeft: "1rem",
+        }}
+      >
+        Back
+      </Button>
       <div className={classes.cardi}>
         <div className={classes.user}>johnnybravo1</div>
         <div className={classes.wrap}>
           <div className={classes.cimagewrap}>
-            <img
-              src={"https://source.unsplash.com/random/500x500"}
-              style={{ maxWidth: "100%" }}
-            />
+            <img src={imgurl} style={{ maxWidth: "100%" }} />
           </div>
           <div className={classes.textwrap}>
-            <h3>Beautiful Experience</h3>
-            <h4>Queensland</h4>
+            <h3>{title}</h3>
+            <h4>{location}</h4>
           </div>
         </div>
         <div className={classes.desc}>
           <Typography style={{ maxWidth: "100%", whiteSpace: "normal" }}>
-            Proud to be from New Zealand! Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Nam at augue sed ex venenatis ornare eu
-            et sapien. Curabitur at est quis diam vehicula aliquam. Cras id
-            dignissim ante, ac bibendum lacus.
+            {desc}
           </Typography>
         </div>
       </div>
