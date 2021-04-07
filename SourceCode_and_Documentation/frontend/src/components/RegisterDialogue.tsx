@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import "@fontsource/farro";
 import { render } from '@testing-library/react';
 import Alert from '@material-ui/lab/Alert';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   dialog: {
     backgroundColor: '#0f214a',
-      
   },
   dialogTitle: {
     color: 'white',
@@ -184,10 +184,23 @@ export default function RegisterDialog() {
   }
 
   function Step2() {
-    let alert;
-    if (success) alert = <Alert severity="success" className={styles.alert}>Your account was successfully created!</Alert>;
-    else alert = '';
-
+    let alert, button;
+    if (success) {
+      alert = <Alert severity="success" className={styles.alert}>Your account was successfully created!</Alert>;
+      button = (
+      <Button variant="contained" color="primary" className={styles.btn} onClick={handleSuccess}>
+        <Link to='home' className={styles.text}><b style={{fontSize:'large'}}>Done</b></Link>
+      </Button>
+      )
+    }  
+    else {
+      alert = '';
+      button = (
+        <Button variant="contained" color="primary" className={styles.btn} onClick={handleSuccess}>
+          <b style={{fontSize:'large'}}>Next</b>
+        </Button>
+      );
+    }
 
     return (
       <div className={styles.dialog}>
@@ -200,36 +213,15 @@ export default function RegisterDialog() {
           </Typography>
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
-          <h3 className={styles.text} style={{margin:'0'}}>Username</h3>
-          <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="spotifyUsername"
-              InputProps={{className: styles.input}}
-              placeholder="username"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/ 
-              type="text"
-          /> 
-          <h3 className={styles.text} style={{margin:'20px 0 0 0'}}>Password</h3>
-          <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="spotifyPassword"
-              InputProps={{className: styles.input}}
-              placeholder="password"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/ 
-              type="password"
-          /> 
+          <Button variant="contained" color="primary" className={styles.btn}>
+            <b>Log In with Spotify</b>
+          </Button>
           {alert}
           
         </DialogContent>
         <DialogActions>
           <p className={styles.text}><a href='#' style={{color: '#3481e1'}}>Help</a></p>
-          <Button variant="contained" color="primary" className={styles.btn} onClick={handleSuccess}>
-            <b style={{fontSize:'large'}}>Next</b>
-          </Button>
+          {button}
           
           
           {/* <Button onClick={handleClose} color="primary">
