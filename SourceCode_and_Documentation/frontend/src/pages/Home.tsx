@@ -1,12 +1,24 @@
 import React from "react";
 import { MapWrapper } from "../components/Map";
-import { Tag } from "../components/Tag";
+import { Sidebar } from "../components/Sidebar";
+import { TagView } from "../components/TagView";
 
 const Home = () => {
   return (
-    <div style={{ display: "flex", height: "100%" }}>
-      <div style={{ height: "100%", flex: 1 }}>
+    <div style={{ height: "100%" }}>
+      <div
+        style={{
+          height: "100vh",
+          position: "absolute",
+          zIndex: 1,
+          left: 0,
+          width: "100%",
+        }}
+      >
         <MapWrapper />
+      </div>
+      <div style={{ position: "absolute", top: 50, left: 50, zIndex: 10 }}>
+        <Sidebar />
       </div>
     </div>
   );

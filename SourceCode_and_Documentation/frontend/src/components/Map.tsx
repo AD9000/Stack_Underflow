@@ -6,6 +6,7 @@ import {
   Marker,
   useMap,
   useMapEvent,
+  Pane,
 } from "react-leaflet";
 import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
@@ -71,10 +72,24 @@ const Map = () => {
 
   return (
     <>
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <Pane
+        name="map"
+        style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
+      >
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+          pane="map"
+        />
+      </Pane>
+      <Pane
+        name="labels"
+        style={{ position: "absolute", zIndex: -9, pointerEvents: "none" }}
+      >
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png"
+          pane="labels"
+        />
+      </Pane>
 
       <Marker position={defaultPosition}>
         <CustomPopup />
