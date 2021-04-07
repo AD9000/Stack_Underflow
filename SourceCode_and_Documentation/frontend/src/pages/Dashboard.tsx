@@ -2,6 +2,7 @@ import React from "react";
 import { HomeTopNav } from "../components/HomeTopNav";
 import { MapWrapper } from "../components/Map";
 import { Sidebar } from "../components/Sidebar";
+import { UserNavBar } from "../components/UserNavBar";
 
 const handleclick = () => {
   const audio = new Audio(
@@ -26,7 +27,8 @@ const Home = () => {
         <MapWrapper />
       </div>
       <div style={{ position: "absolute", top: 50, left: 50, zIndex: 10 }}>
-        <HomeTopNav signin={true} />
+        <UserNavBar/>
+        {/* <HomeTopNav signin={true} /> */}
         <Sidebar />
       </div>
     </div>
