@@ -1,6 +1,7 @@
 import React from "react";
 import { MapWrapper } from "./components/Map";
 import "./App.css";
+import { Home } from "./pages/Home";
 
 import { HomePage } from "./pages/HomePage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
