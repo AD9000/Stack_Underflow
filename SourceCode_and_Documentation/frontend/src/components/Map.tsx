@@ -77,17 +77,8 @@ const Map = () => {
         style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
           pane="map"
-        />
-      </Pane>
-      <Pane
-        name="labels"
-        style={{ position: "absolute", zIndex: -9, pointerEvents: "none" }}
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png"
-          pane="labels"
         />
       </Pane>
 

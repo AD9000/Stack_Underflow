@@ -1,7 +1,6 @@
 import React from "react";
 import { MapWrapper } from "../components/Map";
 import { Sidebar } from "../components/Sidebar";
-import { TagView } from "../components/TagView";
 
 const Home = () => {
   return (
