@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { HomeTopNav } from "../components/HomeTopNav";
 import { MapWrapper } from "../components/Map";
 import { Sidebar } from "../components/Sidebar";
-import { AppContext } from "../components/Context";
+
+const handleclick = () => {
+  const audio = new Audio(
+    "https://open.spotify.com/track/7D49Iig0avHre9RFSUMkd2"
+  );
+  audio.play();
+};
 
 const Home = () => {
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: "100%" }} onClick={handleclick}>
+      yeeet
       <div
         style={{
           height: "100vh",
