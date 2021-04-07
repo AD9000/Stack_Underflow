@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontFamily: "farro",
     justifyContent: "space-between",
     padding: theme.spacing(0.5),
+    maxHeight: "8%",
   },
   toolBar: {
     display: "flex",
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const HomeTopNav = () => {
+const HomeTopNav = ({ signin }: { signin?: boolean }) => {
   const styles = useStyles();
   const [randomTag, setRandomTag] = React.useState<HTMLButtonElement | null>(null);
 
@@ -145,13 +146,17 @@ const HomeTopNav = () => {
 
         </Popover>
         <div style={{ flex: 1 }}></div>
-        <LoginButton />
+        {signin ? null : <LoginButton />}
         <a href="#" className={styles.whiteText}>
           <SettingsIcon fontSize="large" className={styles.settings} />
         </a>
       </Toolbar>
     </AppBar>
   );
+};
+
+HomeTopNav.defaultProps = {
+  signin: false,
 };
 
 export { HomeTopNav };

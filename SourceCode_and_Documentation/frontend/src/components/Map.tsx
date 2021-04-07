@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { LatLngTuple } from "leaflet";
 import {
   MapContainer,
@@ -6,11 +6,16 @@ import {
   Marker,
   useMap,
   useMapEvent,
+  Pane,
+  ZoomControl,
 } from "react-leaflet";
 import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
+import { AppContext } from "./Context";
 
-const defaultPosition: LatLngTuple = [-33.86785, 51.20732];
+const defaultPosition: LatLngTuple = [-33.86785, 151.20732];
+const p2: LatLngTuple = [-43.52565, 172.639847];
+const p3: LatLngTuple = [-42.87936, 147.32941];
 
 const useStyles = makeStyles({
   fullScreen: {
@@ -43,7 +48,8 @@ const MapWrapper = () => {
       <MapContainer
         className={classes.fullScreen}
         center={defaultPosition}
-        zoom={3}
+        zoom={4}
+        zoomControl={false}
         scrollWheelZoom={true}
       >
         <Map />
@@ -71,15 +77,27 @@ const Map = () => {
 
   return (
     <>
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <Pane
+        name="map"
+        style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
+      >
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          pane="map"
+        />
+      </Pane>
 
       <Marker position={defaultPosition}>
         <CustomPopup />
       </Marker>
+      <Marker position={p2}>
+        <CustomPopup />
+      </Marker>
+      <Marker position={p3}>
+        <CustomPopup />
+      </Marker>
       <Animation />
+      <ZoomControl position="bottomleft" />
     </>
   );
 };
