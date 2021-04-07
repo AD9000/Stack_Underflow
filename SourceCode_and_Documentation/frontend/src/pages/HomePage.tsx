@@ -71,7 +71,7 @@ const HomePage = () => {
             className={styles.whiteText}
             style={{ fontSize: "xxx-large" }}
           >
-            DISCOVER.<br></br> PLAY.
+            WorldPlay
           </Typography>
           <Typography className={styles.whiteText}>
             Use your Spotify favourites to connect and share your stories with
