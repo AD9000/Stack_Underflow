@@ -7,62 +7,68 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/styles';
-import { FormControl, Input, InputLabel, Typography } from '@material-ui/core';
+import { Typography, Theme } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import "@fontsource/farro";
 import { render } from '@testing-library/react';
 import Alert from '@material-ui/lab/Alert';
 
-const useStyles = makeStyles({
-    btn: {
-        textTransform: 'none',
-        fontFamily: "farro",
-        fontSize: 'x-large',
-        margin: '0.5rem'
-    },
-    dialog: {
-        backgroundColor: '#0f214a',
-        
-    },
-    dialogTitle: {
-        color: 'white',
-        fontFamily: 'farro',
-        fontSize: 'x-large',
-        textAlign: 'center'
-    },
-    input: {
-        fontFamily: 'farro',
-        backgroundColor: '#aad0ff'
-    },
-    blur: {
-        backgroundColor: 'rgb(255,255,255,0.3)',
-    },
-    dialogContent: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    horizontalFlex: {
-        display: 'flex',
-        flexDirection: 'row'
-    },
-    text: {
-        color: 'white'
-    },
-    grid: {
-        display: 'grid',
-        gridTemplateColumns: 'auto auto'
-    },
-    closeBtn: {/* 
-        position: 'absolute',
-        color: '#3481e1',
-        top: '0px',
-        left: '390px' */
-        color: '#3481e1',
-        float: 'right'
+const useStyles = makeStyles((theme: Theme) => ({
+  
+  btn: {
+    textTransform: 'none',
+    fontFamily: "farro",
+    fontSize: 'x-large',
+    margin: '0.5rem'
+  },
+  dialog: {
+    backgroundColor: '#0f214a',
+      
+  },
+  dialogTitle: {
+    color: 'white',
+    fontFamily: 'farro',
+    fontSize: 'x-large',
+    textAlign: 'center'
+  },
+  input: {
+    fontFamily: 'farro',
+    backgroundColor: '#aad0ff'
+  },
+  blur: {
+    backgroundColor: 'rgb(255,255,255,0.3)',
+  },
+  dialogContent: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  horizontalFlex: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  text: {
+    color: 'white'
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto'
+  },
+  closeBtn: {/* 
+    position: 'absolute',
+    color: '#3481e1',
+    top: '0px',
+    left: '390px' */
+    color: '#3481e1',
+    float: 'right'
 
-    }
-});
+  },
+  alert: {
+    backgroundColor: 'white',
+    margin: '10px',
+    color: '#1aad72'
+  }
+}));
 
 /* const UIstyles = theme => ({
     multilineColor:{
@@ -84,6 +90,7 @@ export default function RegisterDialog() {
   const handleClose = () => {
     setOpen(false);
     setStep(1);
+    setSuccess(false);
   };
 
   const handleNext = () => {
@@ -177,6 +184,11 @@ export default function RegisterDialog() {
   }
 
   function Step2() {
+    let alert;
+    if (success) alert = <Alert severity="success" className={styles.alert}>Your account was successfully created!</Alert>;
+    else alert = '';
+
+
     return (
       <div className={styles.dialog}>
         <IconButton aria-label="close" onClick={handleClose} className={styles.closeBtn}>
@@ -210,18 +222,19 @@ export default function RegisterDialog() {
               /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/ 
               type="password"
           /> 
+          {alert}
+          
         </DialogContent>
         <DialogActions>
-        <p className={styles.text}><a href='#' style={{color: '#3481e1'}}>Help</a></p>
-        <Button variant="contained" color="primary" className={styles.btn} onClick={handleSuccess}>
-          <b style={{fontSize:'large'}}>Next</b>
-        </Button>
-        
-        <Alert severity="success">Your account was successfully created!</Alert>
-        
-        {/* <Button onClick={handleClose} color="primary">
-        Subscribe
-        </Button> */}
+          <p className={styles.text}><a href='#' style={{color: '#3481e1'}}>Help</a></p>
+          <Button variant="contained" color="primary" className={styles.btn} onClick={handleSuccess}>
+            <b style={{fontSize:'large'}}>Next</b>
+          </Button>
+          
+          
+          {/* <Button onClick={handleClose} color="primary">
+          Subscribe
+          </Button> */}
       </DialogActions>
       </div>
     );
