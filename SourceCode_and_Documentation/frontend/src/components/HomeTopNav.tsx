@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Toolbar, Button, Theme, makeStyles } from "@material-ui/core";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import SettingsIcon from "@material-ui/icons/Settings";
+import LoginButton from "./LoginButton";
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -56,13 +57,7 @@ const HomeTopNav = () => {
           <b>Generate Random Tag</b>
         </Button>
         <div style={{ flex: 1 }}></div>
-        <Button
-          variant="contained"
-          color="primary"
-          className={styles.buttonText}
-        >
-          <b>Sign In</b>
-        </Button>
+        <LoginButton />
         <a href="#" className={styles.whiteText}>
           <SettingsIcon fontSize="large" className={styles.settings} />
         </a>
