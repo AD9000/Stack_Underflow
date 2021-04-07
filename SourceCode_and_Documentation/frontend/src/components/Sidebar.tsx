@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {
       height: "50%",
       position: "absolute",
-      top: 30,
       width: drawerWidth,
       flexShrink: 1,
       whiteSpace: "nowrap",
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "&>*": {
         height: "48%",
         borderRadius: "10px 0px 0px 10px",
-        top: 150,
+        top: 220,
         backgroundColor: "#0D204B",
       },
     },

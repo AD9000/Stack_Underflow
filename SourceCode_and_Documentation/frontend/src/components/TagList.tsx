@@ -103,7 +103,10 @@ const TagPreview = (props: tpp) => {
   const { title, location, album, desc, imgurl, index, sstate } = props;
   const classes = useStyles();
   return (
-    <Container onClick={() => handleClick({ index, sstate })}>
+    <Container
+      style={{ cursor: "pointer" }}
+      onClick={() => handleClick({ index, sstate })}
+    >
       <div className={classes.cardi}>
         <div className={classes.cimagewrap}>
           <img src={imgurl} style={{ width: "100%" }} />
@@ -128,7 +131,7 @@ const TagList = () => {
       {open === -1 ? (
         <div className={classes.taglist}>
           {tagjson.map((tj, index) => (
-            <TagPreview {...tj} index={index} sstate={setOpen} />
+            <TagPreview key={index} {...tj} index={index} sstate={setOpen} />
           ))}
         </div>
       ) : (

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { LatLngTuple } from "leaflet";
 import {
   MapContainer,
@@ -7,11 +7,15 @@ import {
   useMap,
   useMapEvent,
   Pane,
+  ZoomControl,
 } from "react-leaflet";
 import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
+import { AppContext } from "./Context";
 
-const defaultPosition: LatLngTuple = [-33.86785, 51.20732];
+const defaultPosition: LatLngTuple = [-33.86785, 151.20732];
+const p2: LatLngTuple = [-43.52565, 172.639847];
+const p3: LatLngTuple = [-42.87936, 147.32941];
 
 const useStyles = makeStyles({
   fullScreen: {
@@ -44,7 +48,8 @@ const MapWrapper = () => {
       <MapContainer
         className={classes.fullScreen}
         center={defaultPosition}
-        zoom={3}
+        zoom={4}
+        zoomControl={false}
         scrollWheelZoom={true}
       >
         <Map />
@@ -85,7 +90,14 @@ const Map = () => {
       <Marker position={defaultPosition}>
         <CustomPopup />
       </Marker>
+      <Marker position={p2}>
+        <CustomPopup />
+      </Marker>
+      <Marker position={p3}>
+        <CustomPopup />
+      </Marker>
       <Animation />
+      <ZoomControl position="bottomleft" />
     </>
   );
 };
