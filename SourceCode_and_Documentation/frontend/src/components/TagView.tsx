@@ -73,6 +73,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 //   );
 // };
 
+const handleclick = () => {
+  const audio = new Audio(
+    "https://open.spotify.com/track/7D49Iig0avHre9RFSUMkd2"
+  );
+  audio.play();
+};
+
 const TagView = ({ title, location, album, desc, imgurl, sstate }: tpp) => {
   const classes = useStyles();
   return (

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { TagView } from "./TagView";
 import { TagPrevProps, tpp } from "./Interfaces";
+import { AppContext } from "./Context";
 
 const tagjson: TagPrevProps[] = [
   {
@@ -125,18 +126,18 @@ const TagPreview = (props: tpp) => {
 };
 
 const TagList = () => {
-  const [open, setOpen] = useState(-1);
+  const { open, setOpen } = useContext(AppContext);
   const classes = useStyles();
   return (
     <div style={{ overflow: "hidden" }}>
-      {open === -1 ? (
+      {!open ? (
         <div className={classes.taglist}>
           {tagjson.map((tj, index) => (
             <TagPreview key={index} {...tj} index={index} sstate={setOpen} />
           ))}
         </div>
       ) : (
-        <TagView {...tagjson[open]} index={-1} sstate={setOpen} />
+        <TagView {...tagjson[open - 1]} index={-1} sstate={setOpen} />
       )}
     </div>
   );

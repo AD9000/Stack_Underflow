@@ -12,6 +12,7 @@ import {
 import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
 import { AppContext } from "./Context";
+import { SettingsPowerRounded } from "@material-ui/icons";
 
 const defaultPosition: LatLngTuple = [-33.86785, 151.20732];
 const p2: LatLngTuple = [-43.52565, 172.639847];
@@ -60,6 +61,7 @@ const MapWrapper = () => {
 
 const Map = () => {
   const map = useMap();
+  const { markers, setOpen } = useContext(AppContext);
 
   useEffect(() => {
     (async () => {
@@ -87,7 +89,16 @@ const Map = () => {
         />
       </Pane>
 
-      <Marker position={defaultPosition}>
+      <Pane name="markers">
+        {markers.map((position, index) => (
+          <Marker
+            eventHandlers={{ click: () => setOpen(index + 1) }}
+            key={index}
+            position={position}
+          ></Marker>
+        ))}
+      </Pane>
+      {/* <Marker position={defaultPosition}>
         <CustomPopup />
       </Marker>
       <Marker position={p2}>
@@ -95,7 +106,7 @@ const Map = () => {
       </Marker>
       <Marker position={p3}>
         <CustomPopup />
-      </Marker>
+        </Marker> */}
       <Animation />
       <ZoomControl position="bottomleft" />
     </>

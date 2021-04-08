@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import clsx from "clsx";
 import { Collapse } from "@material-ui/core";
 import {
@@ -14,6 +14,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { TagView } from "./TagView";
 import { TagList } from "./TagList";
+import { AppContext } from "./Context";
 
 const drawerWidth = 540;
 
@@ -74,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Sidebar = () => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const { open, setOpen } = useContext(AppContext);
 
   const toggleDrawer = () => {
     setOpen(!open);

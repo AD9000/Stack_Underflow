@@ -1,13 +1,18 @@
+import { LatLngTuple } from "leaflet";
 import React from "react";
 
 interface AppContextType {
-  open: boolean;
+  open: number;
   setOpen: Function;
+  markers: LatLngTuple[];
+  setMarkers: Function;
 }
 
 const AppContext = React.createContext<AppContextType>({
-  open: false,
+  open: 0,
   setOpen: () => {},
+  markers: [],
+  setMarkers: () => {},
 });
 
 export { AppContext };
