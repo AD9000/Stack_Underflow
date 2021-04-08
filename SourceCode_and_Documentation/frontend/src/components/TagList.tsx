@@ -8,20 +8,21 @@ const tagjson: TagPrevProps[] = [
     title: "The Ocean's Beauty",
     location: "Tasmania",
     album: "I Lived - One Republic",
-    desc: `Proud to be from New Zealand! Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Nam at augue sed ex venenatis ornare eu
-      et sapien. Curabitur at est quis diam vehicula aliquam. Cras id
-      dignissim ante, ac bibendum lacus.`,
+    desc: `I'm proud to be from New Zealand! My favourite Maori saying is: 
+      'Ka Kite Ano', meaning "See you tomorrow". However, my number one
+      favourite thing about my culture is that there is a legend for everthing. 
+      Mountains? Yep. Rivers? Yep. Lakes? Yep! I hope you get a chance to visit
+      my beautiful country, I guarantee you'll fall in love!`,
     imgurl: "https://ak5.picdn.net/shutterstock/videos/1014147545/thumb/1.jpg",
   },
   {
     title: "Memories Stay",
     location: "UNSW",
     album: "The End of the Road - Boyz II Men",
-    desc: `Proud to be from New Zealand! Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Nam at augue sed ex venenatis ornare eu
-      et sapien. Curabitur at est quis diam vehicula aliquam. Cras id
-      dignissim ante, ac bibendum lacus.`,
+    desc: `I can't believe graduation is here... One day I'm praying to finish
+      uni already and the next I can't bring myself to leave the campus. I'm
+      grateful for the way my university experience has shaped me, and I'm glad
+      I decided not to drop out in first year.`,
     imgurl:
       "https://www.universitiesaustralia.edu.au/wp-content/uploads/2019/05/UNSW-2020_Web-2-1333x1000.jpg",
   },
@@ -29,10 +30,10 @@ const tagjson: TagPrevProps[] = [
     title: "Thrill of My Life",
     location: "Luna Park",
     album: "Happy - Pharell Williams",
-    desc: `Proud to be from New Zealand! Lorem ipsum dolor sit amet,
-      consectetur adipiscing elit. Nam at augue sed ex venenatis ornare eu
-      et sapien. Curabitur at est quis diam vehicula aliquam. Cras id
-      dignissim ante, ac bibendum lacus.  `,
+    desc: `So many fond memories visiting Luna Park as a little boy. My mum would hug me
+      every time we went on the ferris wheel because I was scared (even though it was my 
+      favourite ride!!) She was so patient with me when I couldn't decide on an ice cream 
+      I miss her every day.`,
     imgurl:
       "https://media-cdn.tripadvisor.com/media/photo-s/1a/70/42/90/luna-park-sydney.jpg",
   },
