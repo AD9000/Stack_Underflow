@@ -9,6 +9,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Link } from 'react-router-dom';
+import { CreateTag } from "./CreateTag";
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -38,6 +40,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const UserNavBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [settingsAnchor, setSettingsAnchor] = React.useState<null | HTMLElement>(null);
+
+  let history = useHistory();
   
   const handleClickUser = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -51,6 +55,10 @@ const UserNavBar = () => {
     setAnchorEl(null);
     setSettingsAnchor(null);
   };
+
+  const handleLogOut = () => {
+    history.push('/');
+  }
 
   const styles = useStyles();
   let username = "username";
@@ -66,6 +74,7 @@ const UserNavBar = () => {
         <Link to='home'>
           <h4 className={styles.text}>Help</h4>
         </Link>
+        <CreateTag />
        
         <div style={{ flex: 1 }}></div>
         <AccountCircleIcon fontSize="large"/>
@@ -104,9 +113,9 @@ const UserNavBar = () => {
             <SettingsIcon/>
             Profile Settings
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleLogOut}>
             <ExitToAppIcon/>
-            Log Out
+              Log Out
           </MenuItem>
         </Menu>
       </Toolbar>

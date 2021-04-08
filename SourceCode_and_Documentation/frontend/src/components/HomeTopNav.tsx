@@ -134,10 +134,8 @@ const HomeTopNav = ({ signin }: { signin?: boolean }) => {
                       <h4 style={{margin:'0'}}>Kanye West</h4>
                   </div>
                 </div>
-                  <p>Being underwater is such a surreal experience, one that I can't compare to anything else! 
-                  <br/><br/>
-                  My favourite lyric in this song is "Clean us like the rain in spring... Let Your light reflect on me"
-                  <br/><br/>
+                  <p>Being underwater is such a surreal experience, one that I can't compare to anything else!                   
+                  My favourite lyric in this song is "Clean us like the rain in spring... Let Your light reflect on me"                  
                   Can't wait until I see the ocean again!!!
                   </p>
               </div>
