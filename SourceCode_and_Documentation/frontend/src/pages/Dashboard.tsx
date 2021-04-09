@@ -5,15 +5,9 @@ import { MapWrapper } from "../components/Map";
 import { Sidebar } from "../components/Sidebar";
 import { UserNavBar } from "../components/UserNavBar";
 
-const handleclick = () => {
-  const audio = new Audio(
-    "https://open.spotify.com/track/7D49Iig0avHre9RFSUMkd2"
-  );
-  audio.play();
-};
-
 const Dashboard = () => {
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [tagIndex, setTagIndex] = useState(-1);
   const [markers, setMarkers] = useState<LatLngTuple[]>([]);
   useEffect(() => {
     setMarkers([
@@ -23,8 +17,10 @@ const Dashboard = () => {
     ]);
   }, []);
   return (
-    <AppContext.Provider value={{ open, setOpen, markers, setMarkers }}>
-      <div style={{ height: "100%" }} onClick={handleclick}>
+    <AppContext.Provider
+      value={{ open, setOpen, tagIndex, setTagIndex, markers, setMarkers }}
+    >
+      <div style={{ height: "100%" }}>
         <div
           style={{
             height: "100vh",

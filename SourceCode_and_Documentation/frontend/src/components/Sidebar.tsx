@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -68,10 +68,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Sidebar = () => {
   const classes = useStyles();
-  const { open, setOpen } = useContext(AppContext);
+  const { open, setOpen, setTagIndex } = useContext(AppContext);
 
   const toggleDrawer = () => {
-    console.log(open, !open);
     setOpen(!open);
   };
 
@@ -80,6 +79,12 @@ const Sidebar = () => {
       setOpen(true);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setTagIndex(-1);
+    }
+  }, [open, setTagIndex]);
 
   return (
     <Drawer

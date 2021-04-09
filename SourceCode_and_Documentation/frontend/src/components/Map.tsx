@@ -58,7 +58,12 @@ const MapWrapper = () => {
 
 const Map = () => {
   const map = useMap();
-  const { markers, setOpen } = useContext(AppContext);
+  const { markers, setOpen, setTagIndex } = useContext(AppContext);
+
+  const handleTagClick = (index: number) => {
+    setTagIndex(index);
+    setOpen(true);
+  };
 
   useEffect(() => {
     (async () => {
@@ -89,7 +94,7 @@ const Map = () => {
       <Pane name="markers">
         {markers.map((position, index) => (
           <Marker
-            eventHandlers={{ click: () => setOpen(index + 1) }}
+            eventHandlers={{ click: () => handleTagClick(index) }}
             key={index}
             position={position}
           ></Marker>

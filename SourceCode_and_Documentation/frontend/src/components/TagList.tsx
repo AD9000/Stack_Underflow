@@ -126,18 +126,23 @@ const TagPreview = (props: tpp) => {
 };
 
 const TagList = () => {
-  const { open, setOpen } = useContext(AppContext);
+  const { tagIndex, setTagIndex } = useContext(AppContext);
   const classes = useStyles();
   return (
     <div style={{ overflow: "hidden" }}>
-      {!open ? (
+      {tagIndex === -1 ? (
         <div className={classes.taglist}>
           {tagjson.map((tj, index) => (
-            <TagPreview key={index} {...tj} index={index} sstate={setOpen} />
+            <TagPreview
+              key={index}
+              {...tj}
+              index={index}
+              sstate={setTagIndex}
+            />
           ))}
         </div>
       ) : (
-        <TagView {...tagjson[open - 1]} index={-1} sstate={setOpen} />
+        <TagView {...tagjson[tagIndex]} index={-1} sstate={setTagIndex} />
       )}
     </div>
   );
