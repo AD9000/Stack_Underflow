@@ -1,18 +1,11 @@
 import React, { useContext } from "react";
 import clsx from "clsx";
-import { Collapse } from "@material-ui/core";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
+// import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { TagView } from "./TagView";
 import { TagList } from "./TagList";
 import { AppContext } from "./Context";
 
@@ -78,6 +71,7 @@ const Sidebar = () => {
   const { open, setOpen } = useContext(AppContext);
 
   const toggleDrawer = () => {
+    console.log(open, !open);
     setOpen(!open);
   };
 
@@ -108,6 +102,7 @@ const Sidebar = () => {
           {open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </div>
+      {/* <Divider /> {// add divider here, make part above highlighted on hover } */}
       {open ? <TagList /> : <div style={{ flex: 1, cursor: "pointer" }}></div>}
     </Drawer>
   );

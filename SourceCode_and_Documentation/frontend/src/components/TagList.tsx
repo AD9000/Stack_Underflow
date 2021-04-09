@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { TagView } from "./TagView";
 import { TagPrevProps, tpp } from "./Interfaces";
@@ -111,7 +111,7 @@ const TagPreview = (props: tpp) => {
     >
       <div className={classes.cardi}>
         <div className={classes.cimagewrap}>
-          <img src={imgurl} style={{ width: "100%" }} />
+          <img alt={imgurl} src={imgurl} style={{ width: "100%" }} />
         </div>
         <div className={classes.textwrap}>
           <h4>

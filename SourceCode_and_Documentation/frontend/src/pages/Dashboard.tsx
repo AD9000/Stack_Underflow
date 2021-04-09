@@ -1,7 +1,6 @@
 import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
 import { AppContext } from "../components/Context";
-import { HomeTopNav } from "../components/HomeTopNav";
 import { MapWrapper } from "../components/Map";
 import { Sidebar } from "../components/Sidebar";
 import { UserNavBar } from "../components/UserNavBar";

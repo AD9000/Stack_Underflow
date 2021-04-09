@@ -8,8 +8,8 @@ import {
 import React from "react";
 import { tpp } from "./Interfaces";
 
-const imgurl =
-  "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
+// const randImgurl =
+//   "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
 
 const useStyles = makeStyles((theme: Theme) => ({
   cardi: {
@@ -53,34 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-// interface CardiProps {
-//   title: string;
-//   text: string;
-//   imgurl: string;
-// }
-// const Cardi = ({ title, text, imgurl }: CardiProps) => {
-//   const classes = useStyles();
-//   return (
-//     <div className={classes.cardi}>
-//       <div className={classes.cimagewrap}>
-//         <img src={imgurl} style={{ height: "40px", width: "40px" }} />
-//       </div>
-//       <div className={classes.textwrap}>
-//         <h3>{title}</h3>
-//         <h4>{text}</h4>
-//       </div>
-//     </div>
-//   );
-// };
-
-const handleclick = () => {
-  const audio = new Audio(
-    "https://open.spotify.com/track/7D49Iig0avHre9RFSUMkd2"
-  );
-  audio.play();
-};
-
-const TagView = ({ title, location, album, desc, imgurl, sstate }: tpp) => {
+const TagView = ({ title, location, desc, imgurl, sstate }: tpp) => {
   const classes = useStyles();
   return (
     <Container>
@@ -98,7 +71,7 @@ const TagView = ({ title, location, album, desc, imgurl, sstate }: tpp) => {
         <div className={classes.user}>johnnybravo1</div>
         <div className={classes.wrap}>
           <div className={classes.cimagewrap}>
-            <img src={imgurl} style={{ maxWidth: "100%" }} />
+            <img alt={imgurl} src={imgurl} style={{ maxWidth: "100%" }} />
           </div>
           <div className={classes.textwrap}>
             <h3>{title}</h3>

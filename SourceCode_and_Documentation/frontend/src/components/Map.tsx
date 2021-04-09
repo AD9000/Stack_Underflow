@@ -9,14 +9,11 @@ import {
   Pane,
   ZoomControl,
 } from "react-leaflet";
-import { CustomPopup } from "./CustomPopup";
 import { makeStyles } from "@material-ui/styles";
 import { AppContext } from "./Context";
-import { SettingsPowerRounded } from "@material-ui/icons";
 
+// map cannot load without default position
 const defaultPosition: LatLngTuple = [-33.86785, 151.20732];
-const p2: LatLngTuple = [-43.52565, 172.639847];
-const p3: LatLngTuple = [-42.87936, 147.32941];
 
 const useStyles = makeStyles({
   fullScreen: {
@@ -98,15 +95,6 @@ const Map = () => {
           ></Marker>
         ))}
       </Pane>
-      {/* <Marker position={defaultPosition}>
-        <CustomPopup />
-      </Marker>
-      <Marker position={p2}>
-        <CustomPopup />
-      </Marker>
-      <Marker position={p3}>
-        <CustomPopup />
-        </Marker> */}
       <Animation />
       <ZoomControl position="bottomleft" />
     </>

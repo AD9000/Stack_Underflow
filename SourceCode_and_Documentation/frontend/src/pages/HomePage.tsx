@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Container,
-  Typography,
-  Button,
-  makeStyles,
-  Theme,
-} from "@material-ui/core";
+import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
 import { HomeTopNav } from "../components/HomeTopNav";
 import globe from "../assets/globe.png";
@@ -40,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: "#262626",
     color: "white",
     fontSize: "x-large",
-    margin: '0.5rem'
+    margin: "0.5rem",
   },
   intro: {
     paddingTop: theme.spacing(10),

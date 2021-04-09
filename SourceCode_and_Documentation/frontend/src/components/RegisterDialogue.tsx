@@ -4,14 +4,12 @@ import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/styles";
 import { Typography, Theme } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
-import { render } from "@testing-library/react";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 
@@ -178,14 +176,14 @@ export default function RegisterDialog() {
           </div>
           <p className={styles.text} style={{ textAlign: "center" }}>
             Already have an account?{" "}
-            <a href="#" style={{ color: "#3481e1" }}>
+            <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
               Sign In
             </a>
           </p>
         </DialogContent>
         <DialogActions>
           <p className={styles.text}>
-            <a href="#" style={{ color: "#3481e1" }}>
+            <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
               Help
             </a>
           </p>
@@ -262,7 +260,7 @@ export default function RegisterDialog() {
         </DialogContent>
         <DialogActions>
           <p className={styles.text}>
-            <a href="#" style={{ color: "#3481e1" }}>
+            <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
               Help
             </a>
           </p>
