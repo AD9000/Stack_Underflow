@@ -20,6 +20,7 @@ const Dashboard = () => {
     <AppContext.Provider
       value={{ open, setOpen, tagIndex, setTagIndex, markers, setMarkers }}
     >
+      <UserNavBar />
       <div style={{ height: "100%" }}>
         <div
           style={{
@@ -28,12 +29,12 @@ const Dashboard = () => {
             zIndex: 1,
             left: 0,
             width: "100%",
+            marginTop: "1%",
           }}
         >
           <MapWrapper />
         </div>
         <div style={{ position: "absolute", top: 50, left: 50, zIndex: 10 }}>
-          <UserNavBar />
           <Sidebar />
         </div>
       </div>

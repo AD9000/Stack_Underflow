@@ -12,14 +12,10 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { AppContext } from "./Context";
 
-// map cannot load without default position
-const defaultPosition: LatLngTuple = [-33.86785, 151.20732];
+const mapStyle = "styles/v1/underflow/cknag3sw245zs17o66pbt4dgj";
 
-const useStyles = makeStyles({
-  fullScreen: {
-    height: "100%",
-  },
-});
+// map cannot load without default position
+const defaultPosition: LatLngTuple = [-33.86785, 51.20732];
 
 const Animation = () => {
   const map = useMapEvent("click", (e) => {
@@ -39,6 +35,12 @@ const getPosition = async () => {
   );
 };
 
+const useStyles = makeStyles({
+  fullScreen: {
+    height: "100%",
+  },
+});
+
 const MapWrapper = () => {
   const classes = useStyles();
   return (
@@ -46,8 +48,10 @@ const MapWrapper = () => {
       <MapContainer
         className={classes.fullScreen}
         center={defaultPosition}
-        zoom={4}
+        zoom={2.5}
+        zoomSnap={0.1}
         zoomControl={false}
+        minZoom={2.5}
         scrollWheelZoom={true}
       >
         <Map />
@@ -86,7 +90,8 @@ const Map = () => {
         style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
       >
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          // url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          url={`https://api.mapbox.com/${mapStyle}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_KEY}`}
           pane="map"
         />
       </Pane>
@@ -102,6 +107,7 @@ const Map = () => {
       </Pane>
       <Animation />
       <ZoomControl position="bottomleft" />
+      {/* <ZoomCheck /> */}
     </>
   );
 };
