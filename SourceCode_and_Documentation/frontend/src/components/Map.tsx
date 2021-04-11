@@ -48,10 +48,10 @@ const MapWrapper = () => {
       <MapContainer
         className={classes.fullScreen}
         center={defaultPosition}
-        zoom={2.5}
+        zoom={2.4}
         zoomSnap={0.1}
         zoomControl={false}
-        minZoom={2.5}
+        minZoom={2.4}
         scrollWheelZoom={true}
       >
         <Map />

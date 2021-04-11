@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
-import { HomeTopNav } from "../components/HomeTopNav";
 import { HomeNav } from "../components/NavBar";
 import globe from "../assets/globe.png";
 import RegisterDialogue from "../components/RegisterDialogue";
@@ -61,7 +60,6 @@ const HomePage = () => {
   return (
     <div className={styles.background}>
       <HomeNav />
-      {/* <HomeTopNav /> */}
       <div className={styles.intro}>
         <div className={styles.introTextWrapper}>
           <Typography

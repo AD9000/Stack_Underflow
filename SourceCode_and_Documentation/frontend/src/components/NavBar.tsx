@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -6,19 +6,24 @@ import {
   Theme,
   makeStyles,
   Popover,
-  Card,
-  CardContent,
   Typography,
+  Menu,
+  MenuItem,
+  ButtonGroup,
 } from "@material-ui/core";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import SettingsIcon from "@material-ui/icons/Settings";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import PersonIcon from "@material-ui/icons/Person";
+import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LoginButton from "./LoginButton";
-import CloseIcon from "@material-ui/icons/Close";
 import reefPic from "../assets/reef.jpeg";
 import playButton from "../assets/playButton.png";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { TagInfo, tpp } from "./Interfaces";
 import { TagView } from "./TagView";
+import { CreateTag } from "./CreateTag";
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -75,6 +80,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: "#0f214a",
     color: "white",
   },
+  btn: {
+    margin: theme.spacing(1),
+    color: "white",
+    fontFamily: "farro",
+    textDecoration: "none",
+  },
 }));
 
 interface NavBarProps {
@@ -83,28 +94,23 @@ interface NavBarProps {
 }
 
 const NavBar = ({ children, title }: NavBarProps) => {
-  const styles = useStyles();
+  const classes = useStyles();
   return (
-    <AppBar position="fixed" className={styles.appBar}>
-      <Toolbar className={styles.toolBar}>
-        <div className={styles.playWrapper}>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar className={classes.toolBar}>
+        <div className={classes.playWrapper}>
           <Link to="/home">
             <img
               alt={"app logo (play button)"}
               src={playButton}
-              className={styles.playButton}
+              className={classes.playButton}
             />
           </Link>
         </div>
-        <Typography variant="h4" className={styles.title}>
+        <Typography variant="h4" className={classes.title}>
           {title}
         </Typography>
         {children}
-        <div>
-          <Link to="/" className={styles.whiteText}>
-            <SettingsIcon className={styles.settings} />
-          </Link>
-        </div>
       </Toolbar>
     </AppBar>
   );
@@ -181,4 +187,95 @@ const HomeNav = () => {
   );
 };
 
-export { HomeNav };
+const DashboardNav = () => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [
+    settingsAnchor,
+    setSettingsAnchor,
+  ] = React.useState<null | HTMLElement>(null);
+
+  let history = useHistory();
+
+  const handleClickUser = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClickSettings = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSettingsAnchor(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSettingsAnchor(null);
+  };
+
+  const handleLogOut = () => {
+    history.push("/");
+  };
+
+  let username = "username";
+
+  const classes = useStyles();
+  return (
+    <NavBar title={"DISCOVER. PLAY."}>
+      <ButtonGroup className={classes.btn}>
+        <Button>
+          <Link to="/home">
+            <h4 className={classes.whiteText}>About</h4>
+          </Link>
+        </Button>
+        <Button>
+          <Link to="/home">
+            <h4 className={classes.whiteText}>Help</h4>
+          </Link>
+        </Button>
+      </ButtonGroup>
+      <CreateTag />
+
+      <div style={{ flex: 1 }}></div>
+      <AccountCircleIcon fontSize="large" />
+      <Button className={classes.btn} onClick={handleClickUser}>
+        {username}
+        <ArrowDropDownIcon />
+      </Button>
+      <Menu
+        id="userMenu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+          <PersonIcon />
+          My Profile
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <PriorityHighIcon />
+          Notifications
+        </MenuItem>
+      </Menu>
+      <Button onClick={handleClickSettings} className={classes.settings}>
+        <SettingsIcon fontSize="large" />
+      </Button>
+
+      <Menu
+        id="settingsMenu"
+        anchorEl={settingsAnchor}
+        keepMounted
+        open={Boolean(settingsAnchor)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>
+          <SettingsIcon />
+          Profile Settings
+        </MenuItem>
+        <MenuItem onClick={handleLogOut}>
+          <ExitToAppIcon />
+          Log Out
+        </MenuItem>
+      </Menu>
+    </NavBar>
+  );
+};
+
+export { HomeNav, DashboardNav };

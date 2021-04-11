@@ -2,8 +2,8 @@ import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
 import { AppContext } from "../components/Context";
 import { MapWrapper } from "../components/Map";
+import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar";
-import { UserNavBar } from "../components/UserNavBar";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +20,8 @@ const Dashboard = () => {
     <AppContext.Provider
       value={{ open, setOpen, tagIndex, setTagIndex, markers, setMarkers }}
     >
-      <UserNavBar />
+      {/* <UserNavBar /> */}
+      <DashboardNav />
       <div style={{ height: "100%" }}>
         <div
           style={{
