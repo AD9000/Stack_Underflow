@@ -12,10 +12,14 @@ import { tpp } from "./Interfaces";
 //   "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    height: "100%",
+    padding: theme.spacing(4),
+  },
   cardi: {
     display: "flex",
     flexDirection: "column",
-    margin: theme.spacing(2),
+    // margin: theme.spacing(2),
     padding: theme.spacing(2),
     borderRadius: "10px",
     backgroundColor: "#405B99",
@@ -26,8 +30,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     borderRadius: "10px",
-    // backgroundImage: "https://source.unsplash.com/random/500x500",
-    // backgroundSize: "cover",
   },
   textwrap: {
     display: "flex",
@@ -53,11 +55,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const TagView = ({ title, location, desc, imgurl, sstate }: tpp) => {
+const TagView = ({ title, username, location, desc, imgurl, sstate }: tpp) => {
   const classes = useStyles();
   return (
-    <Container>
-      <Button
+    <Container className={classes.wrapper}>
+      {/* <Button
         onClick={() => sstate(-1)}
         style={{
           color: "white",
@@ -66,9 +68,9 @@ const TagView = ({ title, location, desc, imgurl, sstate }: tpp) => {
         }}
       >
         Back
-      </Button>
+      </Button> */}
       <div className={classes.cardi}>
-        <div className={classes.user}>johnnybravo1</div>
+        <div className={classes.user}>{username}</div>
         <div className={classes.wrap}>
           <div className={classes.cimagewrap}>
             <img alt={imgurl} src={imgurl} style={{ maxWidth: "100%" }} />

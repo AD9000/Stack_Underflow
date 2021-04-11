@@ -6,7 +6,20 @@ export interface TagPrevProps {
   imgurl: string;
 }
 
-export interface tpp extends TagPrevProps {
+export interface TagInfo {
+  region?: string;
+  username?: string;
+  imgurl: string;
+  title: string;
+  location: string;
+  songName?: string;
+  songArtist?: string;
+  songUrl?: string;
+  desc: string;
+}
+
+export interface tpp extends TagInfo {
+  album: string;
   index: number;
   sstate: Function;
 }
