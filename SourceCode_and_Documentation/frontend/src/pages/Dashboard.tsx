@@ -20,7 +20,6 @@ const Dashboard = () => {
     <AppContext.Provider
       value={{ open, setOpen, tagIndex, setTagIndex, markers, setMarkers }}
     >
-      {/* <UserNavBar /> */}
       <DashboardNav />
       <div style={{ height: "100%" }}>
         <div

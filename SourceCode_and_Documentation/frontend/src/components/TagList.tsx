@@ -129,7 +129,7 @@ const TagList = () => {
   const { tagIndex, setTagIndex } = useContext(AppContext);
   const classes = useStyles();
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", flex: 1, display: "flex" }}>
       {tagIndex === -1 ? (
         <div className={classes.taglist}>
           {tagjson.map((tj, index) => (

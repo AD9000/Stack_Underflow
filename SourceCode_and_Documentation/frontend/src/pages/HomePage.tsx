@@ -1,12 +1,10 @@
 import React from "react";
 import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
-import { HomeNav } from "../components/NavBar";
+import { HomeNav } from "../components/Navbar/HomeNav";
 import globe from "../assets/globe.png";
 import RegisterDialogue from "../components/RegisterDialogue";
-//import { MenuIcon } from '@material-ui/core/MenuIcon';
 
-// NOTE SIZES ARE HARDCODED TODO
 const useStyles = makeStyles((theme: Theme) => ({
   background: {
     backgroundImage: `url(${globe})`,

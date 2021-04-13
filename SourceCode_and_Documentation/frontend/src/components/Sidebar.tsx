@@ -20,14 +20,15 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "none",
     },
     drawer: {
-      height: "50%",
+      height: "60%",
       position: "absolute",
       width: drawerWidth,
       flexShrink: 1,
       whiteSpace: "nowrap",
       overflow: "hidden",
       "&>*": {
-        height: "48%",
+        display: "flex",
+        height: "58%",
         borderRadius: "10px 0px 0px 10px",
         top: 220,
         backgroundColor: "#0D204B",

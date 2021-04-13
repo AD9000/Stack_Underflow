@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Theme, makeStyles, Popover } from "@material-ui/core";
 import LoginButton from "../LoginButton";
-import reefPic from "../assets/reef.jpeg";
+import reefPic from "../../assets/reef.jpeg";
 import { TagInfo, tpp } from "../Interfaces";
 import { TagView } from "../TagView";
 import { NavBar } from "./NavBar";
@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     "& .MuiPopover-paper": {
       maxWidth: "30rem",
       borderRadius: "10px",
+      backgroundColor: "#0f214a",
     },
   },
   popoverContent: {
