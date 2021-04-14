@@ -15,11 +15,11 @@ const useStyles = (imgurl: string) =>
   makeStyles((theme: Theme) => ({
     wrapper: {
       display: "flex",
-      padding: theme.spacing(4),
+      padding: 0,
     },
     cardi: {
       display: "flex",
-      height: "80%",
+      height: "90%",
       flexDirection: "column",
       padding: theme.spacing(2),
       borderRadius: "10px",

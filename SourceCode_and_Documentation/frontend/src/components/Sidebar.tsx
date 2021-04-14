@@ -8,6 +8,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { TagList } from "./TagList";
 import { AppContext } from "./Context";
+import { Button } from "@material-ui/core";
 
 const drawerWidth = 540;
 
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "hidden",
       "&>*": {
         display: "flex",
-        height: "58%",
+        height: "50%",
         borderRadius: "10px 0px 0px 10px",
         top: 220,
         backgroundColor: "#0D204B",
@@ -69,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Sidebar = () => {
   const classes = useStyles();
-  const { open, setOpen, setTagIndex } = useContext(AppContext);
+  const { open, setOpen, tagIndex, setTagIndex } = useContext(AppContext);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -103,10 +104,37 @@ const Sidebar = () => {
       anchor="right"
       onClick={openDrawer}
     >
-      <div style={{ cursor: "pointer" }} onClick={toggleDrawer}>
-        <IconButton style={{ color: "white" }}>
-          {open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-        </IconButton>
+      <div
+        style={{
+          cursor: "pointer",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+          }}
+          onClick={toggleDrawer}
+        >
+          <IconButton style={{ color: "white" }}>
+            {open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </div>
+        {open && tagIndex >= 0 && (
+          <Button
+            onClick={() => setTagIndex(-1)}
+            style={{
+              margin: "1rem",
+              height: "50%",
+              color: "white",
+              border: "1px solid white",
+              marginLeft: "1rem",
+            }}
+          >
+            Back
+          </Button>
+        )}
       </div>
       {/* <Divider /> {// add divider here, make part above highlighted on hover } */}
       {open ? <TagList /> : <div style={{ flex: 1, cursor: "pointer" }}></div>}

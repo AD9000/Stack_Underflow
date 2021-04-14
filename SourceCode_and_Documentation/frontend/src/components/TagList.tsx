@@ -41,32 +41,27 @@ const tagjson: TagPrevProps[] = [
 ];
 
 const useStyles = makeStyles((theme: Theme) => ({
-  cardi: {
-    display: "flex",
-    color: "white",
+  // "@global": {
+  //   "&::-webkit-scrollbar": {
+  //     width: "0.4em",
+  //   },
+  //   "&::-webkit-scrollbar-track": {
+  //     boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  //     webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  //   },
+  //   "&::-webkit-scrollbar-thumb": {
+  //     backgroundColor: "rgba(0,0,0,.1)",
+  //     outline: "1px solid blue",
+  //   },
+  // },
+  wrapper: {
     overflow: "hidden",
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
-  cimagewrap: {
     flex: 1,
     display: "flex",
-    alignItems: "center",
-    // width: "400px",
-    borderRadius: "10px",
-    paddingRight: theme.spacing(1),
-    // backgroundImage: "https://source.unsplash.com/random/500x500",
-    // backgroundSize: "cover",
-  },
-  textwrap: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    flex: 2,
-    whiteSpace: "normal",
-    "&>*": {
-      margin: theme.spacing(0.5),
-    },
+    height: "90%",
+    padding: theme.spacing(4),
+    paddingTop: 0,
+    // padding: theme.spacing(2),
   },
   wrap: {
     display: "flex",
@@ -82,15 +77,50 @@ const useStyles = makeStyles((theme: Theme) => ({
     wordWrap: "break-word",
   },
   taglist: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
+    // marginTop: theme.spacing(2),
+    // marginLeft: theme.spacing(4),
+    // marginRight: theme.spacing(4),
+    // margin: theme.spacing(4),
     overflowY: "scroll",
     borderRadius: "10px",
     backgroundColor: "#405B99",
-    maxHeight: "85%",
+    padding: theme.spacing(2),
+    // height: "90%",
   },
 }));
+
+const previewStyles = (imgurl: string) =>
+  makeStyles((theme: Theme) => ({
+    cardi: {
+      display: "flex",
+      color: "white",
+      overflow: "hidden",
+      // padding: theme.spacing(1),
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+    cimagewrap: {
+      flex: 1,
+      display: "flex",
+      alignItems: "center",
+      // width: "400px",
+      borderRadius: "10px",
+      marginRight: theme.spacing(2),
+      backgroundImage: `url(${imgurl})`,
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+    },
+    textwrap: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      flex: 2,
+      whiteSpace: "normal",
+      "&>*": {
+        margin: theme.spacing(0.5),
+      },
+    },
+  }))();
 
 interface clickProps {
   index: number;
@@ -103,7 +133,7 @@ const handleClick = ({ index, sstate }: clickProps) => {
 
 const TagPreview = (props: tpp) => {
   const { title, location, album, desc, imgurl, index, sstate } = props;
-  const classes = useStyles();
+  const classes = previewStyles(imgurl);
   return (
     <Container
       style={{ cursor: "pointer" }}
@@ -111,7 +141,7 @@ const TagPreview = (props: tpp) => {
     >
       <div className={classes.cardi}>
         <div className={classes.cimagewrap}>
-          <img alt={imgurl} src={imgurl} style={{ width: "100%" }} />
+          {/* <img alt={imgurl} src={imgurl} style={{ width: "100%" }} /> */}
         </div>
         <div className={classes.textwrap}>
           <h4>
@@ -129,7 +159,7 @@ const TagList = () => {
   const { tagIndex, setTagIndex } = useContext(AppContext);
   const classes = useStyles();
   return (
-    <div style={{ overflow: "hidden", flex: 1, display: "flex" }}>
+    <div className={classes.wrapper}>
       {tagIndex === -1 ? (
         <div className={classes.taglist}>
           {tagjson.map((tj, index) => (
