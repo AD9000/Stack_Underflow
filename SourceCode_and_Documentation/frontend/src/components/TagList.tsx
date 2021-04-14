@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: "scroll",
     borderRadius: "10px",
     backgroundColor: "#405B99",
-    padding: theme.spacing(2),
+    paddingTop: theme.spacing(2),
   },
 }));
 
