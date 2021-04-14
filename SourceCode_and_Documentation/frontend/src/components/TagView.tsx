@@ -1,10 +1,4 @@
-import {
-  Button,
-  Container,
-  makeStyles,
-  Theme,
-  Typography,
-} from "@material-ui/core";
+import { Container, makeStyles, Theme, Typography } from "@material-ui/core";
 import React from "react";
 import { tpp } from "./Interfaces";
 
@@ -67,22 +61,10 @@ const TagView = ({ title, username, location, desc, imgurl, sstate }: tpp) => {
   const classes = useStyles(imgurl);
   return (
     <Container className={classes.wrapper}>
-      {/* <Button
-        onClick={() => sstate(-1)}
-        style={{
-          color: "white",
-          border: "1px solid white",
-          marginLeft: "1rem",
-        }}
-      >
-        Back
-      </Button> */}
       <div className={classes.cardi}>
         <div className={classes.user}>{username}</div>
         <div className={classes.wrap}>
-          <div className={classes.cimagewrap}>
-            {/* <img alt={imgurl} src={imgurl} style={{ maxWidth: "100%" }} /> */}
-          </div>
+          <div className={classes.cimagewrap} />
           <div className={classes.textwrap}>
             <h2>{title}</h2>
             <h3>{location}</h3>

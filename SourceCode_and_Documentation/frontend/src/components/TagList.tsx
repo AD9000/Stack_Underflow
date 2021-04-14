@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: "90%",
     padding: theme.spacing(4),
     paddingTop: 0,
-    // padding: theme.spacing(2),
   },
   wrap: {
     display: "flex",
@@ -71,21 +70,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingBottom: theme.spacing(1),
   },
   desc: {
-    // display: "flex",
     padding: theme.spacing(2),
     maxWidth: "100%",
     wordWrap: "break-word",
   },
   taglist: {
-    // marginTop: theme.spacing(2),
-    // marginLeft: theme.spacing(4),
-    // marginRight: theme.spacing(4),
-    // margin: theme.spacing(4),
     overflowY: "scroll",
     borderRadius: "10px",
     backgroundColor: "#405B99",
     padding: theme.spacing(2),
-    // height: "90%",
   },
 }));
 
@@ -95,7 +88,6 @@ const previewStyles = (imgurl: string) =>
       display: "flex",
       color: "white",
       overflow: "hidden",
-      // padding: theme.spacing(1),
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
     },
@@ -103,7 +95,6 @@ const previewStyles = (imgurl: string) =>
       flex: 1,
       display: "flex",
       alignItems: "center",
-      // width: "400px",
       borderRadius: "10px",
       marginRight: theme.spacing(2),
       backgroundImage: `url(${imgurl})`,
