@@ -5,6 +5,12 @@ from fastapi import FastAPI, Request, Depends
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
+from sqlalchemy import delete
+from sqlalchemy import insert 
+from sqlalchemy import update
+from sqlalchemy.orm.exc import NoResultFound
+# May need to import this library below, but right now, it isn't being used:
+# rom sqlalchemy.orm.exc import MultipleResultsFound
 
 app = FastAPI()
 
@@ -15,7 +21,7 @@ class UserRegister(BaseModel):
     password : str
     email : str
 
-class UserLogin(Basemodel):
+class UserLogin(BaseModel):
     username : str
     password : str
 
@@ -29,34 +35,54 @@ def get_db():
 # Homepage
 @app.get("/")
 async def root():
-    # insert stuff here
+    # insert homepage info here
     return {"message": "Hello World"}
     
 # AUTHENTICATION:
 
 # Sign Up 
-@app.post("/register")
+@app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     register = Users()
     register.username = userReg.username
     register.password = userReg.password
     register.email = userReg.email
-    db.add(register)
-    db.commit()
-    return {"user created": userReg.username}
+
+    try:
+        # Check if username exists
+        db.query(Users).filter(Users.username == userReg.username).one()
+        db.commit()
+        return {"username already exists": userReg.username}
+    except NoResultFound:
+        # Create user if details don't exist
+        db.add(register)
+        db.commit()
+        return {"user created": userReg.username}
 
 # Log In
 @app.post("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
-    db.execute(f"SELECT FROM users WHERE username = \'{login.username}\' and password = \'{login.password}\'''")
-    # not complete (check if it fetches empty)
-    db.commit()
-    return {"user created": userReg.username}
+    db.query(Users).filter(Users.username == login.username, Users.password == login.password)
+    try:
+        # Check username to login with username
+        db.query(Users).filter(Users.username == login.username).one()
+        db.commit()
+        try:
+            # If username matches, check password
+            db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+            db.commit()
+            return {"user login successful": login.username}
+        except NoResultFound:
+            return {"incorrect password": login.username}
+    except NoResultFound:
+        return {"user does not exist": login.username}
 
-# Delete user (not needed to implement until after deliverable 3)
+# Delete User 
 @app.post("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    # no security checking etc (function to remove any users you implement into database)
-    db.execute(f"DELETE FROM users WHERE username = \'{userReg.username}\'")
-    db.commit()
-    return {"user deleted": userReg.username}
+    # Not for functionality of website, just for deleting Users
+    if (db.query(Users).filter(Users.username == userReg.username).delete()):
+        db.commit()
+        return {"user deleted": userReg.username}
+    else: 
+        return {"no user found": None}
