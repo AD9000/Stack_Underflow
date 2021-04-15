@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontFamily: "farro",
     justifyContent: "space-between",
     padding: theme.spacing(0.5),
-    maxHeight: "8vh",
+    maxHeight: "10vh",
   },
   toolBar: {
     display: "flex",
