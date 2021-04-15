@@ -12,6 +12,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
+import SpotifyLogin from './Spotify-Api/SpotifyLogin';
 
 const useStyles = makeStyles((theme: Theme) => ({
   btn: {
@@ -205,39 +206,6 @@ export default function RegisterDialog() {
   }
 
   function Step2() {
-    let alert, button;
-    if (success) {
-      alert = (
-        <Alert severity="success" className={styles.alert}>
-          Your account was successfully created!
-        </Alert>
-      );
-      button = (
-        <Button
-          variant="contained"
-          color="primary"
-          className={styles.btn}
-          onClick={handleSuccess}
-        >
-          <Link to="home" className={styles.text}>
-            <b style={{ fontSize: "large" }}>Done</b>
-          </Link>
-        </Button>
-      );
-    } else {
-      alert = "";
-      button = (
-        <Button
-          variant="contained"
-          color="primary"
-          className={styles.btn}
-          onClick={handleSuccess}
-        >
-          <b style={{ fontSize: "large" }}>Next</b>
-        </Button>
-      );
-    }
-
     return (
       <div className={styles.dialog}>
         <IconButton
@@ -254,9 +222,8 @@ export default function RegisterDialog() {
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <Button variant="contained" color="primary" className={styles.btn}>
-            <b>Log In with Spotify</b>
+            <SpotifyLogin />                        
           </Button>
-          {alert}
         </DialogContent>
         <DialogActions>
           <p className={styles.text}>
@@ -264,11 +231,6 @@ export default function RegisterDialog() {
               Help
             </a>
           </p>
-          {button}
-
-          {/* <Button onClick={handleClose} color="primary">
-          Subscribe
-          </Button> */}
         </DialogActions>
       </div>
     );

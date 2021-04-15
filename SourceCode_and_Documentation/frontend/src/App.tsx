@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { Dashboard } from "./pages/Dashboard";
 import { HomePage } from "./pages/HomePage";
+import { RegisterSuccess } from "./pages/RegisterSuccess";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const App = () => {
@@ -9,7 +10,8 @@ const App = () => {
     <Router>
       <Switch>
         <Route path="/home" component={Dashboard} />
-        <Route path="*" component={HomePage} />
+        <Route path="/register/success" component={RegisterSuccess} />
+        <Route path="*" component={HomePage} />        
       </Switch>
     </Router>
   );
