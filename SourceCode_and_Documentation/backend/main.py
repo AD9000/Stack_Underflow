@@ -33,11 +33,12 @@ def get_db():
         db.close()
 
 # Homepage
+
 @app.get("/")
 async def root():
     # insert homepage info here
     return {"message": "Hello World"}
-    
+
 # AUTHENTICATION:
 
 # Sign Up 
