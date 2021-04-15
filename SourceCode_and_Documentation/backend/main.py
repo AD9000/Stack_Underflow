@@ -77,6 +77,12 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
     except NoResultFound:
         return {"user does not exist": login.username}
 
+# Change Username
+# do stuff
+
+# Change Password
+# do stuff
+
 # Delete User 
 @app.post("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
