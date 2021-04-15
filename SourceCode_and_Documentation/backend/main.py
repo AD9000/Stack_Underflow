@@ -1,7 +1,10 @@
 import models
-from models import Users
+import json
+import shutil
+import os.path
+from models import Users, Tags
 from typing import Optional
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
@@ -27,6 +30,28 @@ class UserLogin(BaseModel):
     username : str
     password : str
 
+class Tag(BaseModel):
+    title : str
+    region : str
+    location : str 
+    n_likes : int
+    song : str # url ?
+    caption : str
+
+    # I don't know what this classmethod stuff does
+    # but it helps solve Pydantic vs UploadFile problem I was having 
+    # https://github.com/tiangolo/fastapi/issues/2257 < refer to this
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate_to_json
+
+    @classmethod
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
+    
+
 def get_db():
     try:
         db = SessionLocal()
@@ -41,13 +66,11 @@ async def root():
     # insert homepage info here
     return {"message": "Hello World"}
 
-# AUTHENTICATION:
-
 # Sign Up 
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     register = Users()
-    register.id = generate_uid()
+    #register.id = generate_uid()
     register.username = userReg.username
     register.password = userReg.password
     register.email = userReg.email
@@ -81,14 +104,32 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
     except NoResultFound:
         return {"user does not exist": login.username}
 
-# Change Username
-# do stuff
+# Publish New Tag
+# not finished plz dont touch - reinier
+@app.post("/publishTag")
+async def publishTag(tagInfo : Tag = Body(...), db: Session = Depends(get_db), image: UploadFile = File(...)):
+    #tg = Tags()
+    #tg.id = generate_uid()
+    #tg.title = tagInfo.title
+    #tg.region = tagInfo.region
+    #tg.location = tagInfo.location
+    #tg.n_likes = tagInfo.n_likes
+    #tg.song = tagInfo.song
+    #tg.caption = tagInfo.caption
+    
+    # Save to image to folder in backend
+    imageIndex=0
+    path = "Images/" + str(imageIndex)
+    while (os.path.exists(path)):
+        imageIndex+=1
+        path = "Images/" + str(imageIndex)
 
-# Change Password
-# do stuff
+    with open(path, "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+
 
 # Delete User 
-@app.post("/deleteUser")
+@app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
     # Not for functionality of website, just for deleting Users
     if (db.query(Users).filter(Users.username == userReg.username).delete()):
@@ -106,5 +147,9 @@ async def linkSpotify(db: Session = Depends(get_db)):
     # Add Spotify token to user
 """
 
-# Add post
+# TO DO:
+# - Change username 
+# - Change password
+# - Logout (not sure what to do or if implementation is needed for this in backend)
+# - Link to Spotify
 
