@@ -158,7 +158,6 @@ export default function LoginButton() {
           <DialogActions style={{ justifyContent: "center" }}>
             <Button
               variant="contained"
-              style={{ background: "black" }}
               color="primary"
               className={styles.btn}
               onClick={handleSignIn}

@@ -93,16 +93,14 @@ const DashboardNav = () => {
     history.push("/");
   };
 
-  const toAbout = () => history.push({
-    // Navigates to About page
-    pathname: '/about',
-    state: "dashboard"
-  })
-  const toHelp = () => history.push({
-    // Navigates to Help page
-    pathname: '/help',
-    state: "dashboard"
-  })
+  function toPage (path: string, state: string) {
+    history.push({
+      // Navigates to About page
+      pathname: `/${path}`,
+      state: state
+    })
+    return;
+  }
 
   let username = "username";
 
@@ -110,10 +108,10 @@ const DashboardNav = () => {
   return (
     <NavBar title={"DISCOVER. PLAY."}>
       <ButtonGroup className={classes.btn}>
-        <Button onClick={toAbout} className={classes.whiteText}>
+        <Button onClick={() => toPage('about', 'dashboard')} className={classes.whiteText}>
             <h4>About</h4>
         </Button>
-        <Button onClick={toHelp} className={classes.whiteText}>
+        <Button onClick={() => toPage('help', 'dashboard')} className={classes.whiteText}>
             <h4>Help</h4>
         </Button>
       </ButtonGroup>
@@ -135,15 +133,15 @@ const DashboardNav = () => {
         onClose={handleClose}
         className={classes.menu}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => toPage('profile','user')}>
           <PersonIcon />
           My Profile
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => toPage('profile','notifications')}>
           <PriorityHighIcon />
           Notifications
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => toPage('profile','tags')}>
           <LocationOnIcon />
           My Tags
         </MenuItem>
@@ -161,7 +159,7 @@ const DashboardNav = () => {
         onClose={handleClose}
         className={classes.menu}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => toPage('settings','')}>
           <SettingsIcon />
           Account Settings
         </MenuItem>

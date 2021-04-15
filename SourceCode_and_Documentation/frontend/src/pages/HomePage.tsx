@@ -4,6 +4,7 @@ import "@fontsource/farro";
 import { HomeNav } from "../components/Navbar/HomeNav";
 import globe from "../assets/globe.png";
 import RegisterDialogue from "../components/RegisterDialogue";
+import { useHistory } from "react-router-dom"; 
 
 const useStyles = makeStyles((theme: Theme) => ({
   background: {
@@ -50,11 +51,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "row",
   },
+  link: {
+    colour: "white",
+    backgroundColor: "white"
+  }
 }));
 
 const HomePage = () => {
   const styles = useStyles();
-
+  const history = useHistory();
+  const toAbout = () => history.push({
+    // Navigates to About page
+    pathname: '/about',
+    state: "home"
+  })
+  
   return (
     <div className={styles.background}>
       <HomeNav />
@@ -75,7 +86,7 @@ const HomePage = () => {
           </Typography>
           <div className={styles.horizontalFlex}>
             <RegisterDialogue />
-            <Button color="primary" className={styles.secondaryBtn}>
+            <Button color="primary" className={styles.secondaryBtn} onClick={toAbout}>
               <b>More Info</b>
             </Button>
           </div>
