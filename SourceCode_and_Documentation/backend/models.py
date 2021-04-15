@@ -25,4 +25,10 @@ class Tag(Base):
 
     author = relationship("User", back_populates="created_tags")
 
+class Song(Base):
+    __tablename__ = "songs"
+    title = Column(String, nullable=False)
+    artist = Column(String, nullable=False)
+    link = Column(String, nullable=False)
+
 

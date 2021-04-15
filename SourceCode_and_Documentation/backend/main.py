@@ -91,4 +91,14 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
     else: 
         return {"no user found": None}
 
+# Link to Spotify
+"""
+@app.get("/linkSpotify")
+async def linkSpotify(db: Session = Depends(get_db)):
+    # Get Spotify login token
+
+    # Add Spotify token to user
+"""
+
+# Add post
 
