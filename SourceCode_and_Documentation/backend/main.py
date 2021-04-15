@@ -9,6 +9,7 @@ from sqlalchemy import delete
 from sqlalchemy import insert 
 from sqlalchemy import update
 from sqlalchemy.orm.exc import NoResultFound
+from auth import generate_uid
 # May need to import this library below, but right now, it isn't being used:
 # from sqlalchemy.orm.exc import MultipleResultsFound
 
@@ -17,6 +18,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 class UserRegister(BaseModel):
+    id : int
     username : str
     password : str
     email : str
@@ -45,6 +47,7 @@ async def root():
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     register = Users()
+    register.id = generate_uid()
     register.username = userReg.username
     register.password = userReg.password
     register.email = userReg.email
@@ -87,3 +90,5 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
         return {"user deleted": userReg.username}
     else: 
         return {"no user found": None}
+
+
