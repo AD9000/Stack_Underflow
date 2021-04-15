@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
     textTransform: "none",
     margin: "0.5rem",
+    fontFamily: "farro"
   },
   popover: {
     marginTop: theme.spacing(2),

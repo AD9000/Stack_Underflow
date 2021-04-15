@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     marginRight: theme.spacing(2),
+    fontFamily: "farro"
   },
   playButton: {
     marginRight: theme.spacing(2),

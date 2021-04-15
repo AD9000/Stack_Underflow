@@ -13,6 +13,7 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import PersonIcon from "@material-ui/icons/Person";
 import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { Link, useHistory } from "react-router-dom";
 import { CreateTag } from "../CreateTag";
 import { NavBar } from "./NavBar";
@@ -20,11 +21,18 @@ import { NavBar } from "./NavBar";
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
     color: "white",
+    fontFamily: "farro",
+    '&:hover': {
+      background: "rgba(255,255,255,0.2)",
+   }
   },
   settings: {
     paddingLeft: theme.spacing(1),
     fontSize: "3.5rem",
     color: "#C4C4C4",
+    '&:hover': {
+      background: "rgba(255,255,255,0.2)",
+   }
   },
   popover: {
     marginTop: theme.spacing(2),
@@ -46,6 +54,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontFamily: "farro",
     textDecoration: "none",
   },
+  hover: {
+    '&:hover': {
+      background: "rgba(255,255,255,0.2)",
+   },
+   display: 'flex',
+   padding: '10px',
+   borderRadius: '3px'
+  },
+  menu: {
+    margin: '2rem 0 0 0'
+  }
 }));
 
 const DashboardNav = () => {
@@ -74,30 +93,39 @@ const DashboardNav = () => {
     history.push("/");
   };
 
+  const toAbout = () => history.push({
+    // Navigates to About page
+    pathname: '/about',
+    state: "dashboard"
+  })
+  const toHelp = () => history.push({
+    // Navigates to Help page
+    pathname: '/help',
+    state: "dashboard"
+  })
+
   let username = "username";
 
   const classes = useStyles();
   return (
     <NavBar title={"DISCOVER. PLAY."}>
       <ButtonGroup className={classes.btn}>
-        <Button>
-          <Link to="/home">
-            <h4 className={classes.whiteText}>About</h4>
-          </Link>
+        <Button onClick={toAbout} className={classes.whiteText}>
+            <h4>About</h4>
         </Button>
-        <Button>
-          <Link to="/home">
-            <h4 className={classes.whiteText}>Help</h4>
-          </Link>
+        <Button onClick={toHelp} className={classes.whiteText}>
+            <h4>Help</h4>
         </Button>
       </ButtonGroup>
       <CreateTag />
 
       <div style={{ flex: 1 }}></div>
-      <AccountCircleIcon fontSize="large" />
       <Button className={classes.btn} onClick={handleClickUser}>
-        {username}
-        <ArrowDropDownIcon />
+        <AccountCircleIcon fontSize="large" style={{margin: 0}}/>
+        <div  className={classes.hover}>
+          {username}
+          <ArrowDropDownIcon />
+        </div>
       </Button>
       <Menu
         id="userMenu"
@@ -105,6 +133,7 @@ const DashboardNav = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        className={classes.menu}
       >
         <MenuItem onClick={handleClose}>
           <PersonIcon />
@@ -114,10 +143,15 @@ const DashboardNav = () => {
           <PriorityHighIcon />
           Notifications
         </MenuItem>
+        <MenuItem>
+          <LocationOnIcon />
+          My Tags
+        </MenuItem>
       </Menu>
       <Button onClick={handleClickSettings} className={classes.settings}>
         <SettingsIcon />
       </Button>
+
 
       <Menu
         id="settingsMenu"
@@ -125,10 +159,11 @@ const DashboardNav = () => {
         keepMounted
         open={Boolean(settingsAnchor)}
         onClose={handleClose}
+        className={classes.menu}
       >
         <MenuItem onClick={handleClose}>
           <SettingsIcon />
-          Profile Settings
+          Account Settings
         </MenuItem>
         <MenuItem onClick={handleLogOut}>
           <ExitToAppIcon />
