@@ -1,3 +1,4 @@
+import sqlalchemy
 from sqlalchemy import Boolean, Column, ForeignKey, Numeric, Integer, String
 from sqlalchemy.orm import relationship
 from database import Base
@@ -9,22 +10,20 @@ class Users(Base):
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     #spotify_token = Column(String, unique=True)
-    
-    created_tags = relationship("Tag", back_populates="author")
+    tags_owned = relationship("Tags")
 
 class Tags(Base):
     __tablename__ = "tags"
-    #id = Column(String, primary_key=True, unique=True, nullable=False)
-    user = Column(String, primary_key=True, unique=True, nullable=False)
+    id = Column(String, primary_key=True, unique=True, nullable=False)
     title = Column(String, nullable=False)
     region = Column(String, nullable=False)
     location = Column(String, nullable=False)
-    image = Column(String)
+    image = Column(Integer, nullable=False)
     n_likes = Column(Integer, nullable=False, default=0)
     song = Column(String, nullable=False)
     caption = Column(String, nullable=False)
+    username = Column(String, ForeignKey('users.username'))
 
-    author = relationship("User", back_populates="created_tags")
 
 class Song(Base):
     __tablename__ = "songs"
