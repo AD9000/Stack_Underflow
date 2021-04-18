@@ -10,6 +10,7 @@ class Users(Base):
     username = Column(String, primary_key=True, unique=True, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    loggedIn = Column(Boolean, nullable=False, default=False)
     #spotify_token = Column(String, unique=True)
     tags_owned = relationship("Tags")
 
