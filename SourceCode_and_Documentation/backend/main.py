@@ -4,7 +4,7 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags
+from models import Users, Tags, Songs, Comments
 from typing import Optional
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
 from fastapi.responses import FileResponse
@@ -24,7 +24,6 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 class UserRegister(BaseModel):
-    id : int
     username : str
     password : str
     email : str
@@ -52,7 +51,7 @@ class TagInfo(BaseModel):
         if isinstance(value, str):
             return cls(**json.loads(value))
         return value
-    
+
 
 def get_db():
     try:
@@ -150,8 +149,8 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song = tagInf.song
-    tg.time_made = datetime.now()
-    tg.time_edited = tg.time_made
+    #tg.time_made = datetime.now()
+    #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
     
     if img:
@@ -170,6 +169,8 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     db.commit()    
     
     return {"tag posted": tg.title}
+
+
 
 # Generate Random Tag
 @app.get("/generateRandomTag")
@@ -354,8 +355,40 @@ async def likeTag(tagID: int, db: Session = Depends(get_db)):
         db.commit()
     except NoResultFound:
         return "tag does not exist"
+    
+    setattr(tag, 'n_likes', (tag.n_likes + 1))
+    db.commit()
+    return {"User liked this tag": tagID}
 
-    return {"User liked this tag": TagID}
+#Unlike a post
+@app.put("/unlikeTag/{tagID}")
+async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+    
+    setattr(tag, 'n_likes', (tag.n_likes - 1))
+    db.commit()
+    return {"User unliked this tag": tagID}
+
+# Comment on a tag
+@app.post("/commentOnTag/{tagID}")
+async def commentOnTag(username: str, tagID: int, comment: str, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+    
+    comment = Comments()
+    comment.tag_id = tagID
+    comment.author = username
+
+    
+    return {"User unliked this tag": tagID}
+
 
 # Delete User
 @app.delete("/deleteUser")
