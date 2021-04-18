@@ -37,7 +37,6 @@ class TagInfo(BaseModel):
     title : str
     region : str
     location : str 
-    n_likes : int
     caption: str
     song : str # url ?
     # caption : str
@@ -131,7 +130,7 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
-    tg.n_likes = tagInf.n_likes
+    tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song = tagInf.song
     tg.time_made = datetime.now()
