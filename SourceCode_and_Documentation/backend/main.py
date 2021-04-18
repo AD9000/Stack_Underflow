@@ -288,24 +288,23 @@ async def changeUsername(username, newUsername: str, db: Session = Depends(get_d
     return {"username updated": newUsername}
 
 # Change Password
-"""
-@app.put("/changePassword")
-async def changePassword(db: Session = Depends(get_db)):
-    # need an input new password
-
+@app.put("/changePassword{username}")
+async def changePassword(username: str, newPassword: str, db: Session = Depends(get_db)):
     try:
-        # Check if username exists
-        db.query(Users).filter(Users.username == userReg.username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit() 
-        # check if password exists
-        if password exists:    
-            # update password
-            return {"password uodated": }
-        else:
-            return {"password has already been used": None}
     except NoResultFound:
         return {"no user found with username": None}
-"""
+    
+    if user.password == newPassword:    
+        return {"password has already been used": None}
+    
+    if newPassword == None:
+        return {"empty new password": None}
+    
+    setattr(user, 'password', newPassword)
+    db.commit()
+    return {"password has been updated": newPassword}
 
 # Link to Spotify
 """
