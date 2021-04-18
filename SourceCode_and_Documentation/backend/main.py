@@ -107,7 +107,10 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
         except NoResultFound:
             return {"incorrect password": login.username}
         
-        setattr(user, 'loggedIn', True)
+        if user.logged_in == False:
+            return {"user is not logged in": None}
+
+        setattr(user, 'logged_in', True)
         db.commit()
         return {"user login successful": login.username}
     
@@ -123,7 +126,7 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
     except NoResultFound:
         return {"user does not exist": username}
     
-    setattr(user, 'loggedIn', False)
+    setattr(user, 'logged_in', False)
     db.commit()
     return {"user logout successful": username}
 
@@ -169,6 +172,26 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     db.commit()    
     
     return {"tag posted": tg.title}
+
+# Delete a tag
+@app.delete("/deleteTag/{username}/{tagID}")
+async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        return {"no user found": None}
+    
+    if user.logged_in == False:
+        return {"user is not logged in": None}
+
+    try:
+        db.query(Tags).filter(Tags.tag_id == tagID).delete()
+        db.commit()
+    except NoResultFound:
+        return {"tag does not exist": None}
+
+    return {"tag has been deleted successfully": None}        
 
 # Edit a tag
 # This thing may involve multiple steps...
