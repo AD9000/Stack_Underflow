@@ -248,7 +248,7 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
 
 # Filter for certain posts to appear using keyword
 @app.get("/searchTags/{keyword}")
-async def filterTags(keyword, db: Session = Depends(get_db)):
+async def filterTagsByKeyword(keyword, db: Session = Depends(get_db)):
     # To-Do filter song details (title, artist)
     try:
         searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
@@ -273,10 +273,72 @@ async def filterTags(keyword, db: Session = Depends(get_db)):
     return tags
 
 # Filter for most-least/least-most popular tags
+@app.get("/searchTags/popularity/{reverse}")
+async def filterTagsByPopularity(reverse: bool, db: Session = Depends(get_db)):
+    # most popular -> least popular
+    if reverse == True:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.n_likes.desc())
+        except NoResultFound:
+            return "no search results"
+    # least popular -> most popular
+    else:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.n_likes)
+        except NoResultFound:
+            return "no search results"
 
-# Filter for oldest-newest/newest-oldest tags 
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
 
-# Delete User 
+# Filter for oldest-newest/newest-oldest tags
+@app.get("/searchTags/date/{reverse}")
+async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
+    # most recent -> least recent
+    if reverse == True:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.time_made.desc())
+        except NoResultFound:
+            return "no search results"
+    # least recent -> most recent
+    else:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.time_made)
+        except NoResultFound:
+            return "no search results"
+
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
+
+# Delete User
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
     # Not for functionality of website, just for deleting Users
@@ -299,6 +361,7 @@ async def changeUsername(username, newUsername: str, db: Session = Depends(get_d
     # update username
     if newUsername == None:
         return {"empty new username": None}
+
     setattr(user, 'username', newUsername)
     db.commit()
     return {"username updated": newUsername}
