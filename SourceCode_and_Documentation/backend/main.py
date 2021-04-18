@@ -95,22 +95,38 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             return {"user created": userReg.username}
 
 # Log In
-@app.post("/login")
+@app.put("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
-    db.query(Users).filter(Users.username == login.username, Users.password == login.password)
     try:
         # Check username to login with username
         db.query(Users).filter(Users.username == login.username).one()
         db.commit()
         try:
             # If username matches, check password
-            db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+            user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
             db.commit()
-            return {"user login successful": login.username}
         except NoResultFound:
             return {"incorrect password": login.username}
+        
+        setattr(user, 'loggedIn', True)
+        db.commit()
+        return {"user login successful": login.username}
+    
     except NoResultFound:
         return {"user does not exist": login.username}
+
+#Log Out
+@app.put("/logout/{username}")
+async def loginUser(username: str, db: Session = Depends(get_db)):
+    try:
+        user = db.query(Users).filter(Users.username == username),one()
+        db.commit()
+    except NoResultFound:
+        return {"user does not exist": username}
+    
+    setattr(user, 'loggedIn', False)
+    db.commit()
+    return {"user logout successful": username}
 
 # Publish New Tag 
 # To-Do Do we need to add {username} to get the username of user logged in?
@@ -288,7 +304,7 @@ async def changeUsername(username, newUsername: str, db: Session = Depends(get_d
     return {"username updated": newUsername}
 
 # Change Password
-@app.put("/changePassword{username}")
+@app.put("/changePassword/{username}")
 async def changePassword(username: str, newPassword: str, db: Session = Depends(get_db)):
     try:
         user = db.query(Users).filter(Users.username == username).one()
@@ -316,8 +332,6 @@ async def linkSpotify(db: Session = Depends(get_db)):
 """
 
 # TO DO:
-# - Change username 
-# - Change password
 # - Logout (not sure what to do or if implementation is needed for this in backend)
 """
 A additional attribute will be needed -> logged_in (True/False)
