@@ -24,7 +24,6 @@ class Tags(Base):
     caption = Column(String, nullable=False)
     username = Column(String, ForeignKey('users.username'))
 
-
 class Song(Base):
     __tablename__ = "songs"
 

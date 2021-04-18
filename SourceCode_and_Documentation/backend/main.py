@@ -2,6 +2,7 @@ import models
 import json
 import shutil
 import os.path
+from typing import List, Optional
 from models import Users, Tags
 from typing import Optional
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
@@ -30,13 +31,15 @@ class UserLogin(BaseModel):
     username : str
     password : str
 
-class Tag(BaseModel):
+class TagInfo(BaseModel):
+    user : str
     title : str
     region : str
     location : str 
     n_likes : int
+    caption: str
     song : str # url ?
-    caption : str
+    # caption : str
 
     # I don't know what this classmethod stuff does
     # but it helps solve Pydantic vs UploadFile problem I was having 
@@ -81,10 +84,16 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
         db.commit()
         return {"username already exists": userReg.username}
     except NoResultFound:
-        # Create user if details don't exist
-        db.add(register)
-        db.commit()
-        return {"user created": userReg.username}
+        # Check if email exists
+        try:
+            db.query(Users).filter(Users.email == userReg.email).one()
+            db.commit()
+            return {"email already exists": userReg.email}
+        except NoResultFound:
+            # Create user if details don't exist
+            db.add(register)
+            db.commit()
+            return {"user created": userReg.username}
 
 # Log In
 @app.post("/login")
@@ -105,28 +114,48 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
         return {"user does not exist": login.username}
 
 # Publish New Tag
-# not finished plz dont touch - reinier
 @app.post("/publishTag")
-async def publishTag(tagInfo : Tag = Body(...), db: Session = Depends(get_db), image: UploadFile = File(...)):
-    #tg = Tags()
-    #tg.id = generate_uid()
-    #tg.title = tagInfo.title
-    #tg.region = tagInfo.region
-    #tg.location = tagInfo.location
-    #tg.n_likes = tagInfo.n_likes
-    #tg.song = tagInfo.song
-    #tg.caption = tagInfo.caption
+async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+    tg = Tags()
+    tg.id = 0
+    while (True):
+        try:
+            # if id already exists then +1 to number
+            db.query(Tags).filter(Tags.id == tg.id).one()
+            db.commit()
+            tg.id+=1
+        except NoResultFound:
+            break
+
+    tg.user = tagInf.user
+    tg.title = tagInf.title
+    tg.region = tagInf.region
+    tg.location = tagInf.location
+    tg.n_likes = tagInf.n_likes
+    tg.caption = tagInf.caption
+    tg.song = tagInf.song
+    tg.image = -1 # -1 if image isn't uploaded
     
-    # Save to image to folder in backend
-    imageIndex=0
-    path = "Images/" + str(imageIndex)
-    while (os.path.exists(path)):
-        imageIndex+=1
+    if img:
+        # Save to image to folder in backend
+        imageIndex=0
         path = "Images/" + str(imageIndex)
+        while (os.path.exists(path)):
+            imageIndex+=1
+            path = "Images/" + str(imageIndex)
 
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+        tg.image = imageIndex
+        with open(path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
 
+    db.add(tg)
+    db.commit()    
+    
+    return {"tag posted": tg.title}
+
+# TODO:
+# Generate random tag
+# this part not pushed into repo -> just local atm
 
 # Delete User 
 @app.delete("/deleteUser")
