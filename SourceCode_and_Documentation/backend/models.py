@@ -2,6 +2,7 @@ import sqlalchemy
 from sqlalchemy import Boolean, Column, ForeignKey, Numeric, Integer, String
 from sqlalchemy.orm import relationship
 from database import Base
+from datetime import datetime
 
 class Users(Base):
     __tablename__ = "users"
@@ -22,6 +23,8 @@ class Tags(Base):
     n_likes = Column(Integer, nullable=False, default=0)
     song = Column(String, nullable=False)
     caption = Column(String, nullable=False)
+    time_made = Column(String, nullable=False)
+    time_edited = Column(String, nullable=False)
     username = Column(String, ForeignKey('users.username'))
 
 class Song(Base):

@@ -14,6 +14,7 @@ from sqlalchemy import insert
 from sqlalchemy import update
 from sqlalchemy.orm.exc import NoResultFound
 from auth import generate_uid
+from datetime import datetime 
 # May need to import this library below, but right now, it isn't being used:
 # from sqlalchemy.orm.exc import MultipleResultsFound
 
@@ -41,9 +42,8 @@ class TagInfo(BaseModel):
     song : str # url ?
     # caption : str
 
-    # I don't know what this classmethod stuff does
-    # but it helps solve Pydantic vs UploadFile problem I was having 
-    # https://github.com/tiangolo/fastapi/issues/2257 < refer to this
+    # Pydantic vs UploadFile fix
+    # https://github.com/tiangolo/fastapi/issues/2257
     @classmethod
     def __get_validators__(cls):
         yield cls.validate_to_json
@@ -134,6 +134,8 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.n_likes = tagInf.n_likes
     tg.caption = tagInf.caption
     tg.song = tagInf.song
+    tg.time_made = datetime.now()
+    tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
     
     if img:
@@ -146,16 +148,24 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
 
         tg.image = imageIndex
         with open(path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
+            shutil.copyfileobj(img.file, buffer)
 
     db.add(tg)
     db.commit()    
     
     return {"tag posted": tg.title}
 
-# TODO:
-# Generate random tag
-# this part not pushed into repo -> just local atm
+# Generate Random Tag
+#@app.get()
+#async def generateRandomTag(db: Session = Depends(get_db)):
+
+# View All My Tags
+#@app.get()
+#async def viewAllMyTags(db: Session = Depends(get_db)):
+
+# filter for certain posts to appear
+
+# search for tags and music
 
 # Delete User 
 @app.delete("/deleteUser")
@@ -218,8 +228,18 @@ async def linkSpotify(db: Session = Depends(get_db)):
 # - Change username 
 # - Change password
 # - Logout (not sure what to do or if implementation is needed for this in backend)
+# Filter tags by info
 """
 A additional attribute will be needed -> logged_in (True/False)
 """
 # - Link to Spotify
+
+# - Generate Random Tag
+# - View All My Tags
+# - Filter for certain posts to appear
+# - Search for tags and music
+# - Reset forgotten password
+# - Liking a post
+# - Add message/comment to new tag
+# - View notifications
 
