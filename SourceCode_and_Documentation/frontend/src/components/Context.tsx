@@ -8,6 +8,8 @@ interface AppContextType {
   setTagIndex: Function;
   markers: LatLngTuple[];
   setMarkers: Function;
+  createTag: boolean;
+  setCreateTag: Function;
 }
 
 const AppContext = React.createContext<AppContextType>({
@@ -17,6 +19,8 @@ const AppContext = React.createContext<AppContextType>({
   setTagIndex: () => {},
   markers: [],
   setMarkers: () => {},
+  createTag: false,
+  setCreateTag: () => {},
 });
 
 export { AppContext };

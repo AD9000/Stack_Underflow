@@ -4,11 +4,13 @@ import { AppContext } from "../components/Context";
 import { MapWrapper } from "../components/Map";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar";
+// import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [tagIndex, setTagIndex] = useState(-1);
   const [markers, setMarkers] = useState<LatLngTuple[]>([]);
+  const [createTag, setCreateTag] = useState(false);
   useEffect(() => {
     setMarkers([
       [-33.86785, 151.20732],
@@ -18,7 +20,16 @@ const Dashboard = () => {
   }, []);
   return (
     <AppContext.Provider
-      value={{ open, setOpen, tagIndex, setTagIndex, markers, setMarkers }}
+      value={{
+        open,
+        setOpen,
+        tagIndex,
+        setTagIndex,
+        markers,
+        setMarkers,
+        createTag,
+        setCreateTag,
+      }}
     >
       <DashboardNav />
       <div style={{ height: "100%" }}>
@@ -34,8 +45,17 @@ const Dashboard = () => {
         >
           <MapWrapper />
         </div>
-        <div style={{ position: "absolute", top: 50, left: 50, zIndex: 10 }}>
+        <div
+          style={{
+            marginTop: "8%",
+            position: "absolute",
+            top: 50,
+            left: 50,
+            zIndex: 10,
+          }}
+        >
           <Sidebar />
+          {/* <TagCreationLayer /> */}
         </div>
       </div>
     </AppContext.Provider>
