@@ -119,7 +119,7 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
 @app.put("/logout/{username}")
 async def loginUser(username: str, db: Session = Depends(get_db)):
     try:
-        user = db.query(Users).filter(Users.username == username),one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         return {"user does not exist": username}
@@ -179,6 +179,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
 
     try:
         randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
+        db.commit()
     except NoResultFound:
         return "no posts with 1000+ likes"
 
@@ -202,6 +203,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
 async def viewTag(tagID: int, db: Session = Depends(get_db)):
     try:
         tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
     except NoResultFound:
         return "tag does not exist"
 
@@ -225,6 +227,7 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
 async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
     try:
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
+        db.commit()
     except NoResultFound:
         return "user has created no tags"
 
@@ -252,6 +255,7 @@ async def filterTagsByKeyword(keyword, db: Session = Depends(get_db)):
     # To-Do filter song details (title, artist)
     try:
         searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
+        db.commit()
     except NoResultFound:
         return "no search results"
 
@@ -279,12 +283,14 @@ async def filterTagsByPopularity(reverse: bool, db: Session = Depends(get_db)):
     if reverse == True:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.n_likes.desc())
+            db.commit()
         except NoResultFound:
             return "no search results"
     # least popular -> most popular
     else:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.n_likes)
+            db.commit()
         except NoResultFound:
             return "no search results"
 
@@ -312,12 +318,14 @@ async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
     if reverse == True:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.time_made.desc())
+            db.commit()
         except NoResultFound:
             return "no search results"
     # least recent -> most recent
     else:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.time_made)
+            db.commit()
         except NoResultFound:
             return "no search results"
 
@@ -337,6 +345,17 @@ async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
             "caption" : tag.caption
         })
     return tags
+
+#Like a post
+@app.put("/likeTag/{tagID}")
+async def likeTag(tagID: int, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+
+    return {"User liked this tag": TagID}
 
 # Delete User
 @app.delete("/deleteUser")
@@ -395,10 +414,6 @@ async def linkSpotify(db: Session = Depends(get_db)):
 """
 
 # TO DO:
-# - Logout (not sure what to do or if implementation is needed for this in backend)
-"""
-A additional attribute will be needed -> logged_in (True/False)
-"""
 # - Link to Spotify
 
 # - Generate Random Tag DONE
