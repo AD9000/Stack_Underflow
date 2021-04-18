@@ -1,5 +1,6 @@
-import React from "react";
+// import React from "react";
 import { useHistory } from 'react-router-dom';
+import { handleRedirect } from '../components/Spotify-Api/spotifyApi';
 
 // Change name
 export default function RegisterSuccess() {
@@ -9,6 +10,9 @@ export default function RegisterSuccess() {
   const handleButton = () => {
     history.push('/home');
   }
+
+  // Removes code from url, and uses it to fetch access/refresh tokens
+  handleRedirect();
 
   return (
     <div>
