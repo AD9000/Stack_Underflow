@@ -170,7 +170,7 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     
     return {"tag posted": tg.title}
 
-
+# Edit a tag
 
 # Generate Random Tag
 @app.get("/generateRandomTag")
@@ -375,7 +375,13 @@ async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
 
 # Comment on a tag
 @app.post("/commentOnTag/{tagID}")
-async def commentOnTag(username: str, tagID: int, comment: str, db: Session = Depends(get_db)):
+async def commentOnTag(username: str, tagID: int, text: str, db: Session = Depends(get_db)):
+    try:
+        db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        return "user does not exist"
+    
     try:
         tag = db.query(Tags).filter(Tags.id == tagID).one()
         db.commit()
@@ -385,9 +391,13 @@ async def commentOnTag(username: str, tagID: int, comment: str, db: Session = De
     comment = Comments()
     comment.tag_id = tagID
     comment.author = username
-
-    
-    return {"User unliked this tag": tagID}
+    comment.content = text
+    return {
+        "tag_id": comment.tag_id,
+        "author": comment.author,
+        "content": comment.content,
+        "time_posted": comment.time_posted
+    }
 
 
 # Delete User
