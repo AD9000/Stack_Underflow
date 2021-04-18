@@ -171,6 +171,7 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     return {"tag posted": tg.title}
 
 # Edit a tag
+# This thing may involve multiple steps...
 
 # Generate Random Tag
 @app.get("/generateRandomTag")
@@ -388,6 +389,9 @@ async def commentOnTag(username: str, tagID: int, text: str, db: Session = Depen
     except NoResultFound:
         return "tag does not exist"
     
+    if text == None:
+        return {"empty comment cannot be posted": None}
+    
     comment = Comments()
     comment.tag_id = tagID
     comment.author = username
@@ -399,6 +403,9 @@ async def commentOnTag(username: str, tagID: int, text: str, db: Session = Depen
         "time_posted": comment.time_posted
     }
 
+# Edit comment
+
+# Delete comment
 
 # Delete User
 @app.delete("/deleteUser")
@@ -456,16 +463,19 @@ async def linkSpotify(db: Session = Depends(get_db)):
     # Add Spotify token to user
 """
 
+# View notifications in profile
+
 # TO DO:
 # - Link to Spotify
+# - View notifications
 
 # - Generate Random Tag DONE
 # - View All My Tags 1
 # - View a tag DONE
 # - Filter for certain posts to appear 111 same
 # - Search for tags and music 111 same
-# - Reset forgotten password
-# - Liking a post
-# - Add message/comment to new tag
-# - View notifications
+# - Reset forgotten password DONE
+# - Liking a post DONE
+# - Add message/comment to new tag DONE
+
 
