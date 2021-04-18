@@ -2,19 +2,20 @@ import models
 import json
 import shutil
 import os.path
-from typing import List, Optional
+import random
+from random import randrange
 from models import Users, Tags
 from typing import Optional
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
-from sqlalchemy import delete
-from sqlalchemy import insert 
-from sqlalchemy import update
+from sqlalchemy import delete, insert, update, func
 from sqlalchemy.orm.exc import NoResultFound
 from auth import generate_uid
 from datetime import datetime 
+from starlette.responses import StreamingResponse
 # May need to import this library below, but right now, it isn't being used:
 # from sqlalchemy.orm.exc import MultipleResultsFound
 
@@ -39,7 +40,6 @@ class TagInfo(BaseModel):
     location : str 
     caption: str
     song : str # url ?
-    # caption : str
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -126,7 +126,7 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
         except NoResultFound:
             break
 
-    tg.user = tagInf.user
+    tg.username = tagInf.user
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
@@ -155,16 +155,85 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     return {"tag posted": tg.title}
 
 # Generate Random Tag
-#@app.get()
-#async def generateRandomTag(db: Session = Depends(get_db)):
+@app.get("/generateRandomTag")
+async def generateRandomTag(db: Session = Depends(get_db)):
+    maxTagCount = db.query(func.count(Tags.id)).filter(Tags.n_likes >= 1000).scalar()
+    randomNumber = randrange(maxTagCount)
+
+    try:
+        randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
+    except NoResultFound:
+        return "no posts with 1000+ likes"
+
+    img = "no image attached"
+    if randomTag.image > -1:
+        img = None
+        path = "Images/" + str(randomTag.image)
+        img = FileResponse(path)
+        
+    return {
+        "title" : randomTag.title,
+        "region" : randomTag.region,
+        "location" : randomTag.location,
+        "image" : img,
+        "song" : randomTag.song,
+        "caption" : randomTag.caption
+    }
+
+# View Published Tag
+@app.get("/viewTag/{tagID}")
+async def viewTag(tagID, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+    except NoResultFound:
+        return "tag does not exist"
+
+    img = "no image attached"
+    if tag.image > -1:
+        img = None
+        path = "Images/" + str(tag.image)
+        img = FileResponse(path)
+        
+    return {
+        "title" : tag.title,
+        "region" : tag.region,
+        "location" : tag.location,
+        "image" : img,
+        "song" : tag.song,
+        "caption" : tag.caption
+    }
 
 # View All My Tags
-#@app.get()
-#async def viewAllMyTags(db: Session = Depends(get_db)):
+@app.get("/myTags/{username}")
+async def viewAllMyTags(username, db: Session = Depends(get_db)):
+    try:
+        tagsByUser = db.query(Tags).filter(Tags.username == username).all()
+    except NoResultFound:
+        return "user has created no tags"
 
-# filter for certain posts to appear
+    tags = []
+    for tag in tagsByUser:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
 
-# search for tags and music
+    return tags
+
+# Filter for certain posts to appear
+@app.get("/searchTags")
+async def filterTags(db: Session = Depends(get_db)):
+    # do stuff
+    return "lol"
 
 # Delete User 
 @app.delete("/deleteUser")
@@ -227,16 +296,16 @@ async def linkSpotify(db: Session = Depends(get_db)):
 # - Change username 
 # - Change password
 # - Logout (not sure what to do or if implementation is needed for this in backend)
-# Filter tags by info
 """
 A additional attribute will be needed -> logged_in (True/False)
 """
 # - Link to Spotify
 
-# - Generate Random Tag
-# - View All My Tags
-# - Filter for certain posts to appear
-# - Search for tags and music
+# - Generate Random Tag DONE
+# - View All My Tags 1
+# - View a tag DONE
+# - Filter for certain posts to appear 111 same
+# - Search for tags and music 111 same
 # - Reset forgotten password
 # - Liking a post
 # - Add message/comment to new tag
