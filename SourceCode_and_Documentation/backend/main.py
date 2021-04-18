@@ -167,6 +167,44 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
     else: 
         return {"no user found": None}
 
+# Change Username
+"""
+@app.put("/changeUsername")
+async def changeUsername(db: Session = Depends(get_db)):
+    # need an input new username
+
+    try:
+        # Check if username exists
+        db.query(Users).filter(Users.username == userReg.username).one()
+        db.commit()
+        try:
+            # update username
+
+            return {"username uodated": }
+    except NoResultFound:
+        return {"no user found with username": None}
+"""
+
+# Change Password
+"""
+@app.put("/changePassword")
+async def changePassword(db: Session = Depends(get_db)):
+    # need an input new password
+
+    try:
+        # Check if username exists
+        db.query(Users).filter(Users.username == userReg.username).one()
+        db.commit() 
+        # check if password exists
+        if password exists:    
+            # update password
+            return {"password uodated": }
+        else:
+            return {"password has already been used": None}
+    except NoResultFound:
+        return {"no user found with username": None}
+"""
+
 # Link to Spotify
 """
 @app.get("/linkSpotify")
@@ -180,5 +218,8 @@ async def linkSpotify(db: Session = Depends(get_db)):
 # - Change username 
 # - Change password
 # - Logout (not sure what to do or if implementation is needed for this in backend)
+"""
+A additional attribute will be needed -> logged_in (True/False)
+"""
 # - Link to Spotify
 
