@@ -112,7 +112,8 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
     except NoResultFound:
         return {"user does not exist": login.username}
 
-# Publish New Tag
+# Publish New Tag 
+# To-Do Do we need to add {username} to get the username of user logged in?
 @app.post("/publishTag")
 async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     tg = Tags()
@@ -232,7 +233,7 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
 # Filter for certain posts to appear using keyword
 @app.get("/searchTags/{keyword}")
 async def filterTags(keyword, db: Session = Depends(get_db)):
-    # filter song details (title, artist)
+    # To-Do filter song details (title, artist)
     try:
         searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
     except NoResultFound:
@@ -270,20 +271,21 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
         return {"no user found": None}
 
 # Change Username
-"""
 @app.put("/changeUsername/{username}")
-async def changeUsername(username, newUsername:str, db: Session = Depends(get_db)):
+async def changeUsername(username, newUsername: str, db: Session = Depends(get_db)):
     try:
         # Check if username exists
-        db.query(Users).filter(Users.username == username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
-        try:
-            # update username
-
-            return {"username uodated": }
     except NoResultFound:
         return {"no user found with username": None}
-"""
+    
+    # update username
+    if newUsername == None:
+        return {"empty new username": None}
+    setattr(user, 'username', newUsername)
+    db.commit()
+    return {"username updated": newUsername}
 
 # Change Password
 """
