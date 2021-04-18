@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
-from sqlalchemy import delete, insert, update, func
+from sqlalchemy import delete, insert, update, func, or_
 from sqlalchemy.orm.exc import NoResultFound
 from auth import generate_uid
 from datetime import datetime 
@@ -182,7 +182,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
 
 # View Published Tag
 @app.get("/viewTag/{tagID}")
-async def viewTag(tagID, db: Session = Depends(get_db)):
+async def viewTag(tagID: int, db: Session = Depends(get_db)):
     try:
         tag = db.query(Tags).filter(Tags.id == tagID).one()
     except NoResultFound:
@@ -205,7 +205,7 @@ async def viewTag(tagID, db: Session = Depends(get_db)):
 
 # View All My Tags
 @app.get("/myTags/{username}")
-async def viewAllMyTags(username, db: Session = Depends(get_db)):
+async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
     try:
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
     except NoResultFound:
@@ -229,11 +229,35 @@ async def viewAllMyTags(username, db: Session = Depends(get_db)):
 
     return tags
 
-# Filter for certain posts to appear
-@app.get("/searchTags")
-async def filterTags(db: Session = Depends(get_db)):
-    # do stuff
-    return "lol"
+# Filter for certain posts to appear using keyword
+@app.get("/searchTags/{keyword}")
+async def filterTags(keyword, db: Session = Depends(get_db)):
+    # filter song details (title, artist)
+    try:
+        searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
+    except NoResultFound:
+        return "no search results"
+
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
+
+# Filter for most-least/least-most popular tags
+
+# Filter for oldest-newest/newest-oldest tags 
 
 # Delete User 
 @app.delete("/deleteUser")
@@ -247,13 +271,11 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
 
 # Change Username
 """
-@app.put("/changeUsername")
-async def changeUsername(db: Session = Depends(get_db)):
-    # need an input new username
-
+@app.put("/changeUsername/{username}")
+async def changeUsername(username, newUsername:str, db: Session = Depends(get_db)):
     try:
         # Check if username exists
-        db.query(Users).filter(Users.username == userReg.username).one()
+        db.query(Users).filter(Users.username == username).one()
         db.commit()
         try:
             # update username
