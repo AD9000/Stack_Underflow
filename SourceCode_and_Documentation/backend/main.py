@@ -187,7 +187,7 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
         db.query(Tags).filter(Tags.tag_id == tagID).delete()
         db.commit()
     except NoResultFound:
-        raise HTTPException(status_code=400, detail="Tag does not exist")
+        raise HTTPException(status_code=404, detail="Tag does not exist")
 
     return {"tag has been deleted successfully": None}        
 
@@ -201,7 +201,6 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
 async def generateRandomTag(db: Session = Depends(get_db)):
     maxTagCount = db.query(func.count(Tags.id)).filter(Tags.n_likes >= 100).scalar()
     randomNumber = randrange(maxTagCount)
-
     try:
         randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
         db.commit()
@@ -213,7 +212,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
         img = None
         path = "Images/" + str(randomTag.image)
         img = FileResponse(path)
-        
+    
     return {
         "title" : randomTag.title,
         "region" : randomTag.region,
@@ -230,7 +229,7 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
         tag = db.query(Tags).filter(Tags.id == tagID).one()
         db.commit()
     except NoResultFound:
-        return "tag does not exist"
+        raise HTTPException(status_code=404, detail="Tag does not exist")
 
     img = "no image attached"
     if tag.image > -1:
@@ -254,7 +253,7 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
         db.commit()
     except NoResultFound:
-        return "user has created no tags"
+        raise HTTPException(status_code=404, detail="User does not have any tags")
 
     tags = []
     for tag in tagsByUser:
@@ -282,7 +281,7 @@ async def filterTagsByKeyword(keyword, db: Session = Depends(get_db)):
         searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
         db.commit()
     except NoResultFound:
-        return "no search results"
+        raise HTTPException(status_code=404, detail="No search results")
 
     tags = []
     for tag in searchResult:
@@ -310,14 +309,14 @@ async def filterTagsByPopularity(reverse: bool, db: Session = Depends(get_db)):
             searchResult = db.query(Tags).all().order_by(Tags.n_likes.desc())
             db.commit()
         except NoResultFound:
-            return "no search results"
+            raise HTTPException(status_code=404, detail="No search results")
     # least popular -> most popular
     else:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.n_likes)
             db.commit()
         except NoResultFound:
-            return "no search results"
+            raise HTTPException(status_code=404, detail="No search results")
 
     tags = []
     for tag in searchResult:
@@ -345,14 +344,14 @@ async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
             searchResult = db.query(Tags).all().order_by(Tags.time_made.desc())
             db.commit()
         except NoResultFound:
-            return "no search results"
+            raise HTTPException(status_code=404, detail="No search results")
     # least recent -> most recent
     else:
         try:
             searchResult = db.query(Tags).all().order_by(Tags.time_made)
             db.commit()
         except NoResultFound:
-            return "no search results"
+            raise HTTPException(status_code=404, detail="No search results")
 
     tags = []
     for tag in searchResult:
@@ -378,7 +377,7 @@ async def likeTag(tagID: int, db: Session = Depends(get_db)):
         tag = db.query(Tags).filter(Tags.id == tagID).one()
         db.commit()
     except NoResultFound:
-        return "tag does not exist"
+        raise HTTPException(status_code=404, detail="Tag does not exist")
     
     setattr(tag, 'n_likes', (tag.n_likes + 1))
     db.commit()
@@ -391,7 +390,7 @@ async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
         tag = db.query(Tags).filter(Tags.id == tagID).one()
         db.commit()
     except NoResultFound:
-        return "tag does not exist"
+        raise HTTPException(status_code=404, detail="Tag does not exist")
     
     setattr(tag, 'n_likes', (tag.n_likes - 1))
     db.commit()
@@ -401,19 +400,22 @@ async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
 @app.post("/commentOnTag/{tagID}")
 async def commentOnTag(username: str, tagID: int, text: str, db: Session = Depends(get_db)):
     try:
-        db.query(Users).filter(Users.username == username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
-        return "user does not exist"
+        raise HTTPException(status_code=404, detail="User does not exist")
+    
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User is offline")
     
     try:
         tag = db.query(Tags).filter(Tags.id == tagID).one()
         db.commit()
     except NoResultFound:
-        return "tag does not exist"
+        raise HTTPException(status_code=404, detail="Tag does not exist")
     
     if text == None:
-        return {"empty comment cannot be posted": None}
+        raise HTTPException(status_code=400, detail="Empty comment cannot be posted")
     
     comment = Comments()
     comment.tag_id = tagID
@@ -438,7 +440,7 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
         db.commit()
         return {"user deleted": userReg.username}
     else: 
-        return {"no user found": None}
+        raise HTTPException(status_code=404, detail="User does not exist")
 
 # Change Username
 @app.put("/changeUsername/{username}")
@@ -448,11 +450,11 @@ async def changeUsername(username, newUsername: str, db: Session = Depends(get_d
         user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
-        return {"no user found with username": None}
+        raise HTTPException(status_code=404, detail="No user found with such username")
     
     # update username
     if newUsername == None:
-        return {"empty new username": None}
+        raise HTTPException(status_code=400, detail="New username cannot be empty")
 
     setattr(user, 'username', newUsername)
     db.commit()
@@ -465,26 +467,26 @@ async def changePassword(username: str, newPassword: str, db: Session = Depends(
         user = db.query(Users).filter(Users.username == username).one()
         db.commit() 
     except NoResultFound:
-        return {"no user found with username": None}
+        raise HTTPException(status_code=404, detail="No user found with such username")
     
     if user.password == newPassword:    
-        return {"password has already been used": None}
+        raise HTTPException(status_code=400, detail="Password has already been used for this account")
     
     if newPassword == None:
-        return {"empty new password": None}
+        raise HTTPException(status_code=400, detail="New password cannot be empty")
     
     setattr(user, 'password', newPassword)
     db.commit()
     return {"password has been updated": newPassword}
 
 # Link to Spotify
-"""
-@app.get("/linkSpotify")
-async def linkSpotify(db: Session = Depends(get_db)):
+@app.get("/linkSpotify/{username}")
+async def linkSpotify(username: str, db: Session = Depends(get_db)):
     # Get Spotify login token
 
     # Add Spotify token to user
-"""
+    return {"Spotify account has been linked to user successfully": username}
+
 
 # View notifications in profile
 
