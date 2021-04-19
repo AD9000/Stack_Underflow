@@ -4,14 +4,14 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags
+from models import Users, Tags, Songs, Comments
 from typing import Optional
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
-from sqlalchemy import delete, insert, update, func
+from sqlalchemy import delete, insert, update, func, or_
 from sqlalchemy.orm.exc import NoResultFound
 from auth import generate_uid
 from datetime import datetime 
@@ -24,7 +24,6 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 class UserRegister(BaseModel):
-    id : int
     username : str
     password : str
     email : str
@@ -52,7 +51,7 @@ class TagInfo(BaseModel):
         if isinstance(value, str):
             return cls(**json.loads(value))
         return value
-    
+
 
 def get_db():
     try:
@@ -95,24 +94,44 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             return {"user created": userReg.username}
 
 # Log In
-@app.post("/login")
+@app.put("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
-    db.query(Users).filter(Users.username == login.username, Users.password == login.password)
     try:
         # Check username to login with username
         db.query(Users).filter(Users.username == login.username).one()
         db.commit()
         try:
             # If username matches, check password
-            db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+            user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
             db.commit()
-            return {"user login successful": login.username}
         except NoResultFound:
             return {"incorrect password": login.username}
+        
+        if user.logged_in == False:
+            return {"user is not logged in": None}
+
+        setattr(user, 'logged_in', True)
+        db.commit()
+        return {"user login successful": login.username}
+    
     except NoResultFound:
         return {"user does not exist": login.username}
 
-# Publish New Tag
+#Log Out
+@app.put("/logout/{username}")
+async def loginUser(username: str, db: Session = Depends(get_db)):
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        return {"user does not exist": username}
+    
+    setattr(user, 'logged_in', False)
+    db.commit()
+    return {"user logout successful": username}
+
+# Publish New Tag 
+# To-Do Do we need to add {username} to get the username of user logged in?
 @app.post("/publishTag")
 async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     tg = Tags()
@@ -133,8 +152,8 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song = tagInf.song
-    tg.time_made = datetime.now()
-    tg.time_edited = tg.time_made
+    #tg.time_made = datetime.now()
+    #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
     
     if img:
@@ -154,6 +173,29 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     
     return {"tag posted": tg.title}
 
+# Delete a tag
+@app.delete("/deleteTag/{username}/{tagID}")
+async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        return {"no user found": None}
+    
+    if user.logged_in == False:
+        return {"user is not logged in": None}
+
+    try:
+        db.query(Tags).filter(Tags.tag_id == tagID).delete()
+        db.commit()
+    except NoResultFound:
+        return {"tag does not exist": None}
+
+    return {"tag has been deleted successfully": None}        
+
+# Edit a tag
+# This thing may involve multiple steps...
+
 # Generate Random Tag
 @app.get("/generateRandomTag")
 async def generateRandomTag(db: Session = Depends(get_db)):
@@ -162,6 +204,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
 
     try:
         randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
+        db.commit()
     except NoResultFound:
         return "no posts with 1000+ likes"
 
@@ -182,9 +225,10 @@ async def generateRandomTag(db: Session = Depends(get_db)):
 
 # View Published Tag
 @app.get("/viewTag/{tagID}")
-async def viewTag(tagID, db: Session = Depends(get_db)):
+async def viewTag(tagID: int, db: Session = Depends(get_db)):
     try:
         tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
     except NoResultFound:
         return "tag does not exist"
 
@@ -205,9 +249,10 @@ async def viewTag(tagID, db: Session = Depends(get_db)):
 
 # View All My Tags
 @app.get("/myTags/{username}")
-async def viewAllMyTags(username, db: Session = Depends(get_db)):
+async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
     try:
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
+        db.commit()
     except NoResultFound:
         return "user has created no tags"
 
@@ -229,13 +274,163 @@ async def viewAllMyTags(username, db: Session = Depends(get_db)):
 
     return tags
 
-# Filter for certain posts to appear
-@app.get("/searchTags")
-async def filterTags(db: Session = Depends(get_db)):
-    # do stuff
-    return "lol"
+# Filter for certain posts to appear using keyword
+@app.get("/searchTags/{keyword}")
+async def filterTagsByKeyword(keyword, db: Session = Depends(get_db)):
+    # To-Do filter song details (title, artist)
+    try:
+        searchResult = db.query(Tags).filter(or_(att.like("%keyword%") for att in (Tags.username, Tags.title, Tags.region, Tags.location, Tags.caption))).all()
+        db.commit()
+    except NoResultFound:
+        return "no search results"
 
-# Delete User 
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
+
+# Filter for most-least/least-most popular tags
+@app.get("/searchTags/popularity/{reverse}")
+async def filterTagsByPopularity(reverse: bool, db: Session = Depends(get_db)):
+    # most popular -> least popular
+    if reverse == True:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.n_likes.desc())
+            db.commit()
+        except NoResultFound:
+            return "no search results"
+    # least popular -> most popular
+    else:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.n_likes)
+            db.commit()
+        except NoResultFound:
+            return "no search results"
+
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
+
+# Filter for oldest-newest/newest-oldest tags
+@app.get("/searchTags/date/{reverse}")
+async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
+    # most recent -> least recent
+    if reverse == True:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.time_made.desc())
+            db.commit()
+        except NoResultFound:
+            return "no search results"
+    # least recent -> most recent
+    else:
+        try:
+            searchResult = db.query(Tags).all().order_by(Tags.time_made)
+            db.commit()
+        except NoResultFound:
+            return "no search results"
+
+    tags = []
+    for tag in searchResult:
+        img = "no image attached"
+        if tag.image > -1:
+            img = None
+            path = "Images/" + str(tag.image)
+            img = FileResponse(path)
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
+    return tags
+
+#Like a post
+@app.put("/likeTag/{tagID}")
+async def likeTag(tagID: int, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+    
+    setattr(tag, 'n_likes', (tag.n_likes + 1))
+    db.commit()
+    return {"User liked this tag": tagID}
+
+#Unlike a post
+@app.put("/unlikeTag/{tagID}")
+async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+    
+    setattr(tag, 'n_likes', (tag.n_likes - 1))
+    db.commit()
+    return {"User unliked this tag": tagID}
+
+# Comment on a tag
+@app.post("/commentOnTag/{tagID}")
+async def commentOnTag(username: str, tagID: int, text: str, db: Session = Depends(get_db)):
+    try:
+        db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        return "user does not exist"
+    
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        return "tag does not exist"
+    
+    if text == None:
+        return {"empty comment cannot be posted": None}
+    
+    comment = Comments()
+    comment.tag_id = tagID
+    comment.author = username
+    comment.content = text
+    return {
+        "tag_id": comment.tag_id,
+        "author": comment.author,
+        "content": comment.content,
+        "time_posted": comment.time_posted
+    }
+
+# Edit comment
+
+# Delete comment
+
+# Delete User
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
     # Not for functionality of website, just for deleting Users
@@ -246,42 +441,41 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
         return {"no user found": None}
 
 # Change Username
-"""
-@app.put("/changeUsername")
-async def changeUsername(db: Session = Depends(get_db)):
-    # need an input new username
-
+@app.put("/changeUsername/{username}")
+async def changeUsername(username, newUsername: str, db: Session = Depends(get_db)):
     try:
         # Check if username exists
-        db.query(Users).filter(Users.username == userReg.username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
-        try:
-            # update username
-
-            return {"username uodated": }
     except NoResultFound:
         return {"no user found with username": None}
-"""
+    
+    # update username
+    if newUsername == None:
+        return {"empty new username": None}
+
+    setattr(user, 'username', newUsername)
+    db.commit()
+    return {"username updated": newUsername}
 
 # Change Password
-"""
-@app.put("/changePassword")
-async def changePassword(db: Session = Depends(get_db)):
-    # need an input new password
-
+@app.put("/changePassword/{username}")
+async def changePassword(username: str, newPassword: str, db: Session = Depends(get_db)):
     try:
-        # Check if username exists
-        db.query(Users).filter(Users.username == userReg.username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit() 
-        # check if password exists
-        if password exists:    
-            # update password
-            return {"password uodated": }
-        else:
-            return {"password has already been used": None}
     except NoResultFound:
         return {"no user found with username": None}
-"""
+    
+    if user.password == newPassword:    
+        return {"password has already been used": None}
+    
+    if newPassword == None:
+        return {"empty new password": None}
+    
+    setattr(user, 'password', newPassword)
+    db.commit()
+    return {"password has been updated": newPassword}
 
 # Link to Spotify
 """
@@ -292,22 +486,19 @@ async def linkSpotify(db: Session = Depends(get_db)):
     # Add Spotify token to user
 """
 
+# View notifications in profile
+
 # TO DO:
-# - Change username 
-# - Change password
-# - Logout (not sure what to do or if implementation is needed for this in backend)
-"""
-A additional attribute will be needed -> logged_in (True/False)
-"""
 # - Link to Spotify
+# - View notifications
 
 # - Generate Random Tag DONE
 # - View All My Tags 1
 # - View a tag DONE
 # - Filter for certain posts to appear 111 same
 # - Search for tags and music 111 same
-# - Reset forgotten password
-# - Liking a post
-# - Add message/comment to new tag
-# - View notifications
+# - Reset forgotten password DONE
+# - Liking a post DONE
+# - Add message/comment to new tag DONE
+
 
