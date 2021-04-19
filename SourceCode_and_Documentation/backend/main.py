@@ -5,8 +5,8 @@ import os.path
 import random
 from random import randrange
 from models import Users, Tags, Songs, Comments
-from typing import Optional
-from fastapi import FastAPI, Request, Depends, File, UploadFile, Body
+from typing import Optional, List
+from fastapi import FastAPI, Request, Depends, File, UploadFile, Body, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
@@ -23,10 +23,18 @@ app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine)
 
-class UserRegister(BaseModel):
+class UserBase(BaseModel):
     username : str
-    password : str
     email : str
+
+class UserRegister(UserBase):
+    password : str
+
+class User(UserBase):
+    logged_in : bool
+    #tags_owned: List[Tag] = []
+    class Config:
+        orm_mode = True
 
 class UserLogin(BaseModel):
     username : str
@@ -70,61 +78,53 @@ async def root():
 # Sign Up 
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    register = Users()
-    #register.id = generate_uid()
-    register.username = userReg.username
-    register.password = userReg.password
-    register.email = userReg.email
+    register = Users(username=userReg.username, password=userReg.password, email=userReg.email, logged_in=True)
+    # Check if username is used
+    user = db.query(Users).filter(Users.username == userReg.username).first()
+    db.commit()
+    if user:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    # Check if email is used
+    user = db.query(Users).filter(Users.email == userReg.email).first()
+    db.commit()
+    if user:
+        raise HTTPException(status_code=400, detail="Email already registered")
 
-    try:
-        # Check if username exists
-        db.query(Users).filter(Users.username == userReg.username).one()
-        db.commit()
-        return {"username already exists": userReg.username}
-    except NoResultFound:
-        # Check if email exists
-        try:
-            db.query(Users).filter(Users.email == userReg.email).one()
-            db.commit()
-            return {"email already exists": userReg.email}
-        except NoResultFound:
-            # Create user if details don't exist
-            db.add(register)
-            db.commit()
-            return {"user created": userReg.username}
+    db.add(register)
+    db.commit()
+    db.refresh(register)
+    return register
 
 # Log In
 @app.put("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
-    try:
-        # Check username to login with username
-        db.query(Users).filter(Users.username == login.username).one()
-        db.commit()
-        try:
-            # If username matches, check password
-            user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
-            db.commit()
-        except NoResultFound:
-            return {"incorrect password": login.username}
-        
-        if user.logged_in == False:
-            return {"user is not logged in": None}
-
-        setattr(user, 'logged_in', True)
-        db.commit()
-        return {"user login successful": login.username}
+    user = db.query(Users).filter(Users.username == login.username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    except NoResultFound:
-        return {"user does not exist": login.username}
+    user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect password")
+    
+    if user.logged_in == True:
+        raise HTTPException(status_code=400, detail="User already logged in")
+
+    setattr(user, 'logged_in', True)
+    db.commit()
+    return {"user login successful": login.username}
 
 #Log Out
 @app.put("/logout/{username}")
 async def loginUser(username: str, db: Session = Depends(get_db)):
-    try:
-        user = db.query(Users).filter(Users.username == username).one()
-        db.commit()
-    except NoResultFound:
-        return {"user does not exist": username}
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User is offline")
     
     setattr(user, 'logged_in', False)
     db.commit()
@@ -170,43 +170,43 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
 
     db.add(tg)
     db.commit()    
-    
     return {"tag posted": tg.title}
 
 # Delete a tag
 @app.delete("/deleteTag/{username}/{tagID}")
 async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
-    try:
-        user = db.query(Users).filter(Users.username == username).one()
-        db.commit()
-    except NoResultFound:
-        return {"no user found": None}
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
     if user.logged_in == False:
-        return {"user is not logged in": None}
-
+        raise HTTPException(status_code=400, detail="User is offline")
+    
     try:
         db.query(Tags).filter(Tags.tag_id == tagID).delete()
         db.commit()
     except NoResultFound:
-        return {"tag does not exist": None}
+        raise HTTPException(status_code=400, detail="Tag does not exist")
 
     return {"tag has been deleted successfully": None}        
 
 # Edit a tag
 # This thing may involve multiple steps...
 
+
+
 # Generate Random Tag
 @app.get("/generateRandomTag")
 async def generateRandomTag(db: Session = Depends(get_db)):
-    maxTagCount = db.query(func.count(Tags.id)).filter(Tags.n_likes >= 1000).scalar()
+    maxTagCount = db.query(func.count(Tags.id)).filter(Tags.n_likes >= 100).scalar()
     randomNumber = randrange(maxTagCount)
 
     try:
         randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
         db.commit()
     except NoResultFound:
-        return "no posts with 1000+ likes"
+        raise HTTPException(status_code=400, detail="No posts with 100+ likes")
 
     img = "no image attached"
     if randomTag.image > -1:
@@ -491,6 +491,9 @@ async def linkSpotify(db: Session = Depends(get_db)):
 # TO DO:
 # - Link to Spotify
 # - View notifications
+# - Edit tag
+# - Edit comment
+# - Delete comment
 
 # - Generate Random Tag DONE
 # - View All My Tags 1
