@@ -42,9 +42,10 @@ const Animation = () => {
 };
 
 interface CreateTagProps {
+  setNewMarker: Function;
   setMarkersUpdated: Function;
 }
-const CreateTag = ({ setMarkersUpdated }: CreateTagProps) => {
+const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
   const { createTag, markers, setMarkers } = useContext(AppContext);
   useEffect(() => {
     console.log("create tag update: ", createTag);
@@ -55,8 +56,20 @@ const CreateTag = ({ setMarkersUpdated }: CreateTagProps) => {
       return;
     }
     const { lat, lng } = e.latlng;
-    setMarkers([...markers, [lat, lng]]);
+    // setMarkers([...markers, [lat, lng]]);
+    setNewMarker([lat, lng]);
     setMarkersUpdated(true);
+  });
+
+  return null;
+};
+
+const MaxBounds = () => {
+  const map = useMapEvent("drag", () => {
+    if (!map.options.maxBounds) {
+      return;
+    }
+    map.panInsideBounds(map.options.maxBounds, { animate: false });
   });
 
   return null;
@@ -84,12 +97,16 @@ const MapWrapper = () => {
       <MapContainer
         className={classes.fullScreen}
         center={defaultPosition}
-        zoom={2.8}
+        zoom={3}
         zoomSnap={0.1}
         zoomControl={false}
-        minZoom={2.8}
+        minZoom={3}
+        maxBounds={[
+          [-110, -200],
+          [110, 200],
+        ]}
         scrollWheelZoom={true}
-        worldCopyJump={true}
+        // worldCopyJump={true}
       >
         <Map />
       </MapContainer>
@@ -151,8 +168,11 @@ const useStylesMap = makeStyles({
 const Map = () => {
   const map = useMap();
   const [markersUpdated, setMarkersUpdated] = useState(false);
+  const [newMarker, setNewMarker] = useState<LatLngTuple | null>(null);
   const [createForm, setCreateForm] = useState(false);
-  const { markers, createTag, setOpen, setTagIndex } = useContext(AppContext);
+  const { markers, createTag, setCreateTag, setOpen, setTagIndex } = useContext(
+    AppContext
+  );
 
   const styles = useStylesMap();
 
@@ -166,6 +186,8 @@ const Map = () => {
 
   const handleClose = () => {
     setCreateForm(false);
+    setNewMarker(null);
+    setCreateTag(false);
   };
 
   useEffect(() => {
@@ -195,6 +217,7 @@ const Map = () => {
         style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
       >
         <TileLayer
+          // noWrap={true}
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
           // url={`https://api.mapbox.com/${mapStyle}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_KEY}`}
           pane="map"
@@ -209,11 +232,16 @@ const Map = () => {
             position={position}
           ></Marker>
         ))}
+        {newMarker && <Marker position={newMarker} />}
       </Pane>
       <Animation />
+      <MaxBounds />
       <ZoomControl position="bottomleft" />
       {/* <ZoomCheck /> */}
-      <CreateTag setMarkersUpdated={setMarkersUpdated} />
+      <CreateTag
+        setMarkersUpdated={setMarkersUpdated}
+        setNewMarker={setNewMarker}
+      />
       {createForm && (
         <Dialog
           open={createForm}
