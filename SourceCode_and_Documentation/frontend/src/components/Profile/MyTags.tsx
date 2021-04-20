@@ -4,7 +4,7 @@ import { Container, makeStyles } from '@material-ui/core';
 const useStyles = makeStyles({
   page: {
     color: 'white',
-    padding: '5rem 5rem'
+    padding: '5rem 0',
   }
 })
 
@@ -16,7 +16,7 @@ const MyTags = () => {
     <Container maxWidth="lg" className={classes.page}>
       <h1>My Tags</h1>
       <div>
-
+        Tags you have posted.
       </div>
     </Container>
   );
