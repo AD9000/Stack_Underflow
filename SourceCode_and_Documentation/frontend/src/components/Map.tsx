@@ -22,6 +22,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import { AppContext } from "./Context";
+import { searchSong } from "./Spotify-Api/spotifyApi";
 
 const mapStyle = "styles/v1/underflow/cknag3sw245zs17o66pbt4dgj";
 
@@ -170,6 +171,10 @@ const Map = () => {
   const [markersUpdated, setMarkersUpdated] = useState(false);
   const [newMarker, setNewMarker] = useState<LatLngTuple | null>(null);
   const [createForm, setCreateForm] = useState(false);
+  const [location, setLocation] = useState('');
+  const [song, setSong] = useState('');
+  const [title, setTitle] = useState('');
+  const [caption, setCaption] = useState('');
   const { markers, createTag, setCreateTag, setOpen, setTagIndex } = useContext(
     AppContext
   );
@@ -189,6 +194,12 @@ const Map = () => {
     setNewMarker(null);
     setCreateTag(false);
   };
+
+  const handleSubmit = async () => {
+    console.log(title, location, song, caption);
+    console.log(searchSong(song));
+    // Add fetch request here
+  }
 
   useEffect(() => {
     (async () => {
@@ -274,7 +285,7 @@ const Map = () => {
                   id="location"
                   InputProps={{ className: styles.input }}
                   placeholder="location"
-                  // label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
                 <h3 className={styles.text}>Song</h3>
                 <TextField
@@ -283,7 +294,8 @@ const Map = () => {
                   margin="dense"
                   id="song"
                   InputProps={{ className: styles.input }}
-                  placeholder="Enter spotify url"
+                  placeholder="Enter song name"
+                  onChange={(e) => setSong(e.target.value)}
                 />
                 <h3 className={styles.text}>Title</h3>
                 <TextField
@@ -293,6 +305,7 @@ const Map = () => {
                   id="title"
                   InputProps={{ className: styles.input }}
                   placeholder="Enter Tag Title"
+                  onChange={(e) => setTitle(e.target.value)}
                 />
                 <h3 className={styles.text}>Caption</h3>
                 <TextField
@@ -303,6 +316,7 @@ const Map = () => {
                   size="medium"
                   InputProps={{ className: styles.input }}
                   placeholder="Enter your caption"
+                  onChange={(e) => setCaption(e.target.value)}
                 />
               </div>
             </DialogContent>
@@ -322,6 +336,7 @@ const Map = () => {
                 style={{ background: "black" }}
                 color="primary"
                 className={styles.btn}
+                onClick={handleSubmit}
               >
                 <b style={{ fontSize: "large" }}>Next</b>
               </Button>
