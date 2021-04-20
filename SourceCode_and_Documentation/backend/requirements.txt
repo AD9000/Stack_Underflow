@@ -46,4 +46,5 @@ uvicorn==0.13.4
 virtualenv==20.4.2
 watchgod==0.7
 websockets==8.1
+sqlalchemy
 zipp==3.4.1

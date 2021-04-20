@@ -1,26 +1,110 @@
+import models
+from models import Users
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Depends
 from pydantic import BaseModel
+from database import SessionLocal, engine
+from sqlalchemy.orm import Session
+from sqlalchemy import delete
+from sqlalchemy import insert 
+from sqlalchemy import update
+from sqlalchemy.orm.exc import NoResultFound
+from auth import generate_uid
+# May need to import this library below, but right now, it isn't being used:
+# from sqlalchemy.orm.exc import MultipleResultsFound
 
 app = FastAPI()
 
+models.Base.metadata.create_all(bind=engine)
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Optional[bool] = None
+class UserRegister(BaseModel):
+    id : int
+    username : str
+    password : str
+    email : str
 
+class UserLogin(BaseModel):
+    username : str
+    password : str
+
+def get_db():
+    try:
+        db = SessionLocal()
+        yield db
+    finally: 
+        db.close()
+
+# Homepage
 
 @app.get("/")
 async def root():
+    # insert homepage info here
     return {"message": "Hello World"}
 
+# AUTHENTICATION:
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"recieved item_id": item_id}
+# Sign Up 
+@app.post("/registerUser")
+async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
+    register = Users()
+    register.id = generate_uid()
+    register.username = userReg.username
+    register.password = userReg.password
+    register.email = userReg.email
 
+    try:
+        # Check if username exists
+        db.query(Users).filter(Users.username == userReg.username).one()
+        db.commit()
+        return {"username already exists": userReg.username}
+    except NoResultFound:
+        # Create user if details don't exist
+        db.add(register)
+        db.commit()
+        return {"user created": userReg.username}
 
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id, "pr": item.price}
+# Log In
+@app.post("/login")
+async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
+    db.query(Users).filter(Users.username == login.username, Users.password == login.password)
+    try:
+        # Check username to login with username
+        db.query(Users).filter(Users.username == login.username).one()
+        db.commit()
+        try:
+            # If username matches, check password
+            db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+            db.commit()
+            return {"user login successful": login.username}
+        except NoResultFound:
+            return {"incorrect password": login.username}
+    except NoResultFound:
+        return {"user does not exist": login.username}
+
+# Change Username
+# do stuff
+
+# Change Password
+# do stuff
+
+# Delete User 
+@app.post("/deleteUser")
+async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
+    # Not for functionality of website, just for deleting Users
+    if (db.query(Users).filter(Users.username == userReg.username).delete()):
+        db.commit()
+        return {"user deleted": userReg.username}
+    else: 
+        return {"no user found": None}
+
+# Link to Spotify
+"""
+@app.get("/linkSpotify")
+async def linkSpotify(db: Session = Depends(get_db)):
+    # Get Spotify login token
+
+    # Add Spotify token to user
+"""
+
+# Add post
+
