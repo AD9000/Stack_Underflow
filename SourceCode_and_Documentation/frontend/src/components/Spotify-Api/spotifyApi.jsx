@@ -11,106 +11,130 @@ let refresh_token = localStorage.getItem('refresh_token');
 const AUTHORIZE = "https://accounts.spotify.com/authorize";
 const TOKEN = "https://accounts.spotify.com/api/token";
 const CURRENTLYPLAYING = "https://api.spotify.com/v1/me/player/currently-playing"
+const SEARCH = "https://api.spotify.com/v1/search"
 
 // Get items from localstorage
 function onPageLoad(){
-    // client_id = localStorage.getItem("client_id");
-    // client_secret = localStorage.getItem("client_secret");
-    // console.log(client_id);
-    if ( window.location.search.length > 0 ){
-        handleRedirect();
-    }
+	// client_id = localStorage.getItem("client_id");
+	// client_secret = localStorage.getItem("client_secret");
+	// console.log(client_id);
+	if ( window.location.search.length > 0 ){
+			handleRedirect();
+	}
 }
 
 // Get authorization URL
 function requestAuthorization(){
-    localStorage.setItem("client_id", client_id);
-    localStorage.setItem("client_secret", client_secret);
+	localStorage.setItem("client_id", client_id);
+	localStorage.setItem("client_secret", client_secret);
 
-    let url = AUTHORIZE;
-    url += "?client_id=" + client_id;
-    url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(redirect_uri);
-    url += "&show_dialog=true";
-    url += "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private";
-    return url; // Show Spotify's authorization screen
+	let url = AUTHORIZE;
+	url += "?client_id=" + client_id;
+	url += "&response_type=code";
+	url += "&redirect_uri=" + encodeURI(redirect_uri);
+	url += "&show_dialog=true";
+	url += "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private";
+	return url; // Show Spotify's authorization screen
 }
 
 // Handle redirect from spotify login, get access/refresh tokens
 function handleRedirect(){
-    let code = getCode();
-    console.log('CODE', code);
-    fetchAccessToken( code );
+	let code = getCode();
+	console.log('CODE', code);
+	fetchAccessToken( code );
 
-    // remove param from url
-    window.history.pushState("", "", redirect_uri);
+	// remove param from url
+	window.history.pushState("", "", redirect_uri);
 }
 
 // Get code from url
 function getCode(){
-    let code = null;
-    const queryString = window.location.search;
-    if ( queryString.length > 0 ){
-        const urlParams = new URLSearchParams(queryString);
-        code = urlParams.get('code')
-    }
-    return code;
+	let code = null;
+	const queryString = window.location.search;
+	if ( queryString.length > 0 ){
+		const urlParams = new URLSearchParams(queryString);
+		code = urlParams.get('code')
+	}
+	return code;
 }
 
 function fetchAccessToken( code ){
-    let body = "grant_type=authorization_code";
-    body += "&code=" + code; 
-    body += "&redirect_uri=" + encodeURI(redirect_uri);
-    body += "&client_id=" + client_id;
-    body += "&client_secret=" + client_secret;
-    callAuthorizationApi(body);
+	let body = "grant_type=authorization_code";
+	body += "&code=" + code; 
+	body += "&redirect_uri=" + encodeURI(redirect_uri);
+	body += "&client_id=" + client_id;
+	body += "&client_secret=" + client_secret;
+	callAuthorizationApi(body);
 }
 
 const callAuthorizationApi = async (body) => {
-    console.log(body);
-    const response = await fetch(TOKEN, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: 'Basic ' + btoa(client_id + ":" + client_secret)
-        },
-        body: body
-    })
-    console.log(response);
-    if (response.status === 200) {
-        const data = await response.json();
-        console.log(data);
-        if ( data.access_token !== undefined ){
-            access_token = data.access_token;
-            localStorage.setItem("access_token", access_token);
-        }
-        if ( data.refresh_token !== undefined ){
-            refresh_token = data.refresh_token;
-            localStorage.setItem("refresh_token", refresh_token);
-        }
-        onPageLoad();
-    } else {
-        console.log(response.error);
-    }
+	console.log(body);
+	const response = await fetch(TOKEN, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			Authorization: 'Basic ' + btoa(client_id + ":" + client_secret)
+		},
+		body: body
+	})
+	console.log(response);
+	if (response.status === 200) {
+		const data = await response.json();
+		console.log(data);
+		if ( data.access_token !== undefined ){
+			access_token = data.access_token;
+			localStorage.setItem("access_token", access_token);
+		}
+		if ( data.refresh_token !== undefined ){
+			refresh_token = data.refresh_token;
+			localStorage.setItem("refresh_token", refresh_token);
+		}
+		onPageLoad();
+	} else {
+		console.log(response.error);
+	}
 }
 
-function currentlyPlaying(){    
-    callApi( "GET", CURRENTLYPLAYING, null );
+const currentlyPlaying = async () => {    
+	callApi( "GET", CURRENTLYPLAYING, null );
+}
+
+const searchSong = async (songName) => {
+	console.log('Searching song', songName);
+	const songUrl = await callApi("GET", `${SEARCH}?q=${songName}&type=track`, null);
+	console.log(songUrl.tracks.items[0].uri);
+	return songUrl.tracks.items[0].uri;
 }
 
 const callApi = async (method, url, body) => {
-    console.log('here', access_token);
-    const response = await fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + access_token
-        },
-        body: body
-    });
-    const data = await response.json();
-    console.log(data);
+	console.log(method, url);
+	const response = await fetch(url, {
+		method: method,
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: 'Bearer ' + access_token
+		},
+		body: body   
+	});
+	const data = await response.json();
+	return data;
 }
 
+// const pauseSong = () => {
+// 	const requestOptions = {
+// 		method: 'PUT',
+// 		headers: {'Content-Type': 'application/json'}
+// 	};
+// 	fetch('/spotify/pause', requestOptions);
+// }
 
-export {requestAuthorization, handleRedirect, currentlyPlaying}
+// const playSong = () => {
+// 	const requestOptions = {
+// 		method: 'PUT',
+// 		headers: {'Content-Type': 'application/json'}
+// 	};
+// 	fetch('/spotify/play', requestOptions);
+// }
+
+
+export { requestAuthorization, handleRedirect, currentlyPlaying, searchSong }
