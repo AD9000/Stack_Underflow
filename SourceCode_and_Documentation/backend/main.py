@@ -131,7 +131,7 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
     return {"user logout successful": username}
 
 # View user profile
-@app.put("/myProfile/{username}")
+@app.get("/myProfile/{username}")
 async def myProfile(username: str, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.username == login.username).one()
     db.commit()
