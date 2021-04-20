@@ -130,6 +130,20 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
     db.commit()
     return {"user logout successful": username}
 
+# View user profile
+@app.put("/myProfile/{username}")
+async def myProfile(username: str, db: Session = Depends(get_db)):
+    user = db.query(Users).filter(Users.username == login.username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {
+        "username": user.username,
+        "email address": user.email,
+        "password": user.password
+    }
+
 # Publish New Tag 
 # To-Do Do we need to add {username} to get the username of user logged in?
 @app.post("/publishTag")
