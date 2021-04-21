@@ -137,13 +137,13 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
 # View user profile
 @app.get("/myProfile/{username}")
 async def myProfile(username: str, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.username == login.username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == login.username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User offline, cannot open profile")
-
     return {
         "username": user.username,
         "email address": user.email,
@@ -153,9 +153,10 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
 # Publish New Tag 
 @app.post("/publishTag/")
 async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
-    user = db.query(Users).filter(Users.username == tagInf.user).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == tagInf.user).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
@@ -181,7 +182,6 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     #tg.time_made = datetime.now()
     #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
-    
     if img:
         # Save to image to folder in backend
         imageIndex=0
@@ -193,7 +193,6 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
         tg.image = imageIndex
         with open(path, "wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
-
     db.add(tg)
     db.commit()    
     return {"tag posted": tg.title}
@@ -201,9 +200,10 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
 # Delete a tag
 @app.delete("/deleteTag/{username}/{tagID}")
 async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.username == username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User is offline")
@@ -218,14 +218,15 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
 # Edit a tag
 @app.put("/editTag/{username}/{tagID}")
 async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
-    user = db.query(Users).filter(Users.username == username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
     if username != tagInf.user:
-        raise HTTPException(status_code=400, detail="cannot edit tag")
+        raise HTTPException(status_code=400, detail="Not tag author, cannot edit tag")
 
     try:
         tag = db.query(Tags).filter(Tags.tag_id == tagID).one()
@@ -248,7 +249,6 @@ async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: S
     if tag.song != tagInf.song:
         setattr(tag, 'song', tagInf.song)
         db.commit()
-    
     if img:
         # Save to image to folder in backend
         imageIndex=0
@@ -256,11 +256,11 @@ async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: S
         while (os.path.exists(path)):
             imageIndex+=1
             path = "Images/" + str(imageIndex)
+        # Add image to tag
         setattr(tag, 'image', imageIndex)
         with open(path, "wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
         db.commit()
-      
     return {"tag edited": tag.title}
 
 # Generate Random Tag
@@ -320,16 +320,16 @@ async def viewTags(db: Session = Depends(get_db)):
         allTags = db.query(Tags).filter(Tags.id == tagID).all()
         db.commit()
     except NoResultFound:
-        raise HTTPException(status_code=404, detail="no tags stored")
-        
+        raise HTTPException(status_code=404, detail="no tags stored")  
     return allTags
 
 # View All My Tags
 @app.get("/myTags/{username}")
 async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.username == username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User offline, cannot view tags")
@@ -527,7 +527,7 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
 
 # Change Username
 @app.put("/changeUsername/{username}")
-async def changeUsername(username, newUsername: str, db: Session = Depends(get_db)):
+async def changeUsername(username: str, newUsername: str, db: Session = Depends(get_db)):
     try:
         # Check if username exists
         user = db.query(Users).filter(Users.username == username).one()
@@ -576,7 +576,6 @@ async def linkSpotify(username: str, db: Session = Depends(get_db)):
 # TO DO:
 # - Link to Spotify
 # - View notifications
-# - Edit tag
 # - Edit comment
 # - Delete comment
 
