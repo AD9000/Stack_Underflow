@@ -1,6 +1,6 @@
 import { Container, makeStyles, Theme, Typography } from "@material-ui/core";
-// import React, { useEffect, useState } from "react";
-import { tpp } from "./Interfaces";
+import React from "react";
+import { TagInfo } from "./Interfaces";
 import MusicPlayer from "../components/Spotify-Api/MusicPlayer";
 // import { searchSong } from "../components/Spotify-Api/spotifyApi";
 
@@ -65,9 +65,8 @@ const TagView = ({
   location,
   desc,
   imgurl,
-  sstate,
-  songUri,
-}: tpp) => {
+  song,
+}: TagInfo) => {
   const classes = useStyles(imgurl);
   // const [songUri, setSongUri] = useState('');
 
@@ -86,7 +85,7 @@ const TagView = ({
           <div className={classes.textwrap}>
             <h2>{title}</h2>
             <h3>{location}</h3>
-            {songUri && <MusicPlayer songUri={songUri} />}
+            {song?.uri && <MusicPlayer songUri={song.uri} />}
           </div>
         </div>
         <div className={classes.desc}>

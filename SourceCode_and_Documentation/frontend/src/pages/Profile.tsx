@@ -10,32 +10,30 @@ import { Container } from "@material-ui/core";
 const useStyles = makeStyles({
   background: {
     height: "100%",
-    backgroundColor: "#051c3f"
+    backgroundColor: "#051c3f",
   },
   nav: {
-    display: 'sticky'
+    display: "sticky",
   },
   content: {
-    padding: '2rem 0'
-  }
+    padding: "2rem 0",
+  },
 });
 
 const Profile = () => {
   const classes = useStyles();
   const state = String(useLocation().state);
 
-  console.log(state)
-
   return (
     <div className={classes.background}>
-      <DashboardNav/>
+      <DashboardNav />
       <Container className={classes.content}>
-        {state==='user' && <MyProfile/>}
-        {state==='notifications' && <Notifications/>}
-        {state==='tags' && <MyTags/>}
+        {state === "user" && <MyProfile />}
+        {state === "notifications" && <Notifications />}
+        {state === "tags" && <MyTags />}
       </Container>
     </div>
   );
-}
+};
 
 export { Profile };
