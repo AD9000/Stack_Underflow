@@ -22,8 +22,8 @@ import {
   Theme,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { AppContext } from "./Context";
-import { searchSong } from "./Spotify-Api/spotifyApi";
+import { AppContext } from "../Context";
+import { searchSong } from "../Spotify-Api/spotifyApi";
 
 const mapStyle = "styles/v1/underflow/cknag3sw245zs17o66pbt4dgj";
 
