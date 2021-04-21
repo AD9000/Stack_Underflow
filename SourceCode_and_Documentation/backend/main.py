@@ -91,8 +91,6 @@ def get_db():
 
 
 # Homepage
-
-
 @app.get("/")
 async def root():
     # insert homepage info here
@@ -173,6 +171,8 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
     db.commit()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot open profile")
 
     return {
         "username": user.username,
@@ -180,15 +180,16 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
         "password": user.password,
     }
 
+# Publish New Tag 
+@app.post("/publishTag/")
+async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+    user = db.query(Users).filter(Users.username == tagInf.user).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
 
-# Publish New Tag
-# To-Do Do we need to add {username} to get the username of user logged in?
-@app.post("/publishTag")
-async def publishTag(
-    tagInf: TagInfo = Body(...),
-    db: Session = Depends(get_db),
-    img: UploadFile = File(None),
-):
     tg = Tags()
     tg.id = 0
     while True:
@@ -235,7 +236,6 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
     db.commit()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User is offline")
 
@@ -244,13 +244,25 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Tag does not exist")
-
-    return {"tag has been deleted successfully": None}
-
+    return {"tag has been deleted successfully": None}        
 
 # Edit a tag
-# This thing may involve multiple steps...
+@app.put("/editTag/{username}/{tagID}")
+async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
+    if username != tagInf.user:
+        raise HTTPException(status_code=400, detail="cannot edit tag")
 
+    try:
+        tag = db.query(Tags).filter(Tags.tag_id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Tag does not exist")
 
 # Generate Random Tag
 @app.get("/generateRandomTag")
@@ -307,6 +319,12 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
 # View All My Tags
 @app.get("/myTags/{username}")
 async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot view tags")
     try:
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
         db.commit()
@@ -320,17 +338,14 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
             img = None
             path = "Images/" + str(tag.image)
             img = FileResponse(path)
-        tags.append(
-            {
-                "title": tag.title,
-                "region": tag.region,
-                "location": tag.location,
-                "image": img,
-                "song": tag.song,
-                "caption": tag.caption,
-            }
-        )
-
+        tags.append({
+            "title" : tag.title,
+            "region" : tag.region,
+            "location" : tag.location,
+            "image" : img,
+            "song" : tag.song,
+            "caption" : tag.caption
+        })
     return tags
 
 
