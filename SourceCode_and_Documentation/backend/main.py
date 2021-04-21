@@ -110,20 +110,18 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     try:
         user = db.query(Users).filter(Users.username == userReg.username).first()
         db.commit()
-        if user:
-            raise HTTPException(status_code=400, detail="Username already exists")
-    # Check if email is used
-    try:
-        user = db.query(Users).filter(Users.email == userReg.email).first()
-        db.commit()
-        if user:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    except NoResultFound:
+        # Check if email is used
+        try:
+            user = db.query(Users).filter(Users.email == userReg.email).first()
+            db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
-
-    db.add(register)
-    db.commit()
-    db.refresh(register)
-    return register
-
+        except NoResultFound:
+            db.add(register)
+            db.commit()
+            db.refresh(register)
+            return register
 
 # Log In
 @app.put("/login")
