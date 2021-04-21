@@ -46,7 +46,9 @@ class UserBase(BaseModel):
 
 
 class UserRegister(UserBase):
+    username: str
     password: str
+    email: str
 
 
 class User(UserBase):
@@ -176,7 +178,7 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
 
 # Publish New Tag 
 @app.post("/publishTag/")
-async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: Optional[UploadFile] = File(None)):
     try:
         user = db.query(Users).filter(Users.username == tagInf.user).one()
         db.commit()
