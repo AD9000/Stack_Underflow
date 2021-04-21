@@ -102,8 +102,8 @@ const currentlyPlaying = async () => {
 const searchSong = async (songName) => {
 	console.log('Searching song', songName);
 	const songUrl = await callApi("GET", `${SEARCH}?q=${songName}&type=track`, null);
-	console.log(songUrl.tracks.items[0].uri);
-	return songUrl.tracks.items[0].uri;
+	console.log(songUrl?.tracks?.items?.[0]?.uri);
+	return songUrl?.tracks?.items?.[0]?.uri || "";
 }
 
 const callApi = async (method, url, body) => {
