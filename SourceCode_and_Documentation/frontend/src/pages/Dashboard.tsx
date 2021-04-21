@@ -7,6 +7,7 @@ import { Sidebar } from "../components/Sidebar";
 import { TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
 import { searchSong } from "../components/Spotify-Api/spotifyApi";
+import { useHistory } from "react-router-dom";
 // import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
 
 const tagjson: TagInfo[] = [
@@ -82,7 +83,18 @@ const Dashboard = () => {
   const [markers, setMarkers] = useState<LatLngTuple[]>([]);
   const [createTag, setCreateTag] = useState(false);
   const [tags, setTags] = useState<TagInfo[]>([]);
+
+  const history = useHistory();
+
+  const checkLoggedIn = () => {
+    const isLoggedIn = localStorage.getItem("username");
+    if (!isLoggedIn) {
+      history.push("/");
+    }
+  };
+
   useEffect(() => {
+    checkLoggedIn();
     // fetch("/viewTags").then((data) => console.log(data));
     const mark = tagjson.map((tag) => tag.coords);
     setMarkers(mark);
