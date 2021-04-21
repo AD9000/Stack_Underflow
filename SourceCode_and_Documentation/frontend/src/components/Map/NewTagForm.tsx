@@ -1,4 +1,4 @@
-import React, { useState, MouseEventHandler } from "react";
+import React, { useState, MouseEventHandler, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -13,6 +13,9 @@ import {
 } from "@material-ui/core";
 import { searchSong } from "../Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
+import { getToken } from "../../Helpers/token";
+import { LatLngTuple } from "leaflet";
+import { api } from "../../Helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
@@ -71,16 +74,37 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const fileToDataUrl = (file: Blob) => {
+  const validFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+  const valid = validFileTypes.find((type) => type === file.type);
+  // Bad data, let's walk away.
+  if (!valid) {
+    throw Error("provided file is not a png, jpg or jpeg image.");
+  }
+
+  const reader = new FileReader();
+  const dataUrlPromise = new Promise((resolve, reject) => {
+    reader.onerror = reject;
+    reader.onload = () => resolve(reader.result);
+  });
+  reader.readAsDataURL(file);
+  return dataUrlPromise;
+};
+
 interface DisplayImageProps {
   image: string | null;
   setImage: Function;
 }
 const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
+  const [display, setDisplay] = useState<string | null>(null);
   const styles = useStyles();
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
-      setImage(URL.createObjectURL(img));
+      setDisplay(URL.createObjectURL(img));
+      setImage(event.target.files[0]);
     }
   };
 
@@ -96,7 +120,7 @@ const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
           paddingLeft: "3.5rem",
         }}
       >
-        {image && <img src={image} />}
+        {display && <img src={display} style={{ maxHeight: "100px" }} />}
         <input
           className={styles.text}
           type="file"
@@ -107,25 +131,50 @@ const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
     </div>
   );
 };
-export default DisplayImage;
 
 interface NewTagFormProps {
   createForm: boolean;
   handleClose: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  newMarker: LatLngTuple | null;
 }
 
-const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
-  // const [location, setLocation] = useState("");
+const NewTagForm = ({
+  createForm,
+  handleClose,
+  newMarker,
+}: NewTagFormProps) => {
   const [song, setSong] = useState("");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const styles = useStyles();
 
+  useEffect(() => {
+    console.log("image changed: ", image);
+  }, [image]);
+
   const handleSubmit = async () => {
-    console.log(title, song, caption);
-    console.log(searchSong(song));
-    // Add fetch request here
+    const songUri = await searchSong(song);
+    const username = getToken("username");
+
+    const tagInfo = {
+      title: title,
+      region: "",
+      location: newMarker?.join(" "),
+      caption: caption,
+      song_uri: songUri,
+    };
+
+    const body = new FormData();
+    body.append("tagInf", JSON.stringify(tagInfo));
+    if (image) {
+      body.append("img", image);
+    }
+
+    fetch(`${api}publishTag/${username}`, {
+      method: "POST",
+      body: body,
+    });
   };
 
   return (

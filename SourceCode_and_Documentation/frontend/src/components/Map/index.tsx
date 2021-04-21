@@ -185,7 +185,11 @@ const Map = () => {
         setNewMarker={setNewMarker}
       />
       {createForm && (
-        <NewTagForm createForm={createForm} handleClose={handleClose} />
+        <NewTagForm
+          createForm={createForm}
+          handleClose={handleClose}
+          newMarker={newMarker}
+        />
       )}
     </>
   );

@@ -8,6 +8,7 @@ import { TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
 import { searchSong } from "../components/Spotify-Api/spotifyApi";
 import { useHistory } from "react-router-dom";
+import { api } from "../Helpers/api";
 // import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
 
 const tagjson: TagInfo[] = [
@@ -95,7 +96,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     checkLoggedIn();
-    // fetch("/viewTags").then((data) => console.log(data));
+    fetch(`${api}viewTags`).then((data) => console.log(data));
     const mark = tagjson.map((tag) => tag.coords);
     setMarkers(mark);
 

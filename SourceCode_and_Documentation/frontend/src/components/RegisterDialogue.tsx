@@ -120,21 +120,27 @@ export default function RegisterDialog() {
       console.log("Incorrect Input");
       return false;
     }
-    const body = JSON.stringify({
+    const body = {
       username: username,
-      email: email,
       password: password,
-    });
+    };
     console.log(body);
     const response = await fetch(`${api}registerUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: body,
+      body: JSON.stringify({ ...body, email: email }),
     });
     if (response.status === 200) {
       console.log("Registered user");
+      fetch(`${api}login`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...body }),
+      });
       storeToken("username", username);
       return true;
     } else {
