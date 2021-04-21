@@ -18,7 +18,7 @@ class Tags(Base):
     title = Column(String, nullable=False)
     region = Column(String, nullable=False)
     location = Column(String, nullable=False)
-    image = Column(Integer, nullable=False)
+    image = Column(Integer, default=-1)
     n_likes = Column(Integer, nullable=False, default=0)
     song_uri = Column(String)
     caption = Column(String, nullable=False)

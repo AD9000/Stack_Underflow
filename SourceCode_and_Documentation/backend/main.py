@@ -62,12 +62,11 @@ class UserLogin(BaseModel):
 
 
 class TagInfo(BaseModel):
-    user: str
     title: str
     region: str
     location: str
     caption: str
-    song: str  # url ?
+    song_uri: str
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -177,10 +176,10 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
 
 
 # Publish New Tag 
-@app.post("/publishTag/")
-async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+@app.post("/publishTag/{username}")
+async def publishTag(username: str, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     try:
-        user = db.query(Users).filter(Users.username == tagInf.user).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
@@ -198,16 +197,12 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
         except NoResultFound:
             break
 
-    tg.username = tagInf.user
+    tg.username = username
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
-    tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song = tagInf.song
-    #tg.time_made = datetime.now()
-    #tg.time_edited = tg.time_made
-    tg.image = -1 # -1 if image isn't uploaded
+    tg.song_uri = tagInf.song_uri
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -215,7 +210,6 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
         while os.path.exists(path):
             imageIndex += 1
             path = "Images/" + str(imageIndex)
-
         tg.image = imageIndex
         with open(path, "wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
