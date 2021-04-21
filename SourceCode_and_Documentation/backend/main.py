@@ -69,7 +69,6 @@ def get_db():
         db.close()
 
 # Homepage
-
 @app.get("/")
 async def root():
     # insert homepage info here
@@ -137,6 +136,8 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
     db.commit()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot open profile")
 
     return {
         "username": user.username,
@@ -145,9 +146,15 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
     }
 
 # Publish New Tag 
-# To-Do Do we need to add {username} to get the username of user logged in?
-@app.post("/publishTag")
+@app.post("/publishTag/")
 async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+    user = db.query(Users).filter(Users.username == tagInf.user).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
+
     tg = Tags()
     tg.id = 0
     while (True):
@@ -193,7 +200,6 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
     db.commit()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
     if user.logged_in == False:
         raise HTTPException(status_code=400, detail="User is offline")
     
@@ -202,13 +208,55 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Tag does not exist")
-
     return {"tag has been deleted successfully": None}        
 
 # Edit a tag
-# This thing may involve multiple steps...
+@app.post("/editTag/{username}/{tagID}")
+async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot publish tag")
+    if username != tagInf.user:
+        raise HTTPException(status_code=400, detail="cannot edit tag")
 
+    try:
+        tag = db.query(Tags).filter(Tags.tag_id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Tag does not exist")
 
+    if tag.title != tagInf.title:
+        setattr(tag, 'title', tagInf.title)
+        db.commit()
+    if tag.region != tagInf.region:
+        setattr(tag, 'region', tagInf.region)
+        db.commit()
+    if tag.location != tagInf.location:
+        setattr(tag, 'location', tagInf.location)
+        db.commit()
+    if tag.caption != tagInf.caption:
+        setattr(tag, 'caption', tagInf.caption)
+        db.commit()
+    if tag.song != tagInf.song:
+        setattr(tag, 'song', tagInf.song)
+        db.commit()
+    
+    if img:
+        # Save to image to folder in backend
+        imageIndex=0
+        path = "Images/" + str(imageIndex)
+        while (os.path.exists(path)):
+            imageIndex+=1
+            path = "Images/" + str(imageIndex)
+        setattr(tag, 'image', imageIndex)
+        with open(path, "wb") as buffer:
+            shutil.copyfileobj(img.file, buffer)
+        db.commit()
+      
+    return {"tag edited": tag.title}
 
 # Generate Random Tag
 @app.get("/generateRandomTag")
