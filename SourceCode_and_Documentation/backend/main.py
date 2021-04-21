@@ -162,7 +162,7 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
 @app.get("/myProfile/{username}")
 async def myProfile(username: str, db: Session = Depends(get_db)):
     try:
-        user = db.query(Users).filter(Users.username == login.username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
@@ -220,7 +220,6 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     db.add(tg)
     db.commit()
     return {"tag posted": tg.title}
-
 
 # Delete a tag
 @app.delete("/deleteTag/{username}/{tagID}")
