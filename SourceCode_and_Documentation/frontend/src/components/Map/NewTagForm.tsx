@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   blur: {
     backgroundColor: "rgb(255,255,255,0.3)",
+    "& .MuiDialog-paper": {
+      overflow: "hidden",
+    },
   },
   dialogContent: {
     display: "flex",
@@ -110,8 +113,8 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <div className={styles.grid}>
-            <h3 className={styles.text}>Location</h3>
-            <TextField
+            {/* <h3 className={styles.text}>Location</h3> */}
+            {/* <TextField
               autoFocus
               variant="outlined"
               margin="dense"
@@ -119,17 +122,8 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
               InputProps={{ className: styles.input }}
               placeholder="location"
               onChange={(e) => setLocation(e.target.value)}
-            />
-            <h3 className={styles.text}>Song</h3>
-            <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="song"
-              InputProps={{ className: styles.input }}
-              placeholder="Enter song name"
-              onChange={(e) => setSong(e.target.value)}
-            />
+            /> */}
+
             <h3 className={styles.text}>Title</h3>
             <TextField
               autoFocus
@@ -150,6 +144,16 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
               InputProps={{ className: styles.input }}
               placeholder="Enter your caption"
               onChange={(e) => setCaption(e.target.value)}
+            />
+            <h3 className={styles.text}>Song</h3>
+            <TextField
+              autoFocus
+              variant="outlined"
+              margin="dense"
+              id="song"
+              InputProps={{ className: styles.input }}
+              placeholder="Enter song name"
+              onChange={(e) => setSong(e.target.value)}
             />
           </div>
         </DialogContent>

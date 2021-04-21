@@ -36,7 +36,7 @@ interface CreateTagProps {
   setMarkersUpdated: Function;
 }
 const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
-  const { createTag, markers, setMarkers } = useContext(AppContext);
+  const { createTag } = useContext(AppContext);
   useEffect(() => {
     console.log("create tag update: ", createTag);
   }, [createTag]);
@@ -46,7 +46,6 @@ const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
       return;
     }
     const { lat, lng } = e.latlng;
-    // setMarkers([...markers, [lat, lng]]);
     setNewMarker([lat, lng]);
     setMarkersUpdated(true);
   });
@@ -57,7 +56,6 @@ const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
 const MaxBounds = () => {
   const map = useMapEvent("drag", () => {
     const bounds = map.options.maxBounds;
-    console.log(bounds);
     if (!bounds) {
       return;
     }
@@ -79,8 +77,6 @@ const getPosition = async () => {
 const useStyles = makeStyles((theme: Theme) => ({
   fullScreen: {
     height: "100%",
-    // marginTop: theme.spacing(5),
-    // marginBottom: theme.spacing(2),
   },
 }));
 
@@ -96,8 +92,8 @@ const MapWrapper = () => {
         zoomControl={false}
         minZoom={3}
         maxBounds={[
-          [-110, -200],
-          [110, 200],
+          [-130, -200],
+          [130, 200],
         ]}
         scrollWheelZoom={true}
       >
@@ -138,10 +134,10 @@ const Map = () => {
           return;
         }
         map.setView([pos.coords.latitude, pos.coords.longitude]);
-        console.log("setting bounds...");
+
         map.setMaxBounds([
-          [pos.coords.latitude - 110, pos.coords.longitude - 200],
-          [pos.coords.latitude + 110, pos.coords.longitude + 200],
+          [pos.coords.latitude - 130, pos.coords.longitude - 200],
+          [pos.coords.latitude + 130, pos.coords.longitude + 200],
         ]);
       } catch (err) {
         console.error(err);
@@ -182,7 +178,7 @@ const Map = () => {
       <Animation />
       <MaxBounds />
       <ZoomControl position="bottomleft" />
-      {/* <ZoomCheck /> */}
+
       <CreateTag
         setMarkersUpdated={setMarkersUpdated}
         setNewMarker={setNewMarker}
