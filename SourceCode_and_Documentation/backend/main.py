@@ -193,7 +193,7 @@ async def publishTag(
     img: UploadFile = File(None),
 ):
     try:
-        user = db.query(Users).filter(Users.username == tagInf.user).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
