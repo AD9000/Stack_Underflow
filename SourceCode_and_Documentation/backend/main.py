@@ -18,7 +18,9 @@ from datetime import datetime
 from starlette.responses import StreamingResponse
 
 # May need to import this library below, but right now, it isn't being used:
-# from sqlalchemy.orm.exc import MultipleResultsFound
+# from sqlalchemy.orm.exc import
+
+from imghdr import what
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -224,7 +226,7 @@ async def publishTag(
     if img:
         # Save to image to folder in backend
         imageIndex = 0
-        path = "Images/" + str(imageIndex)  # + img.filename.split(".")[-1]
+        path = "Images/" + str(imageIndex)
         while os.path.exists(path):
             imageIndex += 1
             path = "Images/" + str(imageIndex)
@@ -383,7 +385,11 @@ async def viewTags(db: Session = Depends(get_db)):
             t["edited"] = tag.time_edited
             t["username"] = tag.username
             if tag.image != -1:
-                t["image"] = FileResponse("Images/" + str(tag.image))
+                fname = "Images/" + str(tag.image)
+                ext = what(fname)
+                if not ext:
+                    continue
+                t["image"] = FileResponse(fname + "." + ext)
             tagList.append(t)
         db.commit()
 
