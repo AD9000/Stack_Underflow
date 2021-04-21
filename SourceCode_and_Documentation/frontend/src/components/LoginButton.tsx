@@ -93,7 +93,8 @@ export default function LoginButton() {
       const result = fetch(`${api}login`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': `${api}`
         },
         body: body
       }).then((data) => {
