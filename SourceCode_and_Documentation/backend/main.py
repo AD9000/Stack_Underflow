@@ -120,6 +120,7 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.refresh(register)
             return {"user has been successfully registered": userReg.username}
 
+
 # Log In
 @app.put("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
@@ -175,6 +176,7 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
         "email address": user.email,
         "password": user.password,
     }
+
 
 # Publish New Tag 
 @app.post("/publishTag/")
