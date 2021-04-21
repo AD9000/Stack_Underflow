@@ -121,7 +121,7 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.add(register)
             db.commit()
             db.refresh(register)
-            return register
+            return {"user has been successfully registered": userReg.username}
 
 # Log In
 @app.put("/login")
