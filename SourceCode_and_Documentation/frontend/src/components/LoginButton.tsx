@@ -96,13 +96,13 @@ export default function LoginButton() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: body,
       });
       console.log(result);
       // storeToken("username", username);
       // history.push("/home");
-    };
-  }
+    }
+  };
 
   return (
     <div>

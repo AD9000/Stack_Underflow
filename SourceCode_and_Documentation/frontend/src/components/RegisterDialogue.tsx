@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -97,6 +97,7 @@ export default function RegisterDialog() {
   const handleNext = () => {
     if (step === 1) {
       submitForm().then((success) => {
+        console.log(success);
         if (success) {
           setStep(step + 1);
         }
@@ -107,6 +108,7 @@ export default function RegisterDialog() {
   };
 
   const submitForm = async () => {
+    console.log(username, email, password, passwordConfirm);
     if (
       username.length === 0 ||
       email.length === 0 ||
@@ -122,15 +124,21 @@ export default function RegisterDialog() {
       email: email,
       password: password,
     });
-    const response = await fetch(`${api}register`, {
-      method: "PUT",
+    console.log(body);
+    const response = await fetch(`${api}registerUser`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body,
     });
-    console.log(response);
-    console.log(username, email, password, passwordConfirm);
+    if (response.status === 200) {
+      console.log("Registered user");
+      return true;
+    } else {
+      const data = await response.json();
+      console.log(data);
+    }
   };
 
   function Step1() {
@@ -159,7 +167,7 @@ export default function RegisterDialog() {
               margin="dense"
               id="username"
               InputProps={{ className: styles.input }}
-              placeholder="username"
+              // placeholder="username"
               onBlur={(e) => setUsername(e.target.value)}
             />
             <h3 style={{ marginRight: "1rem" }} className={styles.text}>
@@ -171,7 +179,7 @@ export default function RegisterDialog() {
               margin="dense"
               id="email"
               InputProps={{ className: styles.input }}
-              placeholder="email"
+              // placeholder="email"
               onBlur={(e) => setEmail(e.target.value)}
             />
             <h3 style={{ marginRight: "1rem" }} className={styles.text}>
@@ -183,7 +191,7 @@ export default function RegisterDialog() {
               margin="dense"
               id="password"
               InputProps={{ className: styles.input }}
-              placeholder="password"
+              // placeholder={password}
               onBlur={(e) => setPassword(e.target.value)}
               type="password"
             />
@@ -196,7 +204,7 @@ export default function RegisterDialog() {
               margin="dense"
               id="confirmPassword"
               InputProps={{ className: styles.input }}
-              placeholder="confirm password"
+              // placeholder="confirm password"
               onBlur={(e) => setPasswordConfirm(e.target.value)}
               type="password"
             />
