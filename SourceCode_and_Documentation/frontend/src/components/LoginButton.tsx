@@ -81,7 +81,7 @@ export default function LoginButton() {
     setOpen(false);
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (username && password) {
       const body = JSON.stringify({
         username: username,
@@ -91,23 +91,18 @@ export default function LoginButton() {
       console.log(body);
 
       console.log(`${api}login`);
-      const result = fetch(`${api}login`, {
+      const result = await fetch(`${api}login`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-      })
-        .then((data) => {
-          console.log(data);
-          storeToken("username", username);
-          history.push("/home");
-        })
-        .catch((err) => alert(err));
-    } else {
-      alert("Missing field");
-    }
-  };
+      });
+      console.log(result);
+      // storeToken("username", username);
+      // history.push("/home");
+    };
+  }
 
   return (
     <div>

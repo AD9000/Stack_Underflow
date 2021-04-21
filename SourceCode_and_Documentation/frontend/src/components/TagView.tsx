@@ -1,6 +1,8 @@
 import { Container, makeStyles, Theme, Typography } from "@material-ui/core";
-import React from "react";
+// import React, { useEffect, useState } from "react";
 import { tpp } from "./Interfaces";
+import MusicPlayer from "../components/Spotify-Api/MusicPlayer";
+// import { searchSong } from "../components/Spotify-Api/spotifyApi";
 
 // const randImgurl =
 //   "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
@@ -57,8 +59,24 @@ const useStyles = (imgurl: string) =>
     },
   }))();
 
-const TagView = ({ title, username, location, desc, imgurl, sstate }: tpp) => {
+const TagView = ({
+  title,
+  username,
+  location,
+  desc,
+  imgurl,
+  sstate,
+  songUri,
+}: tpp) => {
   const classes = useStyles(imgurl);
+  // const [songUri, setSongUri] = useState('');
+
+  // useEffect(() => {
+  //   searchSong('Lemonade').then(data => {
+  //     setSongUri(data);
+  //   })
+  // }, []);
+
   return (
     <Container className={classes.wrapper}>
       <div className={classes.cardi}>
@@ -68,6 +86,7 @@ const TagView = ({ title, username, location, desc, imgurl, sstate }: tpp) => {
           <div className={classes.textwrap}>
             <h2>{title}</h2>
             <h3>{location}</h3>
+            {songUri && <MusicPlayer songUri={songUri} />}
           </div>
         </div>
         <div className={classes.desc}>

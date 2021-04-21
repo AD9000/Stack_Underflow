@@ -14,7 +14,7 @@ export interface TagInfo {
   location: string;
   songName?: string;
   songArtist?: string;
-  songUrl?: string;
+  songUri?: string;
   desc: string;
 }
 

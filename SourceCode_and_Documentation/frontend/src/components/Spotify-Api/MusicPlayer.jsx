@@ -8,7 +8,7 @@ const MusicPlayer = ({ songUri }) => {
 
   return (    
     <Card>
-      <iframe src={url} width="300" height="300" allow="encrypted-media"></iframe>
+      <iframe src={url} width="300" height="80" allow="encrypted-media"></iframe>
     </Card>
   );
 }
