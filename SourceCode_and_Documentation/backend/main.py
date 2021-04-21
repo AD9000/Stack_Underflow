@@ -112,12 +112,7 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
         except NoResultFound:
-             register = Users(
-                username=userReg.username,
-                password=userReg.password,
-                email=userReg.email,
-                logged_in=True,
-            )
+            register = Users(username=userReg.username, password=userReg.password, email=userReg.email, logged_in=True)
             db.add(register)
             db.commit()
             db.refresh(register)
