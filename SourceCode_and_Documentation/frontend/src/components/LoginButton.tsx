@@ -79,9 +79,22 @@ export default function LoginButton() {
     setOpen(false);
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (email && password) {
-      history.push("home");
+      const body = {
+        username: email,
+        password: password
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/login", {
+        method: "PUT",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      console.log(response.status);
     } else {
       alert("Missing field");
     }
