@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
 import { HomeNav } from "../components/Navbar/HomeNav";
 import globe from "../assets/globe.png";
 import RegisterDialogue from "../components/RegisterDialogue";
-import { useHistory } from "react-router-dom"; 
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
   background: {
@@ -53,19 +53,31 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   link: {
     colour: "white",
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
 }));
 
 const HomePage = () => {
   const styles = useStyles();
   const history = useHistory();
-  const toAbout = () => history.push({
-    // Navigates to About page
-    pathname: '/about',
-    state: "home"
-  })
-  
+  const toAbout = () =>
+    history.push({
+      // Navigates to About page
+      pathname: "/about",
+      state: "home",
+    });
+
+  const checkLoggedIn = () => {
+    const isLoggedIn = localStorage.getItem("username");
+    if (isLoggedIn) {
+      history.push("/home");
+    }
+  };
+
+  useEffect(() => {
+    checkLoggedIn();
+  }, []);
+
   return (
     <div className={styles.background}>
       <HomeNav />
@@ -86,7 +98,11 @@ const HomePage = () => {
           </Typography>
           <div className={styles.horizontalFlex}>
             <RegisterDialogue />
-            <Button color="primary" className={styles.secondaryBtn} onClick={toAbout}>
+            <Button
+              color="primary"
+              className={styles.secondaryBtn}
+              onClick={toAbout}
+            >
               <b>More Info</b>
             </Button>
           </div>
