@@ -217,7 +217,7 @@ async def publishTag(
     tg.location = tagInf.location
     tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song = tagInf.song
+    tg.song_uri = tagInf.song_uri
     # tg.time_made = datetime.now()
     # tg.time_edited = tg.time_made
     tg.image = -1  # -1 if image isn't uploaded
