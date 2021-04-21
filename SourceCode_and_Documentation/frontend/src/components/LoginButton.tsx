@@ -82,19 +82,20 @@ export default function LoginButton() {
   };
 
   const handleSignIn = () => {
-    console.log(username, password)
     if (username && password) {
       const body = JSON.stringify({
         username: username,
         password: password
       })
+
+      console.log(body)
     
       console.log(`${api}login`)
       const result = fetch(`${api}login`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': `${api}`
+          /* 'Access-Control-Allow-Origin': `${api}` */
         },
         body: body
       }).then((data) => {
