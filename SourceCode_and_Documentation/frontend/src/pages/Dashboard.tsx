@@ -23,6 +23,7 @@ const tagjson: TagInfo[] = [
     song: {
       name: "i lived",
       album: "I Lived - One Republic",
+      uri: "spotify:track:3IQF4xCQUPicbA4hWfTxPo",
     },
   },
   {
@@ -38,6 +39,7 @@ const tagjson: TagInfo[] = [
     song: {
       name: "the end of the road",
       album: "The End of the Road - Boyz II Men",
+      uri: "spotify:track:794U3ttupMPMfgZo0CT6NF",
     },
   },
   {
@@ -53,6 +55,7 @@ const tagjson: TagInfo[] = [
     song: {
       name: "happy",
       album: "Happy - Pharell Williams",
+      uri: "spotify:track:60nZcImufyMA1MKQY3dcCH",
     },
   },
   {
