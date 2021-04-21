@@ -184,6 +184,7 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
         "password": user.password,
     }
 
+
 # Publish New Tag
 @app.post("/publishTag/{username}")
 async def publishTag(
@@ -218,9 +219,9 @@ async def publishTag(
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song = tagInf.song
-    #tg.time_made = datetime.now()
-    #tg.time_edited = tg.time_made
-    tg.image = -1 # -1 if image isn't uploaded
+    # tg.time_made = datetime.now()
+    # tg.time_edited = tg.time_made
+    tg.image = -1  # -1 if image isn't uploaded
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -370,7 +371,7 @@ async def viewTags(db: Session = Depends(get_db)):
     try:
         allTags = db.query(Tags).all()
         tagList = []
- 
+
         for tag in allTags:
             t = []
             t.append(tag.title)
@@ -383,20 +384,16 @@ async def viewTags(db: Session = Depends(get_db)):
             t.append(tag.time_edited)
             t.append(tag.username)
             if tag.image != -1:
-                t.append(FileResponse("Images/" + tag.image))
-            else: 
+                t.append(FileResponse("Images/" + str(tag.image)))
+            else:
                 t.append("no image")
             tagList.append(t)
         db.commit()
 
     except NoResultFound:
-        raise HTTPException(status_code=404, detail="no tags stored") 
+        raise HTTPException(status_code=404, detail="no tags stored")
 
-    return {
-        "tag list": tagList
-    }
-
-
+    return {"tag list": tagList}
 
 
 # View All My Tags
