@@ -7,9 +7,9 @@ const MusicPlayer = ({ songUri }) => {
   const url = `https://open.spotify.com/embed/track/${uri}`;
 
   return (    
-    <Card>
-      <iframe src={url} width="300" height="80" allow="encrypted-media"></iframe>
-    </Card>
+    <div style={{backgroundColor:  "#405B99", border: '1px solid  #405B99', margin: 0}}>
+      <iframe style={{backgroundColor:  "#405B99"}} src={url} width="280" height="70" allow="encrypted-media"></iframe>
+    </div>
   );
 }
 export default MusicPlayer
