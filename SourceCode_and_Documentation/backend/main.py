@@ -62,11 +62,12 @@ class UserLogin(BaseModel):
 
 
 class TagInfo(BaseModel):
+    user: str
     title: str
     region: str
     location: str
     caption: str
-    song_uri: str
+    song: str  # url ?
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -176,10 +177,10 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
 
 
 # Publish New Tag 
-@app.post("/publishTag/{username}")
-async def publishTag(username: str, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+@app.post("/publishTag/")
+async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     try:
-        user = db.query(Users).filter(Users.username == username).one()
+        user = db.query(Users).filter(Users.username == tagInf.user).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
@@ -197,12 +198,16 @@ async def publishTag(username: str, tagInf : TagInfo = Body(...), db: Session = 
         except NoResultFound:
             break
 
-    tg.username = username
+    tg.username = tagInf.user
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
+    tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song_uri = tagInf.song_uri
+    tg.song = tagInf.song
+    #tg.time_made = datetime.now()
+    #tg.time_edited = tg.time_made
+    tg.image = -1 # -1 if image isn't uploaded
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -210,6 +215,7 @@ async def publishTag(username: str, tagInf : TagInfo = Body(...), db: Session = 
         while os.path.exists(path):
             imageIndex += 1
             path = "Images/" + str(imageIndex)
+
         tg.image = imageIndex
         with open(path, "wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
@@ -338,11 +344,34 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
 @app.get("/viewTags")
 async def viewTags(db: Session = Depends(get_db)):
     try:
-        allTags = db.query(Tags).filter(Tags.id == tagID).all()
+        allTags = db.query(Tags).all()
+        tagList = []
+ 
+        for tag in allTags:
+            t = []
+            t.append(tag.title)
+            t.append(tag.region)
+            t.append(tag.location)
+            t.append(tag.n_likes)
+            t.append(tag.song_uri)
+            t.append(tag.caption)
+            t.append(tag.time_posted)
+            t.append(tag.time_edited)
+            t.append(tag.username)
+            if tag.image != -1:
+                t.append(FileResponse("Images/" + tag.image))
+            else: 
+                t.append("no image")
+            tagList.append(t)
+            print(tag)
         db.commit()
+
     except NoResultFound:
-        raise HTTPException(status_code=404, detail="no tags stored")  
-    return allTags
+        raise HTTPException(status_code=404, detail="no tags stored") 
+
+    return {
+        "tag list": tagList
+    }
 
 # View All My Tags
 @app.get("/myTags/{username}")
