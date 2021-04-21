@@ -224,7 +224,7 @@ async def publishTag(
     if img:
         # Save to image to folder in backend
         imageIndex = 0
-        path = "Images/" + str(imageIndex)
+        path = "Images/" + str(imageIndex)  # + img.filename.split(".")[-1]
         while os.path.exists(path):
             imageIndex += 1
             path = "Images/" + str(imageIndex)
@@ -372,20 +372,18 @@ async def viewTags(db: Session = Depends(get_db)):
         tagList = []
 
         for tag in allTags:
-            t = []
-            t.append(tag.title)
-            t.append(tag.region)
-            t.append(tag.location)
-            t.append(tag.n_likes)
-            t.append(tag.song_uri)
-            t.append(tag.caption)
-            t.append(tag.time_posted)
-            t.append(tag.time_edited)
-            t.append(tag.username)
+            t = dict([])
+            t["title"] = tag.title
+            t["region"] = tag.region
+            t["location"] = tag.location
+            t["n_likes"] = tag.n_likes
+            t["song_uri"] = tag.song_uri
+            t["caption"] = tag.caption
+            t["posted"] = tag.time_posted
+            t["edited"] = tag.time_edited
+            t["username"] = tag.username
             if tag.image != -1:
-                t.append(FileResponse("Images/" + str(tag.image)))
-            else:
-                t.append("no image")
+                t["image"] = FileResponse("Images/" + str(tag.image))
             tagList.append(t)
         db.commit()
 
