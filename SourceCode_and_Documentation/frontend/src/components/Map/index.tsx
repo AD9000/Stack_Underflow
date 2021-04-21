@@ -124,6 +124,7 @@ const Map = () => {
     setCreateForm(false);
     setNewMarker(null);
     setCreateTag(false);
+    setMarkersUpdated(false);
   };
 
   useEffect(() => {

@@ -71,20 +71,59 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+interface DisplayImageProps {
+  image: string | null;
+  setImage: Function;
+}
+const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
+  const styles = useStyles();
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      let img = event.target.files[0];
+      setImage(URL.createObjectURL(img));
+    }
+  };
+
+  return (
+    <div style={{ display: "flex" }}>
+      <h3 className={styles.text}>Image</h3>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "1rem",
+          paddingLeft: "3.5rem",
+        }}
+      >
+        {image && <img src={image} />}
+        <input
+          className={styles.text}
+          type="file"
+          name="myImage"
+          onChange={handleImageChange}
+        />
+      </div>
+    </div>
+  );
+};
+export default DisplayImage;
+
 interface NewTagFormProps {
   createForm: boolean;
   handleClose: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
 }
 
 const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
-  const [location, setLocation] = useState("");
+  // const [location, setLocation] = useState("");
   const [song, setSong] = useState("");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const styles = useStyles();
 
   const handleSubmit = async () => {
-    console.log(title, location, song, caption);
+    console.log(title, song, caption);
     console.log(searchSong(song));
     // Add fetch request here
   };
@@ -156,18 +195,22 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
               onChange={(e) => setSong(e.target.value)}
             />
           </div>
+          <DisplayImage image={image} setImage={setImage} />
         </DialogContent>
         <DialogActions
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Button
+          {/* <Button
             variant="contained"
             style={{ background: "black" }}
             color="primary"
             className={styles.btn}
+            component="label"
           >
             <b style={{ fontSize: "large" }}>Insert Photo</b>
-          </Button>
+            <input type="file" hidden />
+          </Button> */}
+
           <Button
             variant="contained"
             style={{ background: "black" }}
