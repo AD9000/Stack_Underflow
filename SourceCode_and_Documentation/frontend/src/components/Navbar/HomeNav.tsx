@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
     textTransform: "none",
     margin: "0.5rem",
-    fontFamily: "farro"
+    fontFamily: "farro",
   },
   popover: {
     marginTop: theme.spacing(2),
@@ -40,25 +40,18 @@ const HomeNav = () => {
   ) => {
     click.preventDefault();
 
-    // opening a random tag
-    // TODO: Make API call here
-    const newTag: TagInfo = {
-      region: "Australia",
-      username: "Anonymous",
-      title: "Beautiful Experience!",
-      imgurl: reefPic,
-      location: "Queensland",
-      songName: "Water",
-      songArtist: "Kanye West",
-      desc: `Being underwater is such a surreal experience, one that I
-      can't compare to anything else! My favourite lyric in this
-      song is "Clean us like the rain in spring... Let Your light
-      reflect on me" Can't wait until I see the ocean again!!!`,
-    };
-
-    setAnchorEl(click.currentTarget);
-    setRandomTag(newTag);
+    fetch("/generateRandomTag")
+      .then((res) => {
+        // console.log("status: ", res.status);
+        // // data.text().then((t) => console.log(t));
+        return res.json();
+      })
+      .then((tagInfo) => {
+        setRandomTag(tagInfo);
+        setAnchorEl(click.currentTarget);
+      });
   };
+
   const handleClose = () => {
     setRandomTag(null);
     setAnchorEl(null);

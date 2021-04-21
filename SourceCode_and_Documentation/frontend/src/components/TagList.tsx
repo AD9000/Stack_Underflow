@@ -1,44 +1,8 @@
 import React, { useContext } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { TagView } from "./TagView";
-import { TagPrevProps, tpp } from "./Interfaces";
+import { tpp } from "./Interfaces";
 import { AppContext } from "./Context";
-
-const tagjson: TagPrevProps[] = [
-  {
-    title: "The Ocean's Beauty",
-    location: "Tasmania",
-    album: "I Lived - One Republic",
-    desc: `I'm proud to be from New Zealand! My favourite Maori saying is: 
-      'Ka Kite Ano', meaning "See you tomorrow". However, my number one
-      favourite thing about my culture is that there is a legend for everthing. 
-      Mountains? Yep. Rivers? Yep. Lakes? Yep! I hope you get a chance to visit
-      my beautiful country, I guarantee you'll fall in love!`,
-    imgurl: "https://ak5.picdn.net/shutterstock/videos/1014147545/thumb/1.jpg",
-  },
-  {
-    title: "Memories Stay",
-    location: "UNSW",
-    album: "The End of the Road - Boyz II Men",
-    desc: `I can't believe graduation is here... One day I'm praying to finish
-      uni already and the next I can't bring myself to leave the campus. I'm
-      grateful for the way my university experience has shaped me, and I'm glad
-      I decided not to drop out in first year.`,
-    imgurl:
-      "https://www.universitiesaustralia.edu.au/wp-content/uploads/2019/05/UNSW-2020_Web-2-1333x1000.jpg",
-  },
-  {
-    title: "Thrill of My Life",
-    location: "Luna Park",
-    album: "Happy - Pharell Williams",
-    desc: `So many fond memories visiting Luna Park as a little boy. My mum would hug me
-      every time we went on the ferris wheel because I was scared (even though it was my 
-      favourite ride!!) She was so patient with me when I couldn't decide on an ice cream 
-      I miss her every day.`,
-    imgurl:
-      "https://media-cdn.tripadvisor.com/media/photo-s/1a/70/42/90/luna-park-sydney.jpg",
-  },
-];
 
 const useStyles = makeStyles((theme: Theme) => ({
   // "@global": {
@@ -79,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: "10px",
     backgroundColor: "#405B99",
     paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -123,7 +88,7 @@ const handleClick = ({ index, sstate }: clickProps) => {
 };
 
 const TagPreview = (props: tpp) => {
-  const { title, location, album, desc, imgurl, index, sstate } = props;
+  const { title, location, song, desc, imgurl, index, sstate } = props;
   const classes = previewStyles(imgurl);
   return (
     <Container
@@ -138,7 +103,7 @@ const TagPreview = (props: tpp) => {
           <h4>
             {title}-{location}
           </h4>
-          <p style={{ textDecoration: "underline" }}>{album}</p>
+          <p style={{ textDecoration: "underline" }}>{song?.album}</p>
           <p>{desc.slice(0, 70)}...</p>
         </div>
       </div>
@@ -147,13 +112,13 @@ const TagPreview = (props: tpp) => {
 };
 
 const TagList = () => {
-  const { tagIndex, setTagIndex } = useContext(AppContext);
+  const { tagIndex, setTagIndex, tags } = useContext(AppContext);
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
       {tagIndex === -1 ? (
         <div className={classes.taglist}>
-          {tagjson.map((tj, index) => (
+          {tags.map((tj, index) => (
             <TagPreview
               key={index}
               {...tj}
@@ -163,7 +128,7 @@ const TagList = () => {
           ))}
         </div>
       ) : (
-        <TagView {...tagjson[tagIndex]} index={-1} sstate={setTagIndex} />
+        <TagView {...tags[tagIndex]} />
       )}
     </div>
   );

@@ -11,15 +11,18 @@ export interface TagInfo {
   username?: string;
   imgurl: string;
   title: string;
-  location: string;
-  songName?: string;
-  songArtist?: string;
-  songUri?: string;
+  location?: string;
+  song?: {
+    artist?: string;
+    album?: string;
+    name?: string;
+    uri?: string;
+  };
+  coords: [number, number];
   desc: string;
 }
 
 export interface tpp extends TagInfo {
-  album: string;
   index: number;
   sstate: Function;
 }

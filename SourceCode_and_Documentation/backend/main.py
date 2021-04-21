@@ -46,9 +46,7 @@ class UserBase(BaseModel):
 
 
 class UserRegister(UserBase):
-    username: str
     password: str
-    email: str
 
 
 class User(UserBase):
@@ -69,7 +67,7 @@ class TagInfo(BaseModel):
     region: str
     location: str
     caption: str
-    song_uri: str
+    song: str  # url ?
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -180,7 +178,7 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
 
 # Publish New Tag 
 @app.post("/publishTag/")
-async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: Optional[UploadFile] = File(None)):
+async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     try:
         user = db.query(Users).filter(Users.username == tagInf.user).one()
         db.commit()
@@ -206,7 +204,9 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.location = tagInf.location
     tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song_uri = tagInf.song_uri
+    tg.song = tagInf.song
+    #tg.time_made = datetime.now()
+    #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
     if img:
         # Save to image to folder in backend
