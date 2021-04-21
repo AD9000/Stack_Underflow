@@ -308,6 +308,17 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
         "caption" : tag.caption
     }
 
+# View All Published Tags
+@app.get("/viewTags")
+async def viewTags(db: Session = Depends(get_db)):
+    try:
+        allTags = db.query(Tags).filter(Tags.id == tagID).all()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="no tags stored")
+        
+    return allTags
+
 # View All My Tags
 @app.get("/myTags/{username}")
 async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
