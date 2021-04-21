@@ -205,8 +205,6 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song_uri = tagInf.song_uri
-    #tg.time_made = datetime.now()
-    #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
     if img:
         # Save to image to folder in backend
@@ -572,16 +570,14 @@ async def commentOnTag(
 
 # Delete comment
 
-# Delete User
+# Delete User - Not for functionality of website, just for deleting Users
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    # Not for functionality of website, just for deleting Users
     if db.query(Users).filter(Users.username == userReg.username).delete():
         db.commit()
         return {"user deleted": userReg.username}
     else:
         raise HTTPException(status_code=404, detail="User does not exist")
-
 
 # Change Username
 @app.put("/changeUsername/{username}")
@@ -592,11 +588,10 @@ async def changeUsername(username: str, newUsername: str, db: Session = Depends(
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="No user found with such username")
-
-    # update username
+    # Check if new username is empty string
     if newUsername == None:
         raise HTTPException(status_code=400, detail="New username cannot be empty")
-
+    # Update username
     setattr(user, "username", newUsername)
     db.commit()
     return {"username updated": newUsername}
@@ -612,20 +607,20 @@ async def changePassword(
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="No user found with such username")
-
+    # Check if new password is the old password
     if user.password == newPassword:
         raise HTTPException(
             status_code=400, detail="Password has already been used for this account"
         )
-
+    # Check if password is empty string
     if newPassword == None:
         raise HTTPException(status_code=400, detail="New password cannot be empty")
-
+    # Update password for user
     setattr(user, "password", newPassword)
     db.commit()
     return {"password has been updated": newPassword}
 
-
+"""
 # Link to Spotify
 @app.get("/linkSpotify/{username}")
 async def linkSpotify(username: str, db: Session = Depends(get_db)):
@@ -633,12 +628,11 @@ async def linkSpotify(username: str, db: Session = Depends(get_db)):
 
     # Add Spotify token to user
     return {"Spotify account has been linked to user successfully": username}
-
+"""
 
 # View notifications in profile
 
 # TO DO:
-# - Link to Spotify
 # - View notifications
 # - Edit comment
 # - Delete comment
