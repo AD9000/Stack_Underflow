@@ -19,18 +19,10 @@ const App = () => {
         <Route path="/about" component={AboutPage} />
         <Route path="/profile" component={Profile} />
         <Route path="/settings" component={Settings} />
-        <Route path="*" component={HomePage} />        
+        <Route path="*" component={HomePage} />
       </Switch>
     </Router>
   );
 };
-
-// const App = () => {
-//   return (
-//     <div style={{ height: "100%" }}>
-//       <MapWrapper />
-//     </div>
-//   );
-// };
 
 export default App;
