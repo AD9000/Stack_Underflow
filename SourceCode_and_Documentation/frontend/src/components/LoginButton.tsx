@@ -11,8 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { useHistory } from "react-router";
-import { api } from '../Helpers/api';
-import { storeToken } from '../Helpers/token';
+import { api } from "../Helpers/api";
+import { storeToken } from "../Helpers/token";
 
 const useStyles = makeStyles({
   buttonText: {
@@ -85,31 +85,29 @@ export default function LoginButton() {
     if (username && password) {
       const body = JSON.stringify({
         username: username,
-        password: password
-      })
+        password: password,
+      });
 
-      console.log(body)
-    
-      console.log(`${api}login`)
+      console.log(body);
+
+      console.log(`${api}login`);
       const result = fetch(`${api}login`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          /* 'Access-Control-Allow-Origin': `${api}` */
+          "Content-Type": "application/json",
         },
-        body: body
-      }).then((data) => {
-        console.log(data);
-        storeToken('username', username)
-        history.push('/home');
+        body: JSON.stringify(body),
       })
-      .catch((err) => alert(err)) 
+        .then((data) => {
+          console.log(data);
+          storeToken("username", username);
+          history.push("/home");
+        })
+        .catch((err) => alert(err));
     } else {
       alert("Missing field");
     }
   };
-
-  
 
   return (
     <div>
