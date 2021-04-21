@@ -79,15 +79,17 @@ async def root():
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     register = Users(username=userReg.username, password=userReg.password, email=userReg.email, logged_in=True)
     # Check if username is used
-    user = db.query(Users).filter(Users.username == userReg.username).first()
-    db.commit()
-    if user:
-        raise HTTPException(status_code=400, detail="Username already exists")
+    try:
+        user = db.query(Users).filter(Users.username == userReg.username).first()
+        db.commit()
+        if user:
+            raise HTTPException(status_code=400, detail="Username already exists")
     # Check if email is used
-    user = db.query(Users).filter(Users.email == userReg.email).first()
-    db.commit()
-    if user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    try:
+        user = db.query(Users).filter(Users.email == userReg.email).first()
+        db.commit()
+        if user:
+            raise HTTPException(status_code=400, detail="Email already registered")
 
     db.add(register)
     db.commit()
@@ -97,14 +99,16 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
 # Log In
 @app.put("/login")
 async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.username == login.username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == login.username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     
-    user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=400, detail="Incorrect password")
     
     if user.logged_in == True:
@@ -117,9 +121,10 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
 #Log Out
 @app.put("/logout/{username}")
 async def loginUser(username: str, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.username == username).one()
-    db.commit()
-    if not user:
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
     
     if user.logged_in == False:
