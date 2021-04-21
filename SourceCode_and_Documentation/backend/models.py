@@ -34,3 +34,10 @@ class Comments(Base):
     content = Column(String, nullable=False)
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
 
+class Notifications(Base):
+    __tablename__ = "notifications"
+    user = Column(String, ForeignKey('users.username'), primary_key=True, nullable=False)
+    content = Column(String, nullable=False)
+    time_received = Column(DateTime(timezone=True), server_default=func.now())
+
+
