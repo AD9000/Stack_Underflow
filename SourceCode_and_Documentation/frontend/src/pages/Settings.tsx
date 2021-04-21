@@ -50,7 +50,7 @@ const Settings = () => {
       <Container className={classes.page}>
       <h1>Account Settings</h1>
       <div>
-          <h2>Light / Dark Mode</h2>
+          <h3>Light / Dark Mode</h3>
           <div className={classes.side}>
             <Switch
                 checked={mode}
@@ -62,7 +62,7 @@ const Settings = () => {
           </div>
        
         <div className={classes.side}>
-          <h2>Language:</h2>
+          <h3>Language:</h3>
           <Select
             labelId="Language"
             id="languageSelect"
