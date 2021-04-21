@@ -211,7 +211,7 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
     return {"tag has been deleted successfully": None}        
 
 # Edit a tag
-@app.post("/editTag/{username}/{tagID}")
+@app.put("/editTag/{username}/{tagID}")
 async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
     user = db.query(Users).filter(Users.username == username).one()
     db.commit()
@@ -311,6 +311,12 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
 # View All My Tags
 @app.get("/myTags/{username}")
 async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
+    user = db.query(Users).filter(Users.username == username).one()
+    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User offline, cannot view tags")
     try:
         tagsByUser = db.query(Tags).filter(Tags.username == username).all()
         db.commit()
@@ -332,7 +338,6 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
             "song" : tag.song,
             "caption" : tag.caption
         })
-
     return tags
 
 # Filter for certain posts to appear using keyword
