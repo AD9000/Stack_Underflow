@@ -100,12 +100,6 @@ async def root():
 # Sign Up
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    register = Users(
-        username=userReg.username,
-        password=userReg.password,
-        email=userReg.email,
-        logged_in=True,
-    )
     # Check if username is used
     try:
         user = db.query(Users).filter(Users.username == userReg.username).first()
@@ -118,6 +112,12 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
         except NoResultFound:
+             register = Users(
+                username=userReg.username,
+                password=userReg.password,
+                email=userReg.email,
+                logged_in=True,
+            )
             db.add(register)
             db.commit()
             db.refresh(register)
