@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     wordWrap: "break-word",
   },
   taglist: {
+    flex: 1,
     overflowY: "scroll",
     borderRadius: "10px",
     backgroundColor: "#405B99",
@@ -51,6 +52,7 @@ const previewStyles = (imgurl: string) =>
   makeStyles((theme: Theme) => ({
     cardi: {
       display: "flex",
+      flex: 1,
       color: "white",
       overflow: "hidden",
       paddingTop: theme.spacing(2),
@@ -62,9 +64,10 @@ const previewStyles = (imgurl: string) =>
       alignItems: "center",
       borderRadius: "10px",
       marginRight: theme.spacing(2),
-      backgroundImage: `url(${imgurl})`,
+      backgroundImage: imgurl ? `url(${imgurl})` : "none",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
+      backgroundColor: "white",
     },
     textwrap: {
       display: "flex",

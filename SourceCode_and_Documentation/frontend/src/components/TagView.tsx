@@ -15,6 +15,7 @@ const useStyles = (imgurl: string) =>
     },
     cardi: {
       display: "flex",
+      flex: 1,
       height: "90%",
       flexDirection: "column",
       padding: theme.spacing(2),
@@ -23,9 +24,10 @@ const useStyles = (imgurl: string) =>
       color: "white",
     },
     cimagewrap: {
-      backgroundImage: `url(${imgurl})`,
+      backgroundImage: imgurl ? `url(${imgurl})` : "none",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
+      backgroundColor: "white",
       height: "100%",
       flex: 1,
       marginLeft: theme.spacing(2),
