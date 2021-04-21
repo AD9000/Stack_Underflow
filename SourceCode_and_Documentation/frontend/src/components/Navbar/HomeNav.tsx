@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Button, Theme, makeStyles, Popover } from "@material-ui/core";
 import LoginButton from "../LoginButton";
 import reefPic from "../../assets/reef.jpeg";
-import { TagInfo, tpp } from "../Interfaces";
+import { BackendTag, TagInfo, tpp } from "../Interfaces";
 import { TagView } from "../TagView";
 import { NavBar } from "./NavBar";
+import { api } from "../../Helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
@@ -29,6 +30,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const fileToDataUrl = (file: any) => {
+  const validFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+  const valid = validFileTypes.find((type) => type === file.media_type);
+  // Bad data, let's walk away.
+  // console.log(file);
+  if (!valid) {
+    throw Error("provided file is not a png, jpg or jpeg image.");
+  }
+
+  const reader = new FileReader();
+  const dataUrlPromise = new Promise((resolve, reject) => {
+    reader.onerror = reject;
+    reader.onload = () => resolve(reader.result);
+  });
+  reader.readAsDataURL(file);
+  return dataUrlPromise;
+};
+
 const HomeNav = () => {
   const [randomTag, setRandomTag] = useState<TagInfo | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -40,15 +59,36 @@ const HomeNav = () => {
   ) => {
     click.preventDefault();
 
-    fetch("/generateRandomTag")
+    fetch(`${api}generateRandomTag`)
       .then((res) => {
-        // console.log("status: ", res.status);
-        // // data.text().then((t) => console.log(t));
         return res.json();
       })
-      .then((tagInfo) => {
-        setRandomTag(tagInfo);
+      .then((tagInfo: BackendTag) => {
+        const {
+          region,
+          username,
+          image,
+          title,
+          location,
+          song_uri,
+          caption,
+        } = tagInfo;
+        const cod = location.split(" ").map((l) => Number(l));
+        console.log(image);
+        // fileToDataUrl(image).then((res) => {
+        const tInf: TagInfo = {
+          region,
+          username,
+          title,
+          location,
+          imgurl: "",
+          song: { uri: song_uri },
+          desc: caption,
+          coords: [cod[0], cod[1]],
+        };
+        setRandomTag(tInf);
         setAnchorEl(click.currentTarget);
+        // });
       });
   };
 

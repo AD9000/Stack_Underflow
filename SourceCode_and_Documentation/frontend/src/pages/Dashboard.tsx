@@ -4,7 +4,7 @@ import { AppContext } from "../components/Context";
 import { MapWrapper } from "../components/Map";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar";
-import { TagInfo } from "../components/Interfaces";
+import { BackendTag, TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
 import { searchSong } from "../components/Spotify-Api/spotifyApi";
 import { useHistory } from "react-router-dom";
@@ -96,11 +96,50 @@ const Dashboard = () => {
 
   useEffect(() => {
     checkLoggedIn();
-    fetch(`${api}viewTags`).then((data) => console.log(data));
-    const mark = tagjson.map((tag) => tag.coords);
-    setMarkers(mark);
+    fetch(`${api}viewTags`)
+      .then((res) => res.json())
+      .then((data) => {
+        const updated: TagInfo[] = data["tag list"]
+          .map((tagInfo: BackendTag) => {
+            const {
+              region,
+              username,
+              image,
+              title,
+              location,
+              song_uri,
+              caption,
+            } = tagInfo;
+            const cod = location.split(" ").map((l) => Number(l));
+            console.log(image);
+            // fetch(`${api}image?p=${image.path}`).then((res) =>
+            //   console.log(res)
+            // );
+            if (!cod || isNaN(cod[0]) || isNaN(cod?.[1])) {
+              return null;
+            }
+            const tInf: TagInfo = {
+              region,
+              username,
+              title,
+              imgurl: "",
+              song: { uri: song_uri },
+              desc: caption,
+              coords: [cod[0], cod[1]],
+            };
+            return tInf;
+          })
+          .filter((ele: TagInfo | null) => ele);
 
-    setTags(tagjson);
+        const mark = updated.map((tag) => tag.coords);
+        setMarkers(mark);
+
+        setTags(updated);
+      });
+    // const mark = tagjson.map((tag) => tag.coords);
+    // setMarkers(mark);
+
+    // setTags(tagjson);
 
     // tagjson.map((tag) => {
     //   searchSong(tag?.song?.name).then((res) => {

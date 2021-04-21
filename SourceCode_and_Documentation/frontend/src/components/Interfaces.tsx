@@ -22,6 +22,16 @@ export interface TagInfo {
   desc: string;
 }
 
+export interface BackendTag {
+  region: string;
+  username: string;
+  image: any;
+  title: string;
+  location: string;
+  song_uri: string;
+  caption: string;
+}
+
 export interface tpp extends TagInfo {
   index: number;
   sstate: Function;

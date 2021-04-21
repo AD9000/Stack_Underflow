@@ -1,4 +1,9 @@
-import React, { useState, MouseEventHandler, useEffect } from "react";
+import React, {
+  useState,
+  MouseEventHandler,
+  useEffect,
+  useContext,
+} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -16,6 +21,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import { getToken } from "../../Helpers/token";
 import { LatLngTuple } from "leaflet";
 import { api } from "../../Helpers/api";
+import { AppContext } from "../Context";
+import { TagInfo } from "../Interfaces";
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
@@ -74,28 +81,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const fileToDataUrl = (file: Blob) => {
-  const validFileTypes = ["image/jpeg", "image/png", "image/jpg"];
-  const valid = validFileTypes.find((type) => type === file.type);
-  // Bad data, let's walk away.
-  if (!valid) {
-    throw Error("provided file is not a png, jpg or jpeg image.");
-  }
-
-  const reader = new FileReader();
-  const dataUrlPromise = new Promise((resolve, reject) => {
-    reader.onerror = reject;
-    reader.onload = () => resolve(reader.result);
-  });
-  reader.readAsDataURL(file);
-  return dataUrlPromise;
-};
-
 interface DisplayImageProps {
   image: string | null;
   setImage: Function;
+  setImageUrl: Function;
 }
-const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
+const DisplayImage = ({ image, setImage, setImageUrl }: DisplayImageProps) => {
   const [display, setDisplay] = useState<string | null>(null);
   const styles = useStyles();
   const handleImageChange = async (
@@ -105,6 +96,7 @@ const DisplayImage = ({ image, setImage }: DisplayImageProps) => {
       let img = event.target.files[0];
       setDisplay(URL.createObjectURL(img));
       setImage(event.target.files[0]);
+      setImageUrl(URL.createObjectURL(img));
     }
   };
 
@@ -136,26 +128,44 @@ interface NewTagFormProps {
   createForm: boolean;
   handleClose: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   newMarker: LatLngTuple | null;
+  hhClose: Function;
 }
 
 const NewTagForm = ({
   createForm,
   handleClose,
   newMarker,
+  hhClose,
 }: NewTagFormProps) => {
   const [song, setSong] = useState("");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const styles = useStyles();
+
+  const { markers, setMarkers, tags, setTags } = useContext(AppContext);
 
   useEffect(() => {
     console.log("image changed: ", image);
   }, [image]);
 
   const handleSubmit = async () => {
+    if (!newMarker) {
+      return;
+    }
+
     const songUri = await searchSong(song);
     const username = getToken("username");
+
+    const tf: TagInfo = {
+      title,
+      region: "",
+      coords: newMarker,
+      imgurl: imageUrl || "",
+      desc: caption,
+      song: { uri: songUri },
+    };
 
     const tagInfo = {
       title: title,
@@ -164,6 +174,9 @@ const NewTagForm = ({
       caption: caption,
       song_uri: songUri,
     };
+
+    console.log(JSON.stringify(tagInfo));
+    console.log(image);
 
     const body = new FormData();
     body.append("tagInf", JSON.stringify(tagInfo));
@@ -174,6 +187,11 @@ const NewTagForm = ({
     fetch(`${api}publishTag/${username}`, {
       method: "POST",
       body: body,
+    }).then(() => {
+      setMarkers([...markers, newMarker]);
+      setTags([...tags, tf]);
+
+      hhClose();
     });
   };
 
@@ -244,7 +262,11 @@ const NewTagForm = ({
               onChange={(e) => setSong(e.target.value)}
             />
           </div>
-          <DisplayImage image={image} setImage={setImage} />
+          <DisplayImage
+            image={image}
+            setImage={setImage}
+            setImageUrl={setImageUrl}
+          />
         </DialogContent>
         <DialogActions
           style={{ display: "flex", justifyContent: "space-between" }}

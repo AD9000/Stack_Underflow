@@ -189,6 +189,7 @@ const Map = () => {
           createForm={createForm}
           handleClose={handleClose}
           newMarker={newMarker}
+          hhClose={handleClose}
         />
       )}
     </>
