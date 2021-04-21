@@ -98,7 +98,12 @@ export default function LoginButton() {
         },
         body: body,
       });
-      console.log(result);
+      if (result.status === 200) {
+        history.push("/home");
+      } else {
+        const r = await result.json();
+        console.log(r.detail);
+      }
       // storeToken("username", username);
       // history.push("/home");
     }
