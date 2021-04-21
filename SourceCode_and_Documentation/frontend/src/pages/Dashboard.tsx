@@ -78,6 +78,18 @@ const tagjson: TagInfo[] = [
   },
 ];
 
+const randImages = [
+  "https://images.unsplash.com/photo-1617206685118-9cfb15f14502?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1616793957360-e2736dffebbe?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1616442590959-bdb89b230371?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1617824496324-37ca560972d8?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1616266731149-a14dfe330c81?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1617054192912-a865f7dff87a?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1618191635333-7a6dfce0f9fb?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1617214922084-5db8d3c3df5a?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+  "https://images.unsplash.com/photo-1617440168943-92f66e14cd6c?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max",
+];
+
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [tagIndex, setTagIndex] = useState(-1);
@@ -100,7 +112,7 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((data) => {
         const updated: TagInfo[] = data["tag list"]
-          .map((tagInfo: BackendTag) => {
+          .map((tagInfo: BackendTag, index: number) => {
             const {
               region,
               username,
@@ -122,7 +134,10 @@ const Dashboard = () => {
               region,
               username,
               title,
-              imgurl: "",
+              imgurl:
+                index < randImages.length
+                  ? randImages[index]
+                  : "https://source.unsplash.com/random",
               song: { uri: song_uri },
               desc: caption,
               coords: [cod[0], cod[1]],

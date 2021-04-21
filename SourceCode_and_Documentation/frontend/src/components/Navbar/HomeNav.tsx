@@ -81,7 +81,7 @@ const HomeNav = () => {
           username,
           title,
           location,
-          imgurl: "",
+          imgurl: "https://source.unsplash.com/random",
           song: { uri: song_uri },
           desc: caption,
           coords: [cod[0], cod[1]],
