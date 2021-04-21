@@ -14,6 +14,7 @@ import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import SpotifyLogin from "./Spotify-Api/SpotifyLogin";
 import { api } from "../Helpers/api";
+import { storeToken } from "../Helpers/token";
 
 const useStyles = makeStyles((theme: Theme) => ({
   btn: {
@@ -134,6 +135,7 @@ export default function RegisterDialog() {
     });
     if (response.status === 200) {
       console.log("Registered user");
+      storeToken("username", username);
       return true;
     } else {
       const data = await response.json();
