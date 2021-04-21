@@ -18,9 +18,10 @@ import {
   DialogActions,
   TextField,
   Button,
+  makeStyles,
+  Theme,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { makeStyles } from "@material-ui/styles";
 import { AppContext } from "./Context";
 import { searchSong } from "./Spotify-Api/spotifyApi";
 
@@ -52,7 +53,7 @@ const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
     console.log("create tag update: ", createTag);
   }, [createTag]);
 
-  const map = useMapEvent("click", (e) => {
+  useMapEvent("click", (e) => {
     if (!createTag) {
       return;
     }
@@ -67,10 +68,12 @@ const CreateTag = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
 
 const MaxBounds = () => {
   const map = useMapEvent("drag", () => {
-    if (!map.options.maxBounds) {
+    const bounds = map.options.maxBounds;
+    console.log(bounds);
+    if (!bounds) {
       return;
     }
-    map.panInsideBounds(map.options.maxBounds, { animate: false });
+    map.panInsideBounds(bounds, { animate: false });
   });
 
   return null;
@@ -85,11 +88,13 @@ const getPosition = async () => {
   );
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   fullScreen: {
     height: "100%",
+    // marginTop: theme.spacing(5),
+    // marginBottom: theme.spacing(2),
   },
-});
+}));
 
 const MapWrapper = () => {
   const classes = useStyles();
@@ -107,7 +112,6 @@ const MapWrapper = () => {
           [110, 200],
         ]}
         scrollWheelZoom={true}
-        // worldCopyJump={true}
       >
         <Map />
       </MapContainer>
@@ -115,7 +119,7 @@ const MapWrapper = () => {
   );
 };
 
-const useStylesMap = makeStyles({
+const useStylesMap = makeStyles((theme: Theme) => ({
   buttonText: {
     textTransform: "none",
     fontFamily: "farro",
@@ -164,17 +168,20 @@ const useStylesMap = makeStyles({
     top: "0px",
     left: "300px",
   },
-});
+  zoomControl: {
+    margin: theme.spacing(2),
+  },
+}));
 
 const Map = () => {
   const map = useMap();
   const [markersUpdated, setMarkersUpdated] = useState(false);
   const [newMarker, setNewMarker] = useState<LatLngTuple | null>(null);
   const [createForm, setCreateForm] = useState(false);
-  const [location, setLocation] = useState('');
-  const [song, setSong] = useState('');
-  const [title, setTitle] = useState('');
-  const [caption, setCaption] = useState('');
+  const [location, setLocation] = useState("");
+  const [song, setSong] = useState("");
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
   const { markers, createTag, setCreateTag, setOpen, setTagIndex } = useContext(
     AppContext
   );
@@ -199,7 +206,7 @@ const Map = () => {
     console.log(title, location, song, caption);
     console.log(searchSong(song));
     // Add fetch request here
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -209,6 +216,11 @@ const Map = () => {
           return;
         }
         map.setView([pos.coords.latitude, pos.coords.longitude]);
+        console.log("setting bounds...");
+        map.setMaxBounds([
+          [pos.coords.latitude - 110, pos.coords.longitude - 200],
+          [pos.coords.latitude + 110, pos.coords.longitude + 200],
+        ]);
       } catch (err) {
         console.error(err);
       }
