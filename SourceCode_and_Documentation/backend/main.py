@@ -66,7 +66,7 @@ class TagInfo(BaseModel):
     region: str
     location: str
     caption: str
-    song: str  # url ?
+    song_uri: str  # url ?
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
