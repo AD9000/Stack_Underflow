@@ -12,7 +12,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
-import SpotifyLogin from './Spotify-Api/SpotifyLogin';
+import SpotifyLogin from "./Spotify-Api/SpotifyLogin";
+import { api } from "../Helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   btn: {
@@ -77,9 +78,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 // Change name
 export default function RegisterDialog() {
   const [open, setOpen] = React.useState(false);
-  //const [linkSpotfy, setLinkSpotify] = React.useState(false);
   const [step, setStep] = React.useState(1);
-  const [success, setSuccess] = React.useState(false);
+  // const [success, setSuccess] = React.useState(false);
+  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [passwordConfirm, setPasswordConfirm] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,21 +92,45 @@ export default function RegisterDialog() {
   const handleClose = () => {
     setOpen(false);
     setStep(1);
-    setSuccess(false);
   };
 
   const handleNext = () => {
-    //setLinkSpotify(true);
-    setStep(step + 1);
+    if (step === 1) {
+      submitForm().then((success) => {
+        if (success) {
+          setStep(step + 1);
+        }
+      });
+    } else {
+      setStep(step + 1);
+    }
   };
 
-  /* const handleBack = () => {
-    //setLinkSpotify(false);
-    setStep(step-1);
-  } */
-
-  const handleSuccess = () => {
-    setSuccess(true);
+  const submitForm = async () => {
+    if (
+      username.length === 0 ||
+      email.length === 0 ||
+      password.length === 0 ||
+      passwordConfirm.length === 0 ||
+      password !== passwordConfirm
+    ) {
+      console.log("Incorrect Input");
+      return false;
+    }
+    const body = JSON.stringify({
+      username: username,
+      email: email,
+      password: password,
+    });
+    const response = await fetch(`${api}register`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    console.log(response);
+    console.log(username, email, password, passwordConfirm);
   };
 
   function Step1() {
@@ -126,52 +154,50 @@ export default function RegisterDialog() {
               Username
             </h3>
             <TextField
-              autoFocus
+              // autoFocus
               variant="outlined"
               margin="dense"
               id="username"
               InputProps={{ className: styles.input }}
               placeholder="username"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
-              type="text"
+              onBlur={(e) => setUsername(e.target.value)}
             />
             <h3 style={{ marginRight: "1rem" }} className={styles.text}>
               Email
             </h3>
             <TextField
-              autoFocus
+              // autoFocus
               variant="outlined"
               margin="dense"
               id="email"
               InputProps={{ className: styles.input }}
               placeholder="email"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
-              type="email"
+              onBlur={(e) => setEmail(e.target.value)}
             />
             <h3 style={{ marginRight: "1rem" }} className={styles.text}>
               Password
             </h3>
             <TextField
-              autoFocus
+              // autoFocus
               variant="outlined"
               margin="dense"
               id="password"
               InputProps={{ className: styles.input }}
               placeholder="password"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
+              onBlur={(e) => setPassword(e.target.value)}
               type="password"
             />
             <h3 style={{ marginRight: "1rem" }} className={styles.text}>
               Confirm Password
             </h3>
             <TextField
-              autoFocus
+              // autoFocus
               variant="outlined"
               margin="dense"
               id="confirmPassword"
               InputProps={{ className: styles.input }}
               placeholder="confirm password"
-              /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
+              onBlur={(e) => setPasswordConfirm(e.target.value)}
               type="password"
             />
           </div>
@@ -222,7 +248,7 @@ export default function RegisterDialog() {
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <Button variant="contained" color="primary" className={styles.btn}>
-            <SpotifyLogin />                        
+            <SpotifyLogin />
           </Button>
         </DialogContent>
         <DialogActions>
