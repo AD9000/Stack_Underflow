@@ -6,7 +6,6 @@ from database import Base
 
 class Users(Base):
     __tablename__ = "users"
-    #id = Column(String, primary_key=True, unique=True, nullable=False)
     username = Column(String, primary_key=True, unique=True, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
@@ -22,18 +21,12 @@ class Tags(Base):
     location = Column(String, nullable=False)
     image = Column(Integer, default=-1)
     n_likes = Column(Integer, nullable=False, default=0)
-    song = Column(String, nullable=False)
+    song_uri = Column(String)
     caption = Column(String, nullable=False)
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
     time_edited = Column(DateTime(timezone=True), onupdate=func.now())
     username = Column(String, ForeignKey('users.username'))
     comments = relationship("Comments")
-
-class Songs(Base):
-    __tablename__ = "songs"
-    link = Column(String, primary_key = True, nullable=False)
-    title = Column(String, nullable=False)
-    artist = Column(String, nullable=False)
 
 class Comments(Base):
     __tablename__ = "comments"
@@ -42,3 +35,8 @@ class Comments(Base):
     content = Column(String, nullable=False)
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
 
+class Notifications(Base):
+    __tablename__ = "notification"
+    user = Column(String, ForeignKey('users.username'), primary_key=True, nullable=False)
+    text = Column(String, nullable=False)
+    time_received = Column(DateTime(timezone=True), server_default=func.now())

@@ -4,7 +4,7 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags, Songs, Comments
+from models import Users, Tags, Comments, Notifications
 from typing import Optional, List
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body, HTTPException
 from fastapi.responses import FileResponse
@@ -67,7 +67,7 @@ class TagInfo(BaseModel):
     region: str
     location: str
     caption: str
-    song: str  # url ?
+    songUri: str
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -81,7 +81,6 @@ class TagInfo(BaseModel):
             return cls(**json.loads(value))
         return value
 
-
 def get_db():
     try:
         db = SessionLocal()
@@ -89,23 +88,15 @@ def get_db():
     finally:
         db.close()
 
-
 # Homepage
 @app.get("/")
 async def root():
     # insert homepage info here
     return {"message": "Hello World"}
 
-
 # Sign Up
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    register = Users(
-        username=userReg.username,
-        password=userReg.password,
-        email=userReg.email,
-        logged_in=True,
-    )
     # Check if username is used
     try:
         user = db.query(Users).filter(Users.username == userReg.username).first()
@@ -118,6 +109,12 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
         except NoResultFound:
+            register = Users(
+                username=userReg.username,
+                password=userReg.password,
+                email=userReg.email,
+                logged_in=True,
+            )
             db.add(register)
             db.commit()
             db.refresh(register)
