@@ -13,28 +13,28 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import PersonIcon from "@material-ui/icons/Person";
 import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import LocationOnIcon from "@material-ui/icons/LocationOn";
 import { Link, useHistory } from "react-router-dom";
 import { CreateTag } from "../CreateTag";
 import { NavBar } from "./NavBar";
 import { getToken } from "../../Helpers/token";
-
+import { api } from "../../Helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
     color: "white",
     fontFamily: "farro",
-    '&:hover': {
+    "&:hover": {
       background: "rgba(255,255,255,0.2)",
-   }
+    },
   },
   settings: {
     paddingLeft: theme.spacing(1),
     fontSize: "3.5rem",
     color: "#C4C4C4",
-    '&:hover': {
+    "&:hover": {
       background: "rgba(255,255,255,0.2)",
-   }
+    },
   },
   popover: {
     marginTop: theme.spacing(2),
@@ -57,16 +57,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     textDecoration: "none",
   },
   hover: {
-    '&:hover': {
+    "&:hover": {
       background: "rgba(255,255,255,0.2)",
-   },
-   display: 'flex',
-   padding: '10px',
-   borderRadius: '3px'
+    },
+    display: "flex",
+    padding: "10px",
+    borderRadius: "3px",
   },
   menu: {
-    margin: '2rem 0 0 0'
-  }
+    margin: "2rem 0 0 0",
+  },
 }));
 
 const DashboardNav = () => {
@@ -91,38 +91,60 @@ const DashboardNav = () => {
     setSettingsAnchor(null);
   };
 
-  const handleLogOut = () => {
-    history.push("/");
+  const handleLogOut = async () => {
+    const username = localStorage.getItem("username");
+    const body = { username: username };
+    const response = await fetch(`${api}logout/${username}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (response.status === 200) {
+      localStorage.removeItem("username");
+      history.push("/");
+    } else {
+      const data = await response.json();
+      console.log("Error logging out:", data);
+    }
   };
 
-  function toPage (path: string, state: string) {
+  function toPage(path: string, state: string) {
     history.push({
       // Navigates to About page
       pathname: `/${path}`,
-      state: state
-    })
+      state: state,
+    });
     return;
   }
 
-  const username = getToken('username') || 'user';
+  const username = getToken("username") || "user";
 
   const classes = useStyles();
   return (
     <NavBar title={"DISCOVER. PLAY."}>
       <ButtonGroup className={classes.btn}>
-        <Button onClick={() => toPage('about', 'dashboard')} className={classes.whiteText}>
-            <h4>About</h4>
+        <Button
+          onClick={() => toPage("about", "dashboard")}
+          className={classes.whiteText}
+        >
+          <h4>About</h4>
         </Button>
-        <Button onClick={() => toPage('help', 'dashboard')} className={classes.whiteText}>
-            <h4>Help</h4>
+        <Button
+          onClick={() => toPage("help", "dashboard")}
+          className={classes.whiteText}
+        >
+          <h4>Help</h4>
         </Button>
       </ButtonGroup>
       <CreateTag />
 
       <div style={{ flex: 1 }}></div>
       <Button className={classes.btn} onClick={handleClickUser}>
-        <AccountCircleIcon fontSize="large" style={{margin: 0}}/>
-        <div  className={classes.hover}>
+        <AccountCircleIcon fontSize="large" style={{ margin: 0 }} />
+        <div className={classes.hover}>
           {username}
           <ArrowDropDownIcon />
         </div>
@@ -135,15 +157,15 @@ const DashboardNav = () => {
         onClose={handleClose}
         className={classes.menu}
       >
-        <MenuItem onClick={() => toPage('profile','user')}>
+        <MenuItem onClick={() => toPage("profile", "user")}>
           <PersonIcon />
           My Profile
         </MenuItem>
-        <MenuItem onClick={() => toPage('profile','notifications')}>
+        <MenuItem onClick={() => toPage("profile", "notifications")}>
           <PriorityHighIcon />
           Notifications
         </MenuItem>
-        <MenuItem onClick={() => toPage('profile','tags')}>
+        <MenuItem onClick={() => toPage("profile", "tags")}>
           <LocationOnIcon />
           My Tags
         </MenuItem>
@@ -151,7 +173,6 @@ const DashboardNav = () => {
       <Button onClick={handleClickSettings} className={classes.settings}>
         <SettingsIcon />
       </Button>
-
 
       <Menu
         id="settingsMenu"
@@ -161,7 +182,7 @@ const DashboardNav = () => {
         onClose={handleClose}
         className={classes.menu}
       >
-        <MenuItem onClick={() => toPage('settings','')}>
+        <MenuItem onClick={() => toPage("settings", "")}>
           <SettingsIcon />
           Account Settings
         </MenuItem>
