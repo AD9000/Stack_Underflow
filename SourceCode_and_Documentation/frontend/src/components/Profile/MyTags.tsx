@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, makeStyles } from '@material-ui/core';
 import { api } from '../../Helpers/api';
-
+import { getToken } from '../../Helpers/token';
 const useStyles = makeStyles({
   page: {
     color: 'white',
@@ -12,9 +12,10 @@ const useStyles = makeStyles({
 const MyTags = () => {
   const classes = useStyles();
   const [userTags, setUserTags] = React.useState('No tags found. Try posting one!');
+  const username = getToken('username');
 
-  const tags = async () => {
-    const result = await fetch(`${api}myTags/usertest`, {
+  const fetchTags = async () => {
+    const result = await fetch(`${api}myTags/${username}`, {
       method: 'GET',
     });
     console.log(result);
@@ -27,7 +28,7 @@ const MyTags = () => {
       setUserTags('No tags found. Try posting one!');
     }
   }
-  tags();
+  fetchTags();
 
 
   return (
