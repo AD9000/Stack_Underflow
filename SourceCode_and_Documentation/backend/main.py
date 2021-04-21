@@ -62,7 +62,6 @@ class UserLogin(BaseModel):
 
 
 class TagInfo(BaseModel):
-    user: str
     title: str
     region: str
     location: str
@@ -212,7 +211,7 @@ async def publishTag(
         except NoResultFound:
             break
 
-    tg.username = tagInf.user
+    tg.username = username
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
