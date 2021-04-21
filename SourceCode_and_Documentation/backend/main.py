@@ -69,7 +69,7 @@ class TagInfo(BaseModel):
     region: str
     location: str
     caption: str
-    song: str  # url ?
+    song_uri: str
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -204,7 +204,7 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
     tg.location = tagInf.location
     tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song = tagInf.song
+    tg.song_uri = tagInf.song_uri
     #tg.time_made = datetime.now()
     #tg.time_edited = tg.time_made
     tg.image = -1 # -1 if image isn't uploaded
