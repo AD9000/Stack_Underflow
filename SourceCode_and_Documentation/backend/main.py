@@ -102,13 +102,13 @@ async def root():
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     # Check if username is used
     try:
-        user = db.query(Users).filter(Users.username == userReg.username).first()
+        user = db.query(Users).filter(Users.username == userReg.username).one()
         db.commit()
         raise HTTPException(status_code=400, detail="Username already exists")
     except NoResultFound:
         # Check if email is used
         try:
-            user = db.query(Users).filter(Users.email == userReg.email).first()
+            user = db.query(Users).filter(Users.email == userReg.email).one()
             db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
         except NoResultFound:
