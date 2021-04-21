@@ -17,6 +17,8 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { Link, useHistory } from "react-router-dom";
 import { CreateTag } from "../CreateTag";
 import { NavBar } from "./NavBar";
+import { getToken } from "../../Helpers/token";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
@@ -102,7 +104,7 @@ const DashboardNav = () => {
     return;
   }
 
-  let username = "username";
+  const username = getToken('username') || 'user';
 
   const classes = useStyles();
   return (

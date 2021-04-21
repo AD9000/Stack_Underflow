@@ -44,3 +44,7 @@ body,
     transform: rotate(360deg);
   }
 }
+
+.leaflet-control {
+  margin: 2.5rem 1.5rem !important;
+}

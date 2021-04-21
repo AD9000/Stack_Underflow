@@ -11,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { useHistory } from "react-router";
+import { api } from "../Helpers/api";
+import { storeToken } from "../Helpers/token";
 
 const useStyles = makeStyles({
   buttonText: {
@@ -66,7 +68,7 @@ const useStyles = makeStyles({
 export default function LoginButton() {
   const styles = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   let history = useHistory();
@@ -79,22 +81,29 @@ export default function LoginButton() {
     setOpen(false);
   };
 
-  const handleSignIn = async () => {
-    if (email && password) {
-      const body = {
-        username: email,
-        password: password
-      }
+  const handleSignIn = () => {
+    if (username && password) {
+      const body = JSON.stringify({
+        username: username,
+        password: password,
+      });
 
-      const response = await fetch("http://127.0.0.1:8000/login", {
+      console.log(body);
+
+      console.log(`${api}login`);
+      const result = fetch(`${api}login`, {
         method: "PUT",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       })
-      console.log(response.status);
+        .then((data) => {
+          console.log(data);
+          storeToken("username", username);
+          history.push("/home");
+        })
+        .catch((err) => alert(err));
     } else {
       alert("Missing field");
     }
@@ -134,7 +143,7 @@ export default function LoginButton() {
           <DialogContent className={styles.dialogContent}>
             <div className={styles.grid}>
               <h3 style={{ marginRight: "1rem" }} className={styles.text}>
-                Email
+                Username
               </h3>
               <TextField
                 autoFocus
@@ -142,16 +151,15 @@ export default function LoginButton() {
                 margin="dense"
                 id="email"
                 InputProps={{ className: styles.input }}
-                placeholder="email"
-                onBlur={(e) => setEmail(e.target.value)}
+                placeholder="username"
+                onBlur={(e) => setUsername(e.target.value)}
                 /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
-                type="email"
+                type="text"
               />
               <h3 style={{ marginRight: "1rem" }} className={styles.text}>
                 Confirm Password
               </h3>
               <TextField
-                autoFocus
                 variant="outlined"
                 margin="dense"
                 id="password"
