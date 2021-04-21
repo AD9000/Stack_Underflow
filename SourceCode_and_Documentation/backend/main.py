@@ -4,7 +4,7 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags, Songs, Comments
+from models import Users, Tags, Comments, Notifications
 from typing import Optional, List
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body, HTTPException
 from fastapi.responses import FileResponse
