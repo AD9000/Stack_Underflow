@@ -29,6 +29,7 @@ const useStyles = (imgurl: string) =>
       backgroundSize: "cover",
       backgroundColor: "white",
       // height: "100px",
+      minHeight: "180px",
       flex: 1,
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
