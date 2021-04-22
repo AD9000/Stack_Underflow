@@ -21,7 +21,7 @@ const tagjson: TagInfo[] = [
       Mountains? Yep. Rivers? Yep. Lakes? Yep! I hope you get a chance to visit
       my beautiful country, I guarantee you'll fall in love!`,
     imgurl: "https://ak5.picdn.net/shutterstock/videos/1014147545/thumb/1.jpg",
-    coords: [-33.86785, 151.20732],
+    coords: [-43.52565, 172.639847],
     song: {
       name: "i lived",
       album: "I Lived - One Republic",
@@ -37,7 +37,8 @@ const tagjson: TagInfo[] = [
       I decided not to drop out in first year.`,
     imgurl:
       "https://www.universitiesaustralia.edu.au/wp-content/uploads/2019/05/UNSW-2020_Web-2-1333x1000.jpg",
-    coords: [-43.52565, 172.639847],
+
+    coords: [-33.86785, 151.20732],
     song: {
       name: "the end of the road",
       album: "The End of the Road - Boyz II Men",
@@ -151,7 +152,7 @@ const Dashboard = () => {
         mark.push(...tagjson.map((e) => e.coords));
         setMarkers(mark);
 
-        setTags([...tagjson, ...updated]);
+        setTags([...updated, ...tagjson]);
       });
     // const mark = tagjson.map((tag) => tag.coords);
     // setMarkers(mark);
