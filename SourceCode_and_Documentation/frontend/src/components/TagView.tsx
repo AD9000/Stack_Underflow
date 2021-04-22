@@ -24,11 +24,11 @@ const useStyles = (imgurl: string) =>
       color: "white",
     },
     cimagewrap: {
-      backgroundImage: imgurl ? `url(${imgurl})` : "none",
+      backgroundImage: `url(${imgurl})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundColor: "white",
-      height: "100%",
+      // height: "100px",
       flex: 1,
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
@@ -70,6 +70,7 @@ const TagView = ({
   song,
 }: TagInfo) => {
   const classes = useStyles(imgurl);
+  // console.log(imgurl);
   // const [songUri, setSongUri] = useState('');
 
   // useEffect(() => {
