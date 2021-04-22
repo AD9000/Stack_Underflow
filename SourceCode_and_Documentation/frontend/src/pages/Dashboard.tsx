@@ -95,7 +95,7 @@ const Dashboard = () => {
   const [tagIndex, setTagIndex] = useState(-1);
   const [markers, setMarkers] = useState<LatLngTuple[]>([]);
   const [createTag, setCreateTag] = useState(false);
-  const [tags, setTags] = useState<TagInfo[]>([]);
+  const [tags, setTags] = useState<TagInfo[]>(tagjson);
 
   const history = useHistory();
 
@@ -107,6 +107,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    console.log(tags);
     checkLoggedIn();
     fetch(`${api}viewTags`)
       .then((res) => res.json())
@@ -147,9 +148,10 @@ const Dashboard = () => {
           .filter((ele: TagInfo | null) => ele);
 
         const mark = updated.map((tag) => tag.coords);
+        mark.push(...tagjson.map((e) => e.coords));
         setMarkers(mark);
 
-        setTags(updated);
+        setTags([...tagjson, ...updated]);
       });
     // const mark = tagjson.map((tag) => tag.coords);
     // setMarkers(mark);
