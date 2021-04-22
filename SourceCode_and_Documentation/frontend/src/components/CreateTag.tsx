@@ -76,7 +76,7 @@ const CreateTag = () => {
     <div>
       <Button
         variant="contained"
-        color="primary"
+        color={createTag ? "secondary" : "primary"}
         className={styles.buttonText}
         onClick={handleClickOpen}
       >
