@@ -368,34 +368,34 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
 # View All Published Tags
 @app.get("/viewTags")
 async def viewTags(db: Session = Depends(get_db)):
-    allTags = []
     try:
         allTags = db.query(Tags).all()
+        db.commit()
         tagList = []
-
         for tag in allTags:
-            t = dict([])
-            t["title"] = tag.title
-            t["region"] = tag.region
-            t["location"] = tag.location
-            t["n_likes"] = tag.n_likes
-            t["song_uri"] = tag.song_uri
-            t["caption"] = tag.caption
-            t["posted"] = tag.time_posted
-            t["edited"] = tag.time_edited
-            t["username"] = tag.username
+            imgpath = tag.image
             if tag.image != -1:
                 fname = "Images/" + str(tag.image)
                 ext = what(fname)
                 if not ext:
                     continue
-                t["image"] = FileResponse(fname + "." + ext)
+                imgpath = FileResponse(fname + "." + ext)
+            
+            t = {
+                "title": tag.title,
+                "region": tag.region,
+                "location": tag.location,
+                "image": imgpath,
+                "n_likes": tag.n_likes,
+                "song_uri": tag.song_uri,
+                "caption": tag.caption,
+                "posted": tag.time_posted,
+                "edited": tag.time_edited,
+                "username": tag.username
+            }
             tagList.append(t)
-        db.commit()
-
     except NoResultFound:
         raise HTTPException(status_code=404, detail="no tags stored")
-
     return {"tag list": tagList}
 
 
