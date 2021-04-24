@@ -1,12 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
-import {
-  Container,
-  makeStyles,
-  Switch,
-  Select,
-  MenuItem,
-} from "@material-ui/core";
+import { Container, makeStyles, Switch } from "@material-ui/core";
 
 const useStyles = makeStyles({
   backgroundDark: {
@@ -30,14 +24,18 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * Settings Page: Lets the user manage preferences
+ * At the moment, only support changing to light mode
+ * @returns JSX.Element
+ */
 const Settings = () => {
   const classes = useStyles();
-  const [mode, setMode] = React.useState(false);
-  const [modeTitle, setModeTitle] = React.useState("Dark");
-  const [bg, setBg] = React.useState(classes.backgroundDark);
-  const [language, setLanguage] = React.useState("English");
+  const [mode, setMode] = useState(false);
+  const [modeTitle, setModeTitle] = useState("Dark");
+  const [bg, setBg] = useState(classes.backgroundDark);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = () => {
     setMode(!mode);
     if (mode) {
       setModeTitle("Dark");
@@ -62,20 +60,6 @@ const Settings = () => {
               color="primary"
             />
             <p>{modeTitle}</p>
-          </div>
-
-          <div className={classes.side}>
-            <h3>Language:</h3>
-            <Select
-              labelId="Language"
-              id="languageSelect"
-              value={language}
-              className={classes.select}
-            >
-              <MenuItem value={10}>English</MenuItem>
-              <MenuItem value={20}>French</MenuItem>
-              <MenuItem value={30}>German</MenuItem>
-            </Select>
           </div>
         </div>
       </Container>

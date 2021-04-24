@@ -10,11 +10,9 @@ import { Typography, Theme } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
-import Alert from "@material-ui/lab/Alert";
-import { Link } from "react-router-dom";
-import SpotifyLogin from "./Spotify-Api/SpotifyLogin";
+import { SpotifyLogin } from "./Spotify-Api/SpotifyLogin";
 import { api } from "../helpers/api";
-import { storeToken } from "../helpers/token";
+import { storeToken } from "helpers/token";
 
 const useStyles = makeStyles((theme: Theme) => ({
   btn: {

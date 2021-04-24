@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, makeStyles } from "@material-ui/core";
-import { getToken } from "../../helpers/token";
-import { api } from "../../helpers/api";
+import { getToken } from "helpers/token";
+import { api } from "helpers/api";
 
 const useStyles = makeStyles({
   page: {

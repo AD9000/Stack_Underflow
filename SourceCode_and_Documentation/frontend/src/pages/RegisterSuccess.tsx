@@ -1,4 +1,4 @@
-// import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { handleRedirect } from "../components/Spotify-Api/spotifyApi";
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 });
 
 // Change name
-export default function RegisterSuccess() {
+const RegisterSuccess = () => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -32,7 +32,9 @@ export default function RegisterSuccess() {
   };
 
   // Removes code from url, and uses it to fetch access/refresh tokens
-  handleRedirect();
+  useEffect(() => {
+    handleRedirect();
+  }, []);
 
   return (
     <div className={classes.background}>
@@ -50,6 +52,6 @@ export default function RegisterSuccess() {
       </Container>
     </div>
   );
-}
+};
 
 export { RegisterSuccess };

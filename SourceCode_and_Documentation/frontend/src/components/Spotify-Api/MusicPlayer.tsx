@@ -14,6 +14,7 @@ const MusicPlayer = ({ songUri }: MusicPlayerProps) => {
         backgroundColor: "#405B99",
         border: "1px solid  #405B99",
         margin: 0,
+        padding: 0,
       }}
     >
       <iframe

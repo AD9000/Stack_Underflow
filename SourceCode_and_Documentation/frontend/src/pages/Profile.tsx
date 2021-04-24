@@ -1,10 +1,9 @@
 import React from "react";
-import { DashboardNav } from "../components/Navbar/DashboardNav";
+import { DashboardNav } from "components/Navbar/DashboardNav";
 import { makeStyles } from "@material-ui/styles";
 import { useLocation } from "react-router-dom";
-import { MyProfile } from "../components/Profile/MyProfile";
-import { MyTags } from "../components/Profile/MyTags";
-import { Notifications } from "../components/Profile/Notifications";
+import { MyProfile } from "components/Profile/MyProfile";
+import { MyTags } from "components/Profile/MyTags";
 import { Container } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -29,7 +28,6 @@ const Profile = () => {
       <DashboardNav />
       <Container className={classes.content}>
         {state === "user" && <MyProfile />}
-        {state === "notifications" && <Notifications />}
         {state === "tags" && <MyTags />}
       </Container>
     </div>

@@ -1,18 +1,20 @@
-// import React from 'react'
-import { makeStyles, Theme } from "@material-ui/core";
+import React from "react";
+import { makeStyles } from "@material-ui/core";
 import "@fontsource/farro";
-import { requestAuthorization } from './spotifyApi';
+import { requestAuthorization } from "./spotifyApi";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
   btn: {
-    color: 'white'
+    color: "white",
   },
-}));
+});
 
 const AUTH_URL = requestAuthorization();
 
-// Handles the Login Spotify button
-export default function LoginSpotify() {
+/**
+ * Handles the Login Spotify button
+ */
+const SpotifyLogin = () => {
   const styles = useStyles();
 
   return (
@@ -21,5 +23,7 @@ export default function LoginSpotify() {
         <b>Log In with Spotify</b>
       </a>
     </div>
-  )
-}
+  );
+};
+
+export { SpotifyLogin };

@@ -13,12 +13,6 @@ const drawerWidth = 540;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    menuButton: {
-      marginRight: 36,
-    },
-    hide: {
-      display: "none",
-    },
     drawer: {
       height: "60%",
       position: "absolute",
@@ -67,6 +61,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+/**
+ * Renders the sidebar on the dashboard which opens, closes
+ * and displays the taglist
+ * @returns JSX.Element: The sidebar
+ */
 const Sidebar = () => {
   const classes = useStyles();
   const { open, setOpen, tagIndex, setTagIndex } = useContext(AppContext);

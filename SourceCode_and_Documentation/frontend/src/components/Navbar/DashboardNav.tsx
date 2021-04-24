@@ -161,10 +161,6 @@ const DashboardNav = () => {
           <PersonIcon />
           My Profile
         </MenuItem>
-        <MenuItem onClick={() => toPage("profile", "notifications")}>
-          <PriorityHighIcon />
-          Notifications
-        </MenuItem>
         <MenuItem onClick={() => toPage("profile", "tags")}>
           <LocationOnIcon />
           My Tags

@@ -16,13 +16,13 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-import { searchSong } from "../../Spotify-Api/spotifyApi";
+import { searchSong } from "components/Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
 import { getToken } from "helpers/token";
 import { LatLngTuple } from "leaflet";
-import { api } from "../../../helpers/api";
-import { AppContext } from "../../Context";
-import { TagInfo } from "../../Interfaces";
+import { api } from "helpers/api";
+import { AppContext } from "components/Context";
+import { TagInfo } from "components/Interfaces";
 import { ImageUpload } from "./ImagePreview";
 
 const useStyles = makeStyles((theme: Theme) => ({

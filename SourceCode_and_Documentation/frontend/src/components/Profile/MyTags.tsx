@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { api } from "helpers/api";
 import { getToken } from "helpers/token";
-import { TagPreviewList } from "components/Tag/TagPreviewList";
 import {
   BackendTag,
   BackendTagToTagInfo,

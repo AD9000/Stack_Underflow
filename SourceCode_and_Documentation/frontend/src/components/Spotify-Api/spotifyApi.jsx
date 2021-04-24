@@ -1,5 +1,3 @@
-// import React from 'react';
-
 const redirect_uri = "http://localhost:3000/register/success";
 
 const client_id = "aad2301edd774feba0ad6a82822c64dc"; 
