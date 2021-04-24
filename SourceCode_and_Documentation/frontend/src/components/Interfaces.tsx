@@ -20,6 +20,7 @@ export interface TagInfo {
   };
   coords: [number, number];
   desc: string;
+  imgFile?: File; // thanks, backend
 }
 
 export interface BackendTag {
@@ -36,3 +37,26 @@ export interface tpp extends TagInfo {
   index: number;
   sstate: Function;
 }
+
+const BackendTagToTagInfo = (backendTag: BackendTag) => {
+  const { caption, image, location, region, song_uri, title } = backendTag;
+
+  const latlngloc = location.split(" ").map((loc) => Number(loc)) as [
+    number,
+    number
+  ];
+  const tagInfo: TagInfo = {
+    region,
+    imgurl: "",
+    title,
+    coords: latlngloc,
+    song: {
+      uri: song_uri,
+    },
+    desc: caption,
+  };
+
+  return tagInfo;
+};
+
+export { BackendTagToTagInfo };

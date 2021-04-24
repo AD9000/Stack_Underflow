@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 const MyProfile = () => {
   const classes = useStyles();
   const username = getToken("username") || "user";
-  const [password, setPassword] = React.useState("");
+  const [password, _] = React.useState("");
 
   const [editingUser, setEditingUser] = React.useState(true);
   const [editingPass, setEditingPass] = React.useState(true);
