@@ -13,8 +13,8 @@ import "@fontsource/farro";
 import Alert from "@material-ui/lab/Alert";
 import { Link } from "react-router-dom";
 import SpotifyLogin from "./Spotify-Api/SpotifyLogin";
-import { api } from "../Helpers/api";
-import { storeToken } from "../Helpers/token";
+import { api } from "../helpers/api";
+import { storeToken } from "../helpers/token";
 
 const useStyles = makeStyles((theme: Theme) => ({
   btn: {

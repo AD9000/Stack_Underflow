@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { AppContext } from "../components/Context";
 import { MapWrapper } from "../components/Map";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
-import { Sidebar } from "../components/Sidebar";
+import { Sidebar } from "../components/Sidebar/Sidebar";
 import { BackendTag, TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
 import { searchSong } from "../components/Spotify-Api/spotifyApi";
 import { useHistory } from "react-router-dom";
-import { api } from "../Helpers/api";
+import { api } from "../helpers/api";
 // import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
 
 const tagjson: TagInfo[] = [

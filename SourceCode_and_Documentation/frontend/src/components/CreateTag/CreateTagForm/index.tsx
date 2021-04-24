@@ -16,13 +16,14 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-import { searchSong } from "../Spotify-Api/spotifyApi";
+import { searchSong } from "../../Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
-import { getToken } from "../../Helpers/token";
+import { getToken } from "helpers/token";
 import { LatLngTuple } from "leaflet";
-import { api } from "../../Helpers/api";
-import { AppContext } from "../Context";
-import { TagInfo } from "../Interfaces";
+import { api } from "../../../helpers/api";
+import { AppContext } from "../../Context";
+import { TagInfo } from "../../Interfaces";
+import { ImageUpload } from "./ImagePreview";
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
@@ -80,49 +81,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(2),
   },
 }));
-
-interface DisplayImageProps {
-  image: string | null;
-  setImage: Function;
-  setImageUrl: Function;
-}
-const DisplayImage = ({ image, setImage, setImageUrl }: DisplayImageProps) => {
-  const [display, setDisplay] = useState<string | null>(null);
-  const styles = useStyles();
-  const handleImageChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      setDisplay(URL.createObjectURL(img));
-      setImage(event.target.files[0]);
-      setImageUrl(URL.createObjectURL(img));
-    }
-  };
-
-  return (
-    <div style={{ display: "flex" }}>
-      <h3 className={styles.text}>Image</h3>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "1rem",
-          paddingLeft: "3.5rem",
-        }}
-      >
-        {display && <img src={display} style={{ maxHeight: "100px" }} />}
-        <input
-          className={styles.text}
-          type="file"
-          name="myImage"
-          onChange={handleImageChange}
-        />
-      </div>
-    </div>
-  );
-};
 
 interface NewTagFormProps {
   createForm: boolean;
@@ -262,11 +220,7 @@ const NewTagForm = ({
               onChange={(e) => setSong(e.target.value)}
             />
           </div>
-          <DisplayImage
-            image={image}
-            setImage={setImage}
-            setImageUrl={setImageUrl}
-          />
+          <ImageUpload setImage={setImage} setImageUrl={setImageUrl} />
         </DialogContent>
         <DialogActions
           style={{ display: "flex", justifyContent: "space-between" }}

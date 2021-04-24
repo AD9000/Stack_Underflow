@@ -15,10 +15,10 @@ import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import { Link, useHistory } from "react-router-dom";
-import { CreateTag } from "../CreateTag";
+import { CreateTagButton } from "../CreateTag/CreateTagButton";
 import { NavBar } from "./NavBar";
-import { getToken } from "../../Helpers/token";
-import { api } from "../../Helpers/api";
+import { getToken } from "../../helpers/token";
+import { api } from "../../helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
@@ -139,7 +139,7 @@ const DashboardNav = () => {
           <h4>Help</h4>
         </Button>
       </ButtonGroup>
-      <CreateTag />
+      <CreateTagButton />
 
       <div style={{ flex: 1 }}></div>
       <Button className={classes.btn} onClick={handleClickUser}>

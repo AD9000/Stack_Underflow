@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Button, Theme, makeStyles, Popover } from "@material-ui/core";
 import LoginButton from "../LoginButton";
 import reefPic from "../../assets/reef.jpeg";
-import { BackendTag, TagInfo, tpp } from "../Interfaces";
-import { TagView } from "../TagView";
+import { BackendTag, TagInfo } from "../Interfaces";
+import { TagView } from "../Tag/TagView";
 import { NavBar } from "./NavBar";
-import { api } from "../../Helpers/api";
+import { api } from "../../helpers/api";
 
 const tagjson: TagInfo[] = [
   {
@@ -97,24 +97,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: "white",
   },
 }));
-
-const fileToDataUrl = (file: any) => {
-  const validFileTypes = ["image/jpeg", "image/png", "image/jpg"];
-  const valid = validFileTypes.find((type) => type === file.media_type);
-  // Bad data, let's walk away.
-  // console.log(file);
-  if (!valid) {
-    throw Error("provided file is not a png, jpg or jpeg image.");
-  }
-
-  const reader = new FileReader();
-  const dataUrlPromise = new Promise((resolve, reject) => {
-    reader.onerror = reject;
-    reader.onload = () => resolve(reader.result);
-  });
-  reader.readAsDataURL(file);
-  return dataUrlPromise;
-};
 
 const HomeNav = () => {
   const [randomTag, setRandomTag] = useState<TagInfo | null>(null);
