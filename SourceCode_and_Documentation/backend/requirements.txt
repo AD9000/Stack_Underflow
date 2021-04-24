@@ -7,7 +7,7 @@ black==20.8b1
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
-dataclasses==0.8
+dataclasses==0.6
 distlib==0.3.1
 dnspython==2.1.0
 email-validator==1.1.2
@@ -46,5 +46,5 @@ uvicorn==0.13.4
 virtualenv==20.4.2
 watchgod==0.7
 websockets==8.1
-sqlalchemy
+sqlalchemy==1.4.9
 zipp==3.4.1

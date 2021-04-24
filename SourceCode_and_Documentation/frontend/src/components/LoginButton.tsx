@@ -11,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { useHistory } from "react-router";
+import { api } from "../helpers/api";
+import { storeToken } from "../helpers/token";
 
 const useStyles = makeStyles({
   buttonText: {
@@ -66,7 +68,7 @@ const useStyles = makeStyles({
 export default function LoginButton() {
   const styles = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   let history = useHistory();
@@ -79,11 +81,30 @@ export default function LoginButton() {
     setOpen(false);
   };
 
-  const handleSignIn = () => {
-    if (email && password) {
-      history.push("home");
-    } else {
-      alert("Missing field");
+  const handleSignIn = async () => {
+    if (username && password) {
+      const body = JSON.stringify({
+        username: username,
+        password: password,
+      });
+
+      console.log(body);
+
+      console.log(`${api}login`);
+      const result = await fetch(`${api}login`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: body,
+      });
+      if (result.status === 200) {
+        storeToken("username", username);
+        history.push("/home");
+      } else {
+        const r = await result.json();
+        console.log(r.detail);
+      }
     }
   };
 
@@ -121,7 +142,7 @@ export default function LoginButton() {
           <DialogContent className={styles.dialogContent}>
             <div className={styles.grid}>
               <h3 style={{ marginRight: "1rem" }} className={styles.text}>
-                Email
+                Username
               </h3>
               <TextField
                 autoFocus
@@ -129,16 +150,15 @@ export default function LoginButton() {
                 margin="dense"
                 id="email"
                 InputProps={{ className: styles.input }}
-                placeholder="email"
-                onBlur={(e) => setEmail(e.target.value)}
+                placeholder="username"
+                onBlur={(e) => setUsername(e.target.value)}
                 /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
-                type="email"
+                type="text"
               />
               <h3 style={{ marginRight: "1rem" }} className={styles.text}>
                 Confirm Password
               </h3>
               <TextField
-                autoFocus
                 variant="outlined"
                 margin="dense"
                 id="password"
