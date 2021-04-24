@@ -20,6 +20,11 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * Shows the current username to an authenticated user
+ * and allows them to change their username and password
+ * @returns JSX.Element: The "My Profile Page" contents
+ */
 const MyProfile = () => {
   const classes = useStyles();
   const username = getToken("username") || "user";
@@ -33,18 +38,6 @@ const MyProfile = () => {
 
   const [newUser, setNewUser] = React.useState("");
   const [newPass, setNewPass] = React.useState("");
-
-  const fetchProfile = async () => {
-    const result = await fetch(`${api}myProfile/${username}`, {
-      method: "GET",
-    });
-    if (result.status === 200) {
-      const r = await result.json();
-      console.log("success", r);
-      setPassword(r.password);
-    }
-  };
-  fetchProfile();
 
   /* const changePassword = async () => {
     const result = await fetch(`${api}changePassword/${username}?${newPass}`, {

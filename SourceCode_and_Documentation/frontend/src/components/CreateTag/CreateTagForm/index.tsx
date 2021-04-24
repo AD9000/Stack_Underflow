@@ -177,17 +177,6 @@ const NewTagForm = ({
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <div className={styles.grid}>
-            {/* <h3 className={styles.text}>Location</h3> */}
-            {/* <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="location"
-              InputProps={{ className: styles.input }}
-              placeholder="location"
-              onChange={(e) => setLocation(e.target.value)}
-            /> */}
-
             <h3 className={styles.text}>Title</h3>
             <TextField
               autoFocus
