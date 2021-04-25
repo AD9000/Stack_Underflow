@@ -16,6 +16,10 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * Renders the profile page, that shows user their tags and profile
+ * @returns {JSX.Element}
+ */
 const Profile = () => {
   const classes = useStyles();
   const state = String(useLocation().state);

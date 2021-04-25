@@ -19,6 +19,10 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * Displays the about page, that introduced the idea behind WorldPlay
+ * @returns {JSX.Element}
+ */
 const AboutPage = () => {
   const classes = useStyles();
   const location = useLocation();

@@ -12,6 +12,11 @@ import {
 import { useHistory } from "react-router-dom";
 import { apiViewTags } from "helpers/api";
 
+/**
+ * Renders the user's dashboard, which is the map interface
+ * that the user can use to engage with tags and people
+ * @returns {JSX.Element}
+ */
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [tagIndex, setTagIndex] = useState(-1);

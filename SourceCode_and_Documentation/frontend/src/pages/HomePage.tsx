@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * Renders the Landing/Home Page for when user is not logged in
+ * @returns {JSX.Element}
+ */
 const HomePage = () => {
   const classes = useStyles();
   const history = useHistory();

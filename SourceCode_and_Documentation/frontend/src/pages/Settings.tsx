@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 /**
  * Settings Page: Lets the user manage preferences
  * At the moment, only support changing to light mode
- * @returns JSX.Element
+ * @returns {JSX.Element}
  */
 const Settings = () => {
   const classes = useStyles();
