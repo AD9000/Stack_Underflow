@@ -54,7 +54,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-// Change name
+/**
+ * Renders the form that the user can use to register an account
+ * with WorldPlay
+ * @returns {JSX.Element}
+ */
 const RegisterDialog = () => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);

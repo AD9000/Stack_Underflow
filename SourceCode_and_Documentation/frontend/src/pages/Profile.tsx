@@ -11,9 +11,6 @@ const useStyles = makeStyles({
     height: "100%",
     backgroundColor: "#051c3f",
   },
-  nav: {
-    display: "sticky",
-  },
   content: {
     padding: "2rem 0",
   },

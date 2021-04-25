@@ -54,6 +54,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * The navbar as it is rendered on the dashboard. Its an extension of
+ * the Navbar component
+ * @returns {JSX.Element} DashBoardNav
+ */
 const DashboardNav = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [
@@ -79,7 +84,10 @@ const DashboardNav = () => {
   const handleLogOut = async () => {
     // no point in checking if logout fails,
     // logout anyway
-    await apiLogout();
+    apiLogout();
+
+    // remove username
+    localStorage.removeItem("username");
     history.push("/");
   };
 

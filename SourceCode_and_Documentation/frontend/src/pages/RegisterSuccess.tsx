@@ -22,7 +22,6 @@ const useStyles = makeStyles({
   },
 });
 
-// Change name
 const RegisterSuccess = () => {
   const classes = useStyles();
   let history = useHistory();

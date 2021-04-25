@@ -4,7 +4,11 @@ import { AppContext } from "../components/Context/AppContext";
 import { MapWrapper } from "../components/Map";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar/Sidebar";
-import { BackendTag, TagInfo } from "../components/Interfaces";
+import {
+  BackendTag,
+  BackendTagToTagInfo,
+  TagInfo,
+} from "../components/Interfaces";
 import { useHistory } from "react-router-dom";
 import { apiViewTags } from "../helpers/api";
 
@@ -31,37 +35,13 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((data) => {
         const updated: TagInfo[] = data["tag list"]
-          .map((tagInfo: BackendTag, index: number) => {
-            const {
-              region,
-              username,
-              image,
-              title,
-              location,
-              song_uri,
-              caption,
-            } = tagInfo;
-            const cod = location.split(" ").map((l) => Number(l));
-
-            if (!cod || isNaN(cod[0]) || isNaN(cod?.[1])) {
-              return null;
-            }
-            const tInf: TagInfo = {
-              region,
-              username,
-              title,
-              imgurl: image,
-              song: { uri: song_uri },
-              desc: caption,
-              coords: [cod[0], cod[1]],
-            };
-            return tInf;
+          .map((tagInfo: BackendTag) => {
+            return BackendTagToTagInfo(tagInfo);
           })
           .filter((ele: TagInfo | null) => ele);
 
         const mark = updated.map((tag) => tag.coords);
         setMarkers(mark);
-
         setTags([...updated]);
       });
   }, []);

@@ -38,9 +38,16 @@ const useStyles = (imgurl: string) =>
 
 export interface TagPreviewProps {
   tag: TagInfo;
+
+  // the position of preview in the list
   index: number;
 }
 
+/**
+ * Shows a preview of a tag (no music played)
+ * @param {TagPreviewProps}
+ * @returns
+ */
 const TagPreview = ({ tag, index }: TagPreviewProps) => {
   const { setTagIndex } = useContext(AppContext);
   const { title, location, song, desc, imgurl } = tag;

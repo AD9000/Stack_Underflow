@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * Renders a list of tags, tagviews to be specific
+ * @returns {JSX.Element}
+ */
 const TagList = () => {
   const { tagIndex, tags } = useContext(AppContext);
   const classes = useStyles();

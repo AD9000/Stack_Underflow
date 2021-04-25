@@ -98,6 +98,11 @@ const apiViewTags = async () => {
   return get(endpoint);
 };
 
+const apiRandomTag = async () => {
+  const endpoint = `${api}generateRandomTag`;
+  return get(endpoint);
+};
+
 export {
   api,
   apiRegister,
@@ -106,4 +111,5 @@ export {
   apiPublishTag,
   apiMyTags,
   apiViewTags,
+  apiRandomTag,
 };

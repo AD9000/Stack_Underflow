@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     marginRight: theme.spacing(2),
-    fontFamily: "farro"
+    fontFamily: "farro",
   },
   playButton: {
     marginRight: theme.spacing(2),
@@ -42,6 +42,11 @@ interface NavBarProps {
   children?: ReactNode;
 }
 
+/**
+ * The Navbar template that the the app uses
+ * @param {NavBarProps}: App title, children to be rendered
+ * @returns The basic Navbar for the App
+ */
 const NavBar = ({ children, title }: NavBarProps) => {
   const classes = useStyles();
   return (
@@ -50,7 +55,7 @@ const NavBar = ({ children, title }: NavBarProps) => {
         <div className={classes.playWrapper}>
           <Link to="/home">
             <img
-              alt={"app logo (play button)"}
+              alt="app logo (play button)"
               src={playButton}
               className={classes.playButton}
             />

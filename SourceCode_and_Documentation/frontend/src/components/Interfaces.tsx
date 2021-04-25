@@ -36,11 +36,12 @@ export interface BackendTag extends BackendTagBare {
   image: any;
 }
 
-export interface tpp extends TagInfo {
-  index: number;
-  sstate: Function;
-}
-
+/**
+ * Converts a Backend Tag interface (BackendTag)
+ * to a frontend based one (TagInfo)
+ * @param backendTag {BackendTag}:
+ * @returns {TagInfo}: The converted value
+ */
 const BackendTagToTagInfo = (backendTag: BackendTag) => {
   const { caption, image, location, region, song_uri, title } = backendTag;
 

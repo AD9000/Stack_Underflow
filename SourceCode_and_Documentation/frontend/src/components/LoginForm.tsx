@@ -46,10 +46,6 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  horizontalFlex: {
-    display: "flex",
-    flexDirection: "row",
-  },
   text: {
     color: "white",
   },
@@ -65,8 +61,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LoginButton() {
-  const styles = useStyles();
+/**
+ * Renders the form that the user uses to log in to their account
+ * @returns {JSX.Element}
+ */
+const LoginForm = () => {
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -96,7 +96,7 @@ export default function LoginButton() {
       <Button
         variant="contained"
         color="primary"
-        className={styles.buttonText}
+        className={classes.buttonText}
         onClick={handleClickOpen}
       >
         <b>Sign In</b>
@@ -105,26 +105,26 @@ export default function LoginButton() {
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
-        className={styles.blur}
+        className={classes.blur}
         maxWidth="sm"
         BackdropProps={{ style: { backgroundColor: "transparent" } }}
       >
-        <div className={styles.dialog}>
+        <div className={classes.dialog}>
           <DialogTitle id="form-dialog-title">
-            <Typography className={styles.dialogTitle}>
+            <Typography className={classes.dialogTitle}>
               <b>Welcome Back</b>
             </Typography>
             <IconButton
               aria-label="close"
-              className={styles.closeBtn}
+              className={classes.closeBtn}
               onClick={handleClose}
             >
               <CloseIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent className={styles.dialogContent}>
-            <div className={styles.grid}>
-              <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+          <DialogContent className={classes.dialogContent}>
+            <div className={classes.grid}>
+              <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                 Username
               </h3>
               <TextField
@@ -132,27 +132,25 @@ export default function LoginButton() {
                 variant="outlined"
                 margin="dense"
                 id="email"
-                InputProps={{ className: styles.input }}
+                InputProps={{ className: classes.input }}
                 placeholder="username"
                 onBlur={(e) => setUsername(e.target.value)}
-                /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
                 type="text"
               />
-              <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+              <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                 Confirm Password
               </h3>
               <TextField
                 variant="outlined"
                 margin="dense"
                 id="password"
-                InputProps={{ className: styles.input }}
+                InputProps={{ className: classes.input }}
                 placeholder="password"
                 onBlur={(e) => setPassword(e.target.value)}
-                /* label={<Typography style={{fontFamily:'farro'}}>Username</Typography>}*/
                 type="password"
               />
             </div>
-            <p className={styles.text} style={{ textAlign: "right" }}>
+            <p className={classes.text} style={{ textAlign: "right" }}>
               <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                 Forgot Password
               </a>
@@ -162,7 +160,7 @@ export default function LoginButton() {
             <Button
               variant="contained"
               color="primary"
-              className={styles.btn}
+              className={classes.btn}
               onClick={handleSignIn}
             >
               <b style={{ fontSize: "large" }}>Sign In</b>
@@ -172,4 +170,6 @@ export default function LoginButton() {
       </Dialog>
     </div>
   );
-}
+};
+
+export { LoginForm };
