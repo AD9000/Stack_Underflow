@@ -44,7 +44,8 @@ const Dashboard = () => {
         setMarkers(mark);
         setTags([...updated]);
       });
-  }, []);
+  }, [history]);
+
   return (
     <AppContext.Provider
       value={{
