@@ -22,6 +22,7 @@ const MusicPlayer = ({ songUri }: MusicPlayerProps) => {
         src={url}
         width="280"
         height="70"
+        title="spotify-player"
         allow="encrypted-media"
       ></iframe>
     </div>
