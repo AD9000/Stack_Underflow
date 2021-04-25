@@ -23,14 +23,17 @@ export interface TagInfo {
   imgFile?: File; // thanks, backend
 }
 
-export interface BackendTag {
+export interface BackendTagBare {
   region: string;
-  username: string;
-  image: any;
   title: string;
   location: string;
   song_uri: string;
   caption: string;
+}
+
+export interface BackendTag extends BackendTagBare {
+  username: string;
+  image: any;
 }
 
 export interface tpp extends TagInfo {

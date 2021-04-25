@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  MouseEventHandler,
-  useEffect,
-  useContext,
-} from "react";
+import React, { useState, MouseEventHandler, useContext } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -21,15 +16,10 @@ import CloseIcon from "@material-ui/icons/Close";
 import { LatLngTuple } from "leaflet";
 import { apiPublishTag } from "helpers/api";
 import { AppContext } from "components/Context/AppContext";
-import { TagInfo } from "components/Interfaces";
+import { BackendTagBare, TagInfo } from "components/Interfaces";
 import { ImageUpload } from "./ImagePreview";
 
 const useStyles = makeStyles((theme: Theme) => ({
-  buttonText: {
-    textTransform: "none",
-    fontFamily: "farro",
-    margin: "0.5rem",
-  },
   btn: {
     textTransform: "none",
     fontFamily: "farro",
@@ -45,6 +35,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: "x-large",
     textAlign: "center",
   },
+  dialogContent: {
+    display: "flex",
+    flexDirection: "column",
+  },
   input: {
     fontFamily: "farro",
     backgroundColor: "#aad0ff",
@@ -54,14 +48,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     "& .MuiDialog-paper": {
       overflow: "hidden",
     },
-  },
-  dialogContent: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  horizontalFlex: {
-    display: "flex",
-    flexDirection: "row",
   },
   text: {
     color: "white",
@@ -76,54 +62,42 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: "0px",
     left: "300px",
   },
-  zoomControl: {
-    margin: theme.spacing(2),
-  },
 }));
 
-interface NewTagFormProps {
+interface CreateTagFormProps {
   createForm: boolean;
   handleClose: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   newMarker: LatLngTuple | null;
   hhClose: Function;
 }
 
-const NewTagForm = ({
+/**
+ * The form that is used by the user to create a new tag on the map
+ * @param { CreateTagFormProps }: functions to handle state update on creation of new tag
+ * @returns
+ */
+const CreateTagForm = ({
   createForm,
   handleClose,
   newMarker,
   hhClose,
-}: NewTagFormProps) => {
+}: CreateTagFormProps) => {
   const [song, setSong] = useState("");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const styles = useStyles();
+  const classes = useStyles();
 
   const { markers, setMarkers, tags, setTags } = useContext(AppContext);
-
-  useEffect(() => {
-    console.log("image changed: ", image);
-  }, [image]);
 
   const handleSubmit = async () => {
     if (!newMarker) {
       return;
     }
-
     const songUri = await searchSong(song);
 
-    const tf: TagInfo = {
-      title,
-      region: "",
-      coords: newMarker,
-      imgurl: imageUrl || "",
-      desc: caption,
-      song: { uri: songUri },
-    };
-
-    const tagInfo = {
+    const tagInfo: BackendTagBare = {
       title: title,
       region: "",
       location: newMarker?.join(" "),
@@ -131,17 +105,18 @@ const NewTagForm = ({
       song_uri: songUri,
     };
 
-    console.log(JSON.stringify(tagInfo));
-    console.log(image);
-
-    const body = new FormData();
-    body.append("tagInf", JSON.stringify(tagInfo));
-    if (image) {
-      body.append("img", image);
-    }
-
-    apiPublishTag(body).then(() => {
+    apiPublishTag(tagInfo, image).then(() => {
       setMarkers([...markers, newMarker]);
+
+      // update the tags until next render
+      const tf: TagInfo = {
+        title,
+        region: "",
+        coords: newMarker,
+        imgurl: imageUrl || "",
+        desc: caption,
+        song: { uri: songUri },
+      };
       setTags([...tags, tf]);
 
       hhClose();
@@ -153,53 +128,53 @@ const NewTagForm = ({
       open={createForm}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
-      className={styles.blur}
+      className={classes.blur}
       maxWidth="sm"
       BackdropProps={{ style: { backgroundColor: "transparent" } }}
     >
-      <div className={styles.dialog}>
+      <div className={classes.dialog}>
         <DialogTitle id="form-dialog-title">
-          <Typography className={styles.dialogTitle}>
+          <Typography className={classes.dialogTitle}>
             <b>Create A Tag</b>
           </Typography>
           <IconButton
             aria-label="close"
-            className={styles.closeBtn}
+            className={classes.closeBtn}
             onClick={handleClose}
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent className={styles.dialogContent}>
-          <div className={styles.grid}>
-            <h3 className={styles.text}>Title</h3>
+        <DialogContent className={classes.dialogContent}>
+          <div className={classes.grid}>
+            <h3 className={classes.text}>Title</h3>
             <TextField
               autoFocus
               variant="outlined"
               margin="dense"
               id="title"
-              InputProps={{ className: styles.input }}
+              InputProps={{ className: classes.input }}
               placeholder="Enter Tag Title"
               onChange={(e) => setTitle(e.target.value)}
             />
-            <h3 className={styles.text}>Caption</h3>
+            <h3 className={classes.text}>Caption</h3>
             <TextField
               autoFocus
               variant="outlined"
               margin="dense"
               id="caption"
               size="medium"
-              InputProps={{ className: styles.input }}
+              InputProps={{ className: classes.input }}
               placeholder="Enter your caption"
               onChange={(e) => setCaption(e.target.value)}
             />
-            <h3 className={styles.text}>Song</h3>
+            <h3 className={classes.text}>Song</h3>
             <TextField
               autoFocus
               variant="outlined"
               margin="dense"
               id="song"
-              InputProps={{ className: styles.input }}
+              InputProps={{ className: classes.input }}
               placeholder="Enter song name"
               onChange={(e) => setSong(e.target.value)}
             />
@@ -213,7 +188,7 @@ const NewTagForm = ({
             variant="contained"
             style={{ background: "black" }}
             color="primary"
-            className={styles.btn}
+            className={classes.btn}
             onClick={handleSubmit}
           >
             <b style={{ fontSize: "large" }}>Next</b>
@@ -224,4 +199,4 @@ const NewTagForm = ({
   );
 };
 
-export { NewTagForm };
+export { CreateTagForm };

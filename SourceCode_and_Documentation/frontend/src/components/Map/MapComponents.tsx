@@ -4,7 +4,7 @@ import { TileLayer, Marker, useMap, Pane, ZoomControl } from "react-leaflet";
 import { AppContext } from "../Context/AppContext";
 import { Animation } from "./Animate";
 import { MaxBounds } from "./MaxBounds";
-import { NewTagForm } from "../CreateTag/CreateTagForm";
+import { CreateTagForm } from "../CreateTag/CreateTagForm";
 import { CreateTagHook } from "../CreateTag/CreateTagHook";
 
 /**
@@ -110,7 +110,7 @@ const Map = () => {
         setNewMarker={setNewMarker}
       />
       {createForm && (
-        <NewTagForm
+        <CreateTagForm
           createForm={createForm}
           handleClose={handleClose}
           newMarker={newMarker}

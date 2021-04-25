@@ -1,3 +1,4 @@
+import { BackendTag, BackendTagBare } from "components/Interfaces";
 import { getToken } from "./token";
 
 const port = 8000;
@@ -53,7 +54,6 @@ export interface apiLoginProps {
   username: string;
   password: string;
 }
-
 const apiLogin = async (body: apiLoginProps) => {
   const endpoint = `${api}login`;
   return put(endpoint, JSON.stringify(body));
@@ -68,11 +68,18 @@ const apiLogout = async () => {
   return put(endpoint, JSON.stringify({ username }));
 };
 
-const apiPublishTag = async (body: FormData) => {
+const apiPublishTag = async (tagInfo: BackendTagBare, image: string | null) => {
   const username = getToken("username");
   if (!username) {
     return new Promise<null>((resolve) => resolve(null));
   }
+
+  const body = new FormData();
+  body.append("tagInf", JSON.stringify(tagInfo));
+  if (image) {
+    body.append("img", image);
+  }
+
   const endpoint = `${api}publishTag/${username}`;
   return post(endpoint, body, false);
 };
