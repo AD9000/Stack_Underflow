@@ -4,7 +4,7 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags, Comments, Notifications
+from models import Users, Tags
 from typing import Optional, List
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body, HTTPException
 from fastapi.responses import FileResponse
@@ -13,7 +13,6 @@ from database import SessionLocal, engine
 from sqlalchemy.orm import Session
 from sqlalchemy import delete, insert, update, func, or_
 from sqlalchemy.orm.exc import NoResultFound
-from auth import generate_uid
 from datetime import datetime
 from starlette.responses import StreamingResponse
 
@@ -220,11 +219,10 @@ async def publishTag(
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song_uri = tagInf.song_uri
-    # tg.time_made = datetime.now()
-    # tg.time_edited = tg.time_made
-    tg.image = -1  # -1 if image isn't uploaded
+    # image = -1 if image isn't uploaded
+    tg.image = -1
     if img:
-        # Save to image to folder in backend
+        # Save image to folder at backend
         imageIndex = 0
         path = "Images/" + str(imageIndex)
         while os.path.exists(path):
@@ -285,19 +283,15 @@ async def editTag(
 
     if tag.title != tagInf.title:
         setattr(tag, "title", tagInf.title)
-        db.commit()
     if tag.region != tagInf.region:
         setattr(tag, "region", tagInf.region)
-        db.commit()
     if tag.location != tagInf.location:
         setattr(tag, "location", tagInf.location)
-        db.commit()
     if tag.caption != tagInf.caption:
         setattr(tag, "caption", tagInf.caption)
-        db.commit()
     if tag.song_uri != tagInf.song_uri:
         setattr(tag, "song_uri", tagInf.song_uri)
-        db.commit()
+    db.commit()
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -619,10 +613,6 @@ async def commentOnTag(
     }
 
 
-# Edit comment
-
-# Delete comment
-
 # Delete User - Not for functionality of website, just for deleting Users
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
@@ -675,30 +665,3 @@ async def changePassword(
     setattr(user, "password", newPassword)
     db.commit()
     return {"password has been updated": newPassword}
-
-
-"""
-# Link to Spotify
-@app.get("/linkSpotify/{username}")
-async def linkSpotify(username: str, db: Session = Depends(get_db)):
-    # Get Spotify login token
-
-    # Add Spotify token to user
-    return {"Spotify account has been linked to user successfully": username}
-"""
-
-# View notifications in profile
-
-# TO DO:
-# - View notifications
-# - Edit comment
-# - Delete comment
-
-# - Generate Random Tag DONE
-# - View All My Tags 1
-# - View a tag DONE
-# - Filter for certain posts to appear 111 same
-# - Search for tags and music 111 same
-# - Reset forgotten password DONE
-# - Liking a post DONE
-# - Add message/comment to new tag DONE
