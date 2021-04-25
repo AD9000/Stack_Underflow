@@ -3,7 +3,7 @@ import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
 import { HomeNav } from "../components/Navbar/HomeNav";
 import globe from "../assets/globe.png";
-import RegisterDialogue from "../components/RegisterDialogue";
+import { RegisterDialog } from "../components/RegisterDialogue";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -97,7 +97,7 @@ const HomePage = () => {
             Register now for free!
           </Typography>
           <div className={styles.horizontalFlex}>
-            <RegisterDialogue />
+            <RegisterDialog />
             <Button
               color="primary"
               className={styles.secondaryBtn}
