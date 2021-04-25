@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useMapEvent } from "react-leaflet";
-import { AppContext } from "../Context";
+import { AppContext } from "../Context/AppContext";
 
 /**
  * Adds animation to the map on click, assuming that

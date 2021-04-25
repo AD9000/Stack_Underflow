@@ -1,6 +1,6 @@
 import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
-import { AppContext } from "../components/Context";
+import { AppContext } from "../components/Context/AppContext";
 import { MapWrapper } from "../components/Map";
 import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar/Sidebar";
@@ -8,7 +8,7 @@ import { BackendTag, TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
 import { searchSong } from "../components/Spotify-Api/spotifyApi";
 import { useHistory } from "react-router-dom";
-import { api } from "../helpers/api";
+import { api, apiViewTags } from "../helpers/api";
 // import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
 
 const tagjson: TagInfo[] = [
@@ -110,7 +110,7 @@ const Dashboard = () => {
   useEffect(() => {
     console.log(tags);
     checkLoggedIn();
-    fetch(`${api}viewTags`)
+    apiViewTags()
       .then((res) => res.json())
       .then((data) => {
         const updated: TagInfo[] = data["tag list"]
@@ -126,9 +126,7 @@ const Dashboard = () => {
             } = tagInfo;
             const cod = location.split(" ").map((l) => Number(l));
             console.log(image);
-            // fetch(`${api}image?p=${image.path}`).then((res) =>
-            //   console.log(res)
-            // );
+
             if (!cod || isNaN(cod[0]) || isNaN(cod?.[1])) {
               return null;
             }

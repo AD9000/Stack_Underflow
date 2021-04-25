@@ -18,10 +18,9 @@ import {
 } from "@material-ui/core";
 import { searchSong } from "components/Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
-import { getToken } from "helpers/token";
 import { LatLngTuple } from "leaflet";
-import { api } from "helpers/api";
-import { AppContext } from "components/Context";
+import { apiPublishTag } from "helpers/api";
+import { AppContext } from "components/Context/AppContext";
 import { TagInfo } from "components/Interfaces";
 import { ImageUpload } from "./ImagePreview";
 
@@ -114,7 +113,6 @@ const NewTagForm = ({
     }
 
     const songUri = await searchSong(song);
-    const username = getToken("username");
 
     const tf: TagInfo = {
       title,
@@ -142,10 +140,7 @@ const NewTagForm = ({
       body.append("img", image);
     }
 
-    fetch(`${api}publishTag/${username}`, {
-      method: "POST",
-      body: body,
-    }).then(() => {
+    apiPublishTag(body).then(() => {
       setMarkers([...markers, newMarker]);
       setTags([...tags, tf]);
 
@@ -214,17 +209,6 @@ const NewTagForm = ({
         <DialogActions
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          {/* <Button
-            variant="contained"
-            style={{ background: "black" }}
-            color="primary"
-            className={styles.btn}
-            component="label"
-          >
-            <b style={{ fontSize: "large" }}>Insert Photo</b>
-            <input type="file" hidden />
-          </Button> */}
-
           <Button
             variant="contained"
             style={{ background: "black" }}

@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { TagList } from "../Tag/TagList";
-import { AppContext } from "../Context";
+import { AppContext } from "../Context/AppContext";
 import { Button } from "@material-ui/core";
 
 const drawerWidth = 540;

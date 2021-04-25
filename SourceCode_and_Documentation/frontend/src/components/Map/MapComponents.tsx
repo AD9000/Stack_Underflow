@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LatLngTuple } from "leaflet";
 import { TileLayer, Marker, useMap, Pane, ZoomControl } from "react-leaflet";
-import { AppContext } from "../Context";
+import { AppContext } from "../Context/AppContext";
 import { Animation } from "./Animate";
 import { MaxBounds } from "./MaxBounds";
 import { NewTagForm } from "../CreateTag/CreateTagForm";

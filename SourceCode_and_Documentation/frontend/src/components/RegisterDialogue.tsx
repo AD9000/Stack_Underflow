@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { SpotifyLogin } from "./Spotify-Api/SpotifyLogin";
-import { api } from "../helpers/api";
+import { apiRegister, apiLogin } from "../helpers/api";
 import { storeToken } from "helpers/token";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }); */
 
 // Change name
-export default function RegisterDialog() {
+const RegisterDialog = () => {
   const [open, setOpen] = React.useState(false);
   const [step, setStep] = React.useState(1);
   // const [success, setSuccess] = React.useState(false);
@@ -96,7 +96,6 @@ export default function RegisterDialog() {
   const handleNext = () => {
     if (step === 1) {
       submitForm().then((success) => {
-        console.log(success);
         if (success) {
           setStep(step + 1);
         }
@@ -106,44 +105,30 @@ export default function RegisterDialog() {
     }
   };
 
-  const submitForm = async () => {
-    console.log(username, email, password, passwordConfirm);
-    if (
+  const checkForm = () => {
+    return (
       username.length === 0 ||
       email.length === 0 ||
       password.length === 0 ||
       passwordConfirm.length === 0 ||
       password !== passwordConfirm
-    ) {
-      console.log("Incorrect Input");
-      return false;
+    );
+  };
+
+  const submitForm = async () => {
+    if (!checkForm) {
+      alert("Incorrect Input. Please check your entry");
     }
-    const body = {
-      username: username,
-      password: password,
-    };
-    console.log(body);
-    const response = await fetch(`${api}registerUser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...body, email: email }),
-    });
+
+    const response = await apiRegister({ username, password, email });
+
     if (response.status === 200) {
-      console.log("Registered user");
-      fetch(`${api}login`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...body }),
-      });
+      // then also log the user in (temp?)
+      apiLogin({ username, password });
+
+      // add username into localstorage
       storeToken("username", username);
       return true;
-    } else {
-      const data = await response.json();
-      console.log(data);
     }
   };
 
@@ -292,4 +277,6 @@ export default function RegisterDialog() {
       </Dialog>
     </div>
   );
-}
+};
+
+export { RegisterDialog };

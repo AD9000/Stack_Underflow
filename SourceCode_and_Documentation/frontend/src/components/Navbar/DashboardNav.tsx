@@ -11,14 +11,13 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import PersonIcon from "@material-ui/icons/Person";
-import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { CreateTagButton } from "../CreateTag/CreateTagButton";
 import { NavBar } from "./NavBar";
-import { getToken } from "../../helpers/token";
-import { api } from "../../helpers/api";
+import { getToken } from "helpers/token";
+import { apiLogout } from "helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
@@ -92,33 +91,20 @@ const DashboardNav = () => {
   };
 
   const handleLogOut = async () => {
-    const username = localStorage.getItem("username");
-    const body = { username: username };
-    const response = await fetch(`${api}logout/${username}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    if (response.status === 200) {
-      localStorage.removeItem("username");
-      history.push("/");
-    } else {
-      const data = await response.json();
-      console.log("Error logging out:", data);
-    }
+    // no point in checking if logout fails,
+    // logout anyway
+    await apiLogout();
+    history.push("/");
   };
 
-  function toPage(path: string, state: string) {
+  const toPage = (path: string, state: string) => {
     history.push({
       // Navigates to About page
       pathname: `/${path}`,
       state: state,
     });
     return;
-  }
+  };
 
   const username = getToken("username") || "user";
 

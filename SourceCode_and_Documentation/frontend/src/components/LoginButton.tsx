@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { useHistory } from "react-router";
-import { api } from "../helpers/api";
+import { api, apiLogin } from "../helpers/api";
 import { storeToken } from "../helpers/token";
 
 const useStyles = makeStyles({
@@ -83,27 +83,10 @@ export default function LoginButton() {
 
   const handleSignIn = async () => {
     if (username && password) {
-      const body = JSON.stringify({
-        username: username,
-        password: password,
-      });
-
-      console.log(body);
-
-      console.log(`${api}login`);
-      const result = await fetch(`${api}login`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      });
+      const result = await apiLogin({ username, password });
       if (result.status === 200) {
         storeToken("username", username);
         history.push("/home");
-      } else {
-        const r = await result.json();
-        console.log(r.detail);
       }
     }
   };

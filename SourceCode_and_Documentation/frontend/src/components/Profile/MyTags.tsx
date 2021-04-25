@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
-import { api } from "helpers/api";
-import { getToken } from "helpers/token";
+import { apiMyTags } from "helpers/api";
 import {
   BackendTag,
   BackendTagToTagInfo,
@@ -30,12 +29,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const MyTags = () => {
   const classes = useStyles();
   const [userTags, setUserTags] = useState<TagInfo[]>([]);
-  const username = getToken("username");
 
   const fetchTags = async () => {
-    const result = await fetch(`${api}myTags/${username}`);
-    console.log(result);
-    if (result.status === 200) {
+    const result = await apiMyTags();
+    if (result?.status === 200) {
       const r: BackendTag[] = await result.json();
 
       if (r.length) {
@@ -43,6 +40,7 @@ const MyTags = () => {
       }
     }
   };
+
   useEffect(() => {
     fetchTags();
   }, []);
