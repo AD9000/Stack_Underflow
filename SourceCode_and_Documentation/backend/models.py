@@ -10,7 +10,6 @@ class Users(Base):
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     logged_in = Column(Boolean, nullable=False, default=False)
-    #spotify_token = Column(String, unique=True)
     tags_owned = relationship("Tags")
 
 class Tags(Base):
@@ -36,7 +35,9 @@ class Comments(Base):
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
 
 class Notifications(Base):
-    __tablename__ = "notification"
+    __tablename__ = "notifications"
     user = Column(String, ForeignKey('users.username'), primary_key=True, nullable=False)
-    text = Column(String, nullable=False)
+    content = Column(String, nullable=False)
     time_received = Column(DateTime(timezone=True), server_default=func.now())
+
+

@@ -1,4 +1,9 @@
-import React, { useState, MouseEventHandler } from "react";
+import React, {
+  useState,
+  MouseEventHandler,
+  useEffect,
+  useContext,
+} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,8 +16,14 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-import { searchSong } from "../Spotify-Api/spotifyApi";
+import { searchSong } from "components/Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
+import { getToken } from "helpers/token";
+import { LatLngTuple } from "leaflet";
+import { api } from "helpers/api";
+import { AppContext } from "components/Context";
+import { TagInfo } from "components/Interfaces";
+import { ImageUpload } from "./ImagePreview";
 
 const useStyles = makeStyles((theme: Theme) => ({
   buttonText: {
@@ -41,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   blur: {
     backgroundColor: "rgb(255,255,255,0.3)",
+    "& .MuiDialog-paper": {
+      overflow: "hidden",
+    },
   },
   dialogContent: {
     display: "flex",
@@ -71,19 +85,72 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface NewTagFormProps {
   createForm: boolean;
   handleClose: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  newMarker: LatLngTuple | null;
+  hhClose: Function;
 }
 
-const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
-  const [location, setLocation] = useState("");
+const NewTagForm = ({
+  createForm,
+  handleClose,
+  newMarker,
+  hhClose,
+}: NewTagFormProps) => {
   const [song, setSong] = useState("");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
+  const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const styles = useStyles();
 
+  const { markers, setMarkers, tags, setTags } = useContext(AppContext);
+
+  useEffect(() => {
+    console.log("image changed: ", image);
+  }, [image]);
+
   const handleSubmit = async () => {
-    console.log(title, location, song, caption);
-    console.log(searchSong(song));
-    // Add fetch request here
+    if (!newMarker) {
+      return;
+    }
+
+    const songUri = await searchSong(song);
+    const username = getToken("username");
+
+    const tf: TagInfo = {
+      title,
+      region: "",
+      coords: newMarker,
+      imgurl: imageUrl || "",
+      desc: caption,
+      song: { uri: songUri },
+    };
+
+    const tagInfo = {
+      title: title,
+      region: "",
+      location: newMarker?.join(" "),
+      caption: caption,
+      song_uri: songUri,
+    };
+
+    console.log(JSON.stringify(tagInfo));
+    console.log(image);
+
+    const body = new FormData();
+    body.append("tagInf", JSON.stringify(tagInfo));
+    if (image) {
+      body.append("img", image);
+    }
+
+    fetch(`${api}publishTag/${username}`, {
+      method: "POST",
+      body: body,
+    }).then(() => {
+      setMarkers([...markers, newMarker]);
+      setTags([...tags, tf]);
+
+      hhClose();
+    });
   };
 
   return (
@@ -110,26 +177,6 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
         </DialogTitle>
         <DialogContent className={styles.dialogContent}>
           <div className={styles.grid}>
-            <h3 className={styles.text}>Location</h3>
-            <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="location"
-              InputProps={{ className: styles.input }}
-              placeholder="location"
-              onChange={(e) => setLocation(e.target.value)}
-            />
-            <h3 className={styles.text}>Song</h3>
-            <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              id="song"
-              InputProps={{ className: styles.input }}
-              placeholder="Enter song name"
-              onChange={(e) => setSong(e.target.value)}
-            />
             <h3 className={styles.text}>Title</h3>
             <TextField
               autoFocus
@@ -151,19 +198,33 @@ const NewTagForm = ({ createForm, handleClose }: NewTagFormProps) => {
               placeholder="Enter your caption"
               onChange={(e) => setCaption(e.target.value)}
             />
+            <h3 className={styles.text}>Song</h3>
+            <TextField
+              autoFocus
+              variant="outlined"
+              margin="dense"
+              id="song"
+              InputProps={{ className: styles.input }}
+              placeholder="Enter song name"
+              onChange={(e) => setSong(e.target.value)}
+            />
           </div>
+          <ImageUpload setImage={setImage} setImageUrl={setImageUrl} />
         </DialogContent>
         <DialogActions
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <Button
+          {/* <Button
             variant="contained"
             style={{ background: "black" }}
             color="primary"
             className={styles.btn}
+            component="label"
           >
             <b style={{ fontSize: "large" }}>Insert Photo</b>
-          </Button>
+            <input type="file" hidden />
+          </Button> */}
+
           <Button
             variant="contained"
             style={{ background: "black" }}

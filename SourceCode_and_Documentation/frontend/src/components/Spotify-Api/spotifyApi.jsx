@@ -1,5 +1,3 @@
-// import React from 'react';
-
 const redirect_uri = "http://localhost:3000/register/success";
 
 const client_id = "aad2301edd774feba0ad6a82822c64dc"; 
@@ -102,8 +100,8 @@ const currentlyPlaying = async () => {
 const searchSong = async (songName) => {
 	console.log('Searching song', songName);
 	const songUrl = await callApi("GET", `${SEARCH}?q=${songName}&type=track`, null);
-	console.log(songUrl.tracks.items[0].uri);
-	return songUrl.tracks.items[0].uri;
+	console.log(songUrl?.tracks?.items?.[0]?.uri);
+	return songUrl?.tracks?.items?.[0]?.uri || "";
 }
 
 const callApi = async (method, url, body) => {

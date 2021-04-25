@@ -1,11 +1,7 @@
+import React from "react";
+import { TagInfo } from "../Interfaces";
+import { MusicPlayer } from "../Spotify-Api/MusicPlayer";
 import { Container, makeStyles, Theme, Typography } from "@material-ui/core";
-// import React, { useEffect, useState } from "react";
-import { tpp } from "./Interfaces";
-import MusicPlayer from "../components/Spotify-Api/MusicPlayer";
-// import { searchSong } from "../components/Spotify-Api/spotifyApi";
-
-// const randImgurl =
-//   "https://images.unsplash.com/photo-1617339648529-76cbe1cea71b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixlib=rb-1.2.1&q=80&w=300";
 
 const useStyles = (imgurl: string) =>
   makeStyles((theme: Theme) => ({
@@ -14,6 +10,7 @@ const useStyles = (imgurl: string) =>
       padding: 0,
     },
     cardi: {
+      flex: 1,
       display: "flex",
       height: "90%",
       flexDirection: "column",
@@ -23,35 +20,37 @@ const useStyles = (imgurl: string) =>
       color: "white",
     },
     cimagewrap: {
+      flex: 1,
       backgroundImage: `url(${imgurl})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
-      height: "100%",
-      flex: 1,
+      backgroundColor: "white",
+      minHeight: "180px",
+      minWidth: "100px",
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
       borderRadius: "10px",
     },
     textwrap: {
+      flex: 2,
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
-      flex: 2,
       "&>*": {
         margin: theme.spacing(0.5),
       },
     },
     wrap: {
-      display: "flex",
       flex: 2,
+      display: "flex",
     },
     user: {
       paddingLeft: theme.spacing(2),
       paddingBottom: theme.spacing(1),
     },
     desc: {
-      display: "flex",
       flex: 1,
+      display: "flex",
       alignContent: "flex-end",
       padding: theme.spacing(2),
       maxWidth: "100%",
@@ -65,18 +64,9 @@ const TagView = ({
   location,
   desc,
   imgurl,
-  sstate,
-  songUri,
-}: tpp) => {
+  song,
+}: TagInfo) => {
   const classes = useStyles(imgurl);
-  // const [songUri, setSongUri] = useState('');
-
-  // useEffect(() => {
-  //   searchSong('Lemonade').then(data => {
-  //     setSongUri(data);
-  //   })
-  // }, []);
-
   return (
     <Container className={classes.wrapper}>
       <div className={classes.cardi}>
@@ -86,7 +76,7 @@ const TagView = ({
           <div className={classes.textwrap}>
             <h2>{title}</h2>
             <h3>{location}</h3>
-            {songUri && <MusicPlayer songUri={songUri} />}
+            {song?.uri && <MusicPlayer songUri={song.uri} />}
           </div>
         </div>
         <div className={classes.desc}>

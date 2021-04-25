@@ -18,7 +18,9 @@ from datetime import datetime
 from starlette.responses import StreamingResponse
 
 # May need to import this library below, but right now, it isn't being used:
-# from sqlalchemy.orm.exc import MultipleResultsFound
+# from sqlalchemy.orm.exc import
+
+from imghdr import what
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -62,12 +64,11 @@ class UserLogin(BaseModel):
 
 
 class TagInfo(BaseModel):
-    user: str
     title: str
     region: str
     location: str
     caption: str
-    songUri: str
+    song_uri: str  # url ?
 
     # Pydantic vs UploadFile fix
     # https://github.com/tiangolo/fastapi/issues/2257
@@ -81,6 +82,7 @@ class TagInfo(BaseModel):
             return cls(**json.loads(value))
         return value
 
+
 def get_db():
     try:
         db = SessionLocal()
@@ -88,24 +90,26 @@ def get_db():
     finally:
         db.close()
 
+
 # Homepage
 @app.get("/")
 async def root():
     # insert homepage info here
     return {"message": "Hello World"}
 
+
 # Sign Up
 @app.post("/registerUser")
 async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
     # Check if username is used
     try:
-        user = db.query(Users).filter(Users.username == userReg.username).first()
+        user = db.query(Users).filter(Users.username == userReg.username).one()
         db.commit()
         raise HTTPException(status_code=400, detail="Username already exists")
     except NoResultFound:
         # Check if email is used
         try:
-            user = db.query(Users).filter(Users.email == userReg.email).first()
+            user = db.query(Users).filter(Users.email == userReg.email).one()
             db.commit()
             raise HTTPException(status_code=400, detail="Email already registered")
         except NoResultFound:
@@ -118,7 +122,8 @@ async def registerUser(userReg: UserRegister, db: Session = Depends(get_db)):
             db.add(register)
             db.commit()
             db.refresh(register)
-            return register
+            return {"user has been successfully registered": userReg.username}
+
 
 # Log In
 @app.put("/login")
@@ -128,9 +133,13 @@ async def loginUser(login: UserLogin, db: Session = Depends(get_db)):
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     try:
-        user = db.query(Users).filter(Users.username == login.username, Users.password == login.password).one()
+        user = (
+            db.query(Users)
+            .filter(Users.username == login.username, Users.password == login.password)
+            .one()
+        )
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=400, detail="Incorrect password")
@@ -164,7 +173,7 @@ async def loginUser(username: str, db: Session = Depends(get_db)):
 @app.get("/myProfile/{username}")
 async def myProfile(username: str, db: Session = Depends(get_db)):
     try:
-        user = db.query(Users).filter(Users.username == login.username).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
@@ -176,11 +185,17 @@ async def myProfile(username: str, db: Session = Depends(get_db)):
         "password": user.password,
     }
 
-# Publish New Tag 
-@app.post("/publishTag/")
-async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+
+# Publish New Tag
+@app.post("/publishTag/{username}")
+async def publishTag(
+    username: str,
+    tagInf: TagInfo = Body(...),
+    db: Session = Depends(get_db),
+    img: UploadFile = File(None),
+):
     try:
-        user = db.query(Users).filter(Users.username == tagInf.user).one()
+        user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="User not found")
@@ -198,16 +213,16 @@ async def publishTag(tagInf : TagInfo = Body(...), db: Session = Depends(get_db)
         except NoResultFound:
             break
 
-    tg.username = tagInf.user
+    tg.username = username
     tg.title = tagInf.title
     tg.region = tagInf.region
     tg.location = tagInf.location
     tg.n_likes = 0
     tg.caption = tagInf.caption
-    tg.song = tagInf.song
-    #tg.time_made = datetime.now()
-    #tg.time_edited = tg.time_made
-    tg.image = -1 # -1 if image isn't uploaded
+    tg.song_uri = tagInf.song_uri
+    # tg.time_made = datetime.now()
+    # tg.time_edited = tg.time_made
+    tg.image = -1  # -1 if image isn't uploaded
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -240,11 +255,18 @@ async def deleteTag(username: str, tagID: int, db: Session = Depends(get_db)):
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Tag does not exist")
-    return {"tag has been deleted successfully": None}        
+    return {"tag has been deleted successfully": None}
+
 
 # Edit a tag
 @app.put("/editTag/{username}/{tagID}")
-async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: Session = Depends(get_db), img: UploadFile = File(None)):
+async def editTag(
+    username: str,
+    tagID: int,
+    tagInf: TagInfo = Body(...),
+    db: Session = Depends(get_db),
+    img: UploadFile = File(None),
+):
     try:
         user = db.query(Users).filter(Users.username == username).one()
         db.commit()
@@ -262,38 +284,39 @@ async def editTag(username: str, tagID: int, tagInf : TagInfo = Body(...), db: S
         raise HTTPException(status_code=404, detail="Tag does not exist")
 
     if tag.title != tagInf.title:
-        setattr(tag, 'title', tagInf.title)
+        setattr(tag, "title", tagInf.title)
         db.commit()
     if tag.region != tagInf.region:
-        setattr(tag, 'region', tagInf.region)
+        setattr(tag, "region", tagInf.region)
         db.commit()
     if tag.location != tagInf.location:
-        setattr(tag, 'location', tagInf.location)
+        setattr(tag, "location", tagInf.location)
         db.commit()
     if tag.caption != tagInf.caption:
-        setattr(tag, 'caption', tagInf.caption)
+        setattr(tag, "caption", tagInf.caption)
         db.commit()
-    if tag.song != tagInf.song:
-        setattr(tag, 'song', tagInf.song)
+    if tag.song_uri != tagInf.song_uri:
+        setattr(tag, "song_uri", tagInf.song_uri)
         db.commit()
     if img:
         # Save to image to folder in backend
-        imageIndex=0
+        imageIndex = 0
         path = "Images/" + str(imageIndex)
-        while (os.path.exists(path)):
-            imageIndex+=1
+        while os.path.exists(path):
+            imageIndex += 1
             path = "Images/" + str(imageIndex)
         # Add image to tag
-        setattr(tag, 'image', imageIndex)
+        setattr(tag, "image", imageIndex)
         with open(path, "wb") as buffer:
             shutil.copyfileobj(img.file, buffer)
         db.commit()
     return {"tag edited": tag.title}
 
+
 # Generate Random Tag
 @app.get("/generateRandomTag")
 async def generateRandomTag(db: Session = Depends(get_db)):
-    maxTagCount = db.query(func.count(Tags.id)).filter(Tags.n_likes >= 100).scalar()
+    maxTagCount = db.query(func.count(Tags.id)).scalar()
     randomNumber = randrange(maxTagCount)
     try:
         randomTag = db.query(Tags).filter(Tags.id == randomNumber).one()
@@ -312,7 +335,7 @@ async def generateRandomTag(db: Session = Depends(get_db)):
         "region": randomTag.region,
         "location": randomTag.location,
         "image": img,
-        "song": randomTag.song,
+        "song_uri": randomTag.song_uri,
         "caption": randomTag.caption,
     }
 
@@ -337,19 +360,44 @@ async def viewTag(tagID: int, db: Session = Depends(get_db)):
         "region": tag.region,
         "location": tag.location,
         "image": img,
-        "song": tag.song,
+        "song_uri": tag.song_uri,
         "caption": tag.caption,
     }
+
 
 # View All Published Tags
 @app.get("/viewTags")
 async def viewTags(db: Session = Depends(get_db)):
     try:
-        allTags = db.query(Tags).filter(Tags.id == tagID).all()
+        allTags = db.query(Tags).all()
         db.commit()
+        tagList = []
+        for tag in allTags:
+            imgpath = tag.image
+            if tag.image != -1:
+                fname = "Images/" + str(tag.image)
+                ext = what(fname)
+                if not ext:
+                    continue
+                imgpath = FileResponse(fname + "." + ext)
+            
+            t = {
+                "title": tag.title,
+                "region": tag.region,
+                "location": tag.location,
+                "image": imgpath,
+                "n_likes": tag.n_likes,
+                "song_uri": tag.song_uri,
+                "caption": tag.caption,
+                "posted": tag.time_posted,
+                "edited": tag.time_edited,
+                "username": tag.username
+            }
+            tagList.append(t)
     except NoResultFound:
-        raise HTTPException(status_code=404, detail="no tags stored")  
-    return allTags
+        raise HTTPException(status_code=404, detail="no tags stored")
+    return {"tag list": tagList}
+
 
 # View All My Tags
 @app.get("/myTags/{username}")
@@ -374,14 +422,16 @@ async def viewAllMyTags(username: str, db: Session = Depends(get_db)):
             img = None
             path = "Images/" + str(tag.image)
             img = FileResponse(path)
-        tags.append({
-            "title" : tag.title,
-            "region" : tag.region,
-            "location" : tag.location,
-            "image" : img,
-            "song" : tag.song,
-            "caption" : tag.caption
-        })
+        tags.append(
+            {
+                "title": tag.title,
+                "region": tag.region,
+                "location": tag.location,
+                "image": img,
+                "song_uri": tag.song_uri,
+                "caption": tag.caption,
+            }
+        )
     return tags
 
 
@@ -423,7 +473,7 @@ async def filterTagsByKeyword(keyword, db: Session = Depends(get_db)):
                 "region": tag.region,
                 "location": tag.location,
                 "image": img,
-                "song": tag.song,
+                "song_uri": tag.song_uri,
                 "caption": tag.caption,
             }
         )
@@ -461,7 +511,7 @@ async def filterTagsByPopularity(reverse: bool, db: Session = Depends(get_db)):
                 "region": tag.region,
                 "location": tag.location,
                 "image": img,
-                "song": tag.song,
+                "song_uri": tag.song_uri,
                 "caption": tag.caption,
             }
         )
@@ -499,7 +549,7 @@ async def filterTagsByDate(reverse: bool, db: Session = Depends(get_db)):
                 "region": tag.region,
                 "location": tag.location,
                 "image": img,
-                "song": tag.song,
+                "song_uri": tag.song_uri,
                 "caption": tag.caption,
             }
         )
@@ -573,10 +623,9 @@ async def commentOnTag(
 
 # Delete comment
 
-# Delete User
+# Delete User - Not for functionality of website, just for deleting Users
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
-    # Not for functionality of website, just for deleting Users
     if db.query(Users).filter(Users.username == userReg.username).delete():
         db.commit()
         return {"user deleted": userReg.username}
@@ -586,18 +635,19 @@ async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
 
 # Change Username
 @app.put("/changeUsername/{username}")
-async def changeUsername(username: str, newUsername: str, db: Session = Depends(get_db)):
+async def changeUsername(
+    username: str, newUsername: str, db: Session = Depends(get_db)
+):
     try:
         # Check if username exists
         user = db.query(Users).filter(Users.username == username).one()
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="No user found with such username")
-
-    # update username
+    # Check if new username is empty string
     if newUsername == None:
         raise HTTPException(status_code=400, detail="New username cannot be empty")
-
+    # Update username
     setattr(user, "username", newUsername)
     db.commit()
     return {"username updated": newUsername}
@@ -613,20 +663,21 @@ async def changePassword(
         db.commit()
     except NoResultFound:
         raise HTTPException(status_code=404, detail="No user found with such username")
-
+    # Check if new password is the old password
     if user.password == newPassword:
         raise HTTPException(
             status_code=400, detail="Password has already been used for this account"
         )
-
+    # Check if password is empty string
     if newPassword == None:
         raise HTTPException(status_code=400, detail="New password cannot be empty")
-
+    # Update password for user
     setattr(user, "password", newPassword)
     db.commit()
     return {"password has been updated": newPassword}
 
 
+"""
 # Link to Spotify
 @app.get("/linkSpotify/{username}")
 async def linkSpotify(username: str, db: Session = Depends(get_db)):
@@ -634,12 +685,11 @@ async def linkSpotify(username: str, db: Session = Depends(get_db)):
 
     # Add Spotify token to user
     return {"Spotify account has been linked to user successfully": username}
-
+"""
 
 # View notifications in profile
 
 # TO DO:
-# - Link to Spotify
 # - View notifications
 # - Edit comment
 # - Delete comment

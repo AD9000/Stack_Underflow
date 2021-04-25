@@ -6,3 +6,7 @@ venv
 
 # pycache
 __pycache__
+
+# db is not needed
+*.db
+
