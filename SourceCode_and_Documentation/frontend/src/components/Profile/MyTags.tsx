@@ -49,7 +49,7 @@ const MyTags = () => {
     <Container maxWidth="lg" className={classes.page}>
       <h1>My Tags</h1>
       <div>
-        {userTags ? (
+        {userTags?.length > 0 ? (
           userTags.map((tag, index) => (
             <div className={classes.wrapper}>
               <TagPreview tag={tag} index={index} />

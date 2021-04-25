@@ -59,8 +59,8 @@ const AboutPage = () => {
         </p>
         <br />
         <h2>What is WorldPlay?</h2>
-        {what.map((line) => (
-          <p>{line}</p>
+        {what.map((line, index) => (
+          <p key={index}>{line}</p>
         ))}
         <br />
         <h2>How does WorldPlay work?</h2>
@@ -72,8 +72,8 @@ const AboutPage = () => {
           </span>{" "}
           around the world map.
         </p>
-        {tags.map((line) => (
-          <p>{line}</p>
+        {tags.map((line, index) => (
+          <p key={index}>{line}</p>
         ))}
         <ul>
           <li>
