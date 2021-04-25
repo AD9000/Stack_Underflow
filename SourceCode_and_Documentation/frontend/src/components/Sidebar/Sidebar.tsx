@@ -2,24 +2,17 @@ import React, { useContext, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-// import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { TagList } from "./TagList";
-import { AppContext } from "./Context";
+import { TagList } from "../Tag/TagList";
+import { AppContext } from "../Context";
 import { Button } from "@material-ui/core";
 
 const drawerWidth = 540;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    menuButton: {
-      marginRight: 36,
-    },
-    hide: {
-      display: "none",
-    },
     drawer: {
       height: "60%",
       position: "absolute",
@@ -68,6 +61,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+/**
+ * Renders the sidebar on the dashboard which opens, closes
+ * and displays the taglist
+ * @returns JSX.Element: The sidebar
+ */
 const Sidebar = () => {
   const classes = useStyles();
   const { open, setOpen, tagIndex, setTagIndex } = useContext(AppContext);
@@ -136,7 +134,6 @@ const Sidebar = () => {
           </Button>
         )}
       </div>
-      {/* <Divider /> {// add divider here, make part above highlighted on hover } */}
       {open ? <TagList /> : <div style={{ flex: 1, cursor: "pointer" }}></div>}
     </Drawer>
   );

@@ -1,5 +1,6 @@
 import { LatLngTuple } from "leaflet";
 import React from "react";
+import { TagInfo } from "./Interfaces";
 
 interface AppContextType {
   open: boolean;
@@ -10,6 +11,8 @@ interface AppContextType {
   setMarkers: Function;
   createTag: boolean;
   setCreateTag: Function;
+  tags: TagInfo[];
+  setTags: Function;
 }
 
 const AppContext = React.createContext<AppContextType>({
@@ -21,6 +24,8 @@ const AppContext = React.createContext<AppContextType>({
   setMarkers: () => {},
   createTag: false,
   setCreateTag: () => {},
+  tags: [],
+  setTags: () => {},
 });
 
 export { AppContext };

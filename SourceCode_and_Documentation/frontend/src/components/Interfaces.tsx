@@ -11,15 +11,52 @@ export interface TagInfo {
   username?: string;
   imgurl: string;
   title: string;
-  location: string;
-  songName?: string;
-  songArtist?: string;
-  songUrl?: string;
+  location?: string;
+  song?: {
+    artist?: string;
+    album?: string;
+    name?: string;
+    uri?: string;
+  };
+  coords: [number, number];
   desc: string;
+  imgFile?: File; // thanks, backend
+}
+
+export interface BackendTag {
+  region: string;
+  username: string;
+  image: any;
+  title: string;
+  location: string;
+  song_uri: string;
+  caption: string;
 }
 
 export interface tpp extends TagInfo {
-  album: string;
   index: number;
   sstate: Function;
 }
+
+const BackendTagToTagInfo = (backendTag: BackendTag) => {
+  const { caption, image, location, region, song_uri, title } = backendTag;
+
+  const latlngloc = location.split(" ").map((loc) => Number(loc)) as [
+    number,
+    number
+  ];
+  const tagInfo: TagInfo = {
+    region,
+    imgurl: "",
+    title,
+    coords: latlngloc,
+    song: {
+      uri: song_uri,
+    },
+    desc: caption,
+  };
+
+  return tagInfo;
+};
+
+export { BackendTagToTagInfo };
