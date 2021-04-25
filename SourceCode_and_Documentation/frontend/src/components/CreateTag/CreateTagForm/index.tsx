@@ -15,7 +15,7 @@ import { searchSong } from "components/Spotify-Api/spotifyApi";
 import CloseIcon from "@material-ui/icons/Close";
 import { LatLngTuple } from "leaflet";
 import { apiPublishTag } from "helpers/api";
-import { AppContext } from "components/Context/AppContext";
+import { AppContext } from "context/AppContext";
 import { BackendTagBare, TagInfo } from "components/Interfaces";
 import { ImageUpload } from "./ImagePreview";
 

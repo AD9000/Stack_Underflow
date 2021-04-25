@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { makeStyles, Theme } from "@material-ui/core";
 import { TagView } from "./TagView";
-import { AppContext } from "../Context/AppContext";
+import { AppContext } from "context/AppContext";
 import { TagPreviewList } from "./TagPreviewList";
 
 const useStyles = makeStyles((theme: Theme) => ({

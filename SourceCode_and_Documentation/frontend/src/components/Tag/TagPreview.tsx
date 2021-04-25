@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { TagInfo } from "../Interfaces";
-import { AppContext } from "../Context/AppContext";
+import { AppContext } from "context/AppContext";
 
 const useStyles = (imgurl: string) =>
   makeStyles((theme: Theme) => ({

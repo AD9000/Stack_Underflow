@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useMapEvent } from "react-leaflet";
-import { AppContext } from "../Context/AppContext";
+import { AppContext } from "context/AppContext";
 
 export interface CreateTagProps {
   setNewMarker: Function;

@@ -1,16 +1,16 @@
 import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
-import { AppContext } from "../components/Context/AppContext";
-import { MapWrapper } from "../components/Map";
-import { DashboardNav } from "../components/Navbar/DashboardNav";
-import { Sidebar } from "../components/Sidebar/Sidebar";
+import { AppContext } from "context/AppContext";
+import { MapWrapper } from "components/Map";
+import { DashboardNav } from "components/Navbar/DashboardNav";
+import { Sidebar } from "components/Sidebar/Sidebar";
 import {
   BackendTag,
   BackendTagToTagInfo,
   TagInfo,
-} from "../components/Interfaces";
+} from "components/Interfaces";
 import { useHistory } from "react-router-dom";
-import { apiViewTags } from "../helpers/api";
+import { apiViewTags } from "helpers/api";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);

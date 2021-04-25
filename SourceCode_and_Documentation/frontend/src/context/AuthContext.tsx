@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { TagInfo } from "../Interfaces";
 
 interface AuthContextType {
   auth: string | null;
