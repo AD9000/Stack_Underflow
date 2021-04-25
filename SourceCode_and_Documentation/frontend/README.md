@@ -5,7 +5,7 @@
 - React
 - Typescript
 - npm/Yarn
-- _Css library to be decided_
+- Material UI
 
 ## Setup instructions
 
@@ -38,16 +38,4 @@ Your website should be running on http://localhost:3000
 
 ## Repository Structure
 
-Since the frontend is using ReactJS, the structure of the repository is as follows:
-
-src folder contains all our code
-
-- assets/
-  - contains any images that we have used in the frontend, stored locally
-- components/
-  - contains any reusable React components we have created for our application.
-  - This folder is further broken down into subcategories such as 'Map, Navbar, Sidebar' to maintain our code more usable and tidy
-- Helpers
-  - contains any helper Javascript/Typescript code that we require
-- Pages
-  - contains the main pages we are using within this project, to separate between components and pages
+For a detailed repository structure check out [RepositoryStructure.md](RepositoryStructure.md)
