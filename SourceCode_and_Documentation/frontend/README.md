@@ -31,3 +31,11 @@ yarn start
 Your website should be running on http://localhost:3000
 
 ## Repository Structure (to be added)
+
+Since the frontend is using ReactJS, the structure of the repository is as follows:
+
+src folder contains all our code
+- Assets -> contains any images that we have used in the frontend, stored locally
+- Components -> contains any reusable React components we have created for our application. This folder is further broken down into subcategories such as 'Map, Navbar, Sidebar' to maintain our code more usable and tidy
+- Helpers -> contains any helper Javascript/Typescript code that we require
+- Pages -> contains the main pages we are using within this project, to separate between components and pages
