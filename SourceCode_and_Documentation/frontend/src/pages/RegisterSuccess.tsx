@@ -22,7 +22,12 @@ const useStyles = makeStyles({
   },
 });
 
-// Change name
+/**
+ * Renders the Register Success page, once the
+ * user has successfully created an account and
+ * linked their spotify account
+ * @returns {JSX.Element}
+ */
 const RegisterSuccess = () => {
   const classes = useStyles();
   let history = useHistory();

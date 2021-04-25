@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Container, makeStyles, Theme } from "@material-ui/core";
 import { TagInfo } from "../Interfaces";
-import { AppContext } from "../Context";
+import { AppContext } from "context/AppContext";
 
 const useStyles = (imgurl: string) =>
   makeStyles((theme: Theme) => ({
@@ -38,9 +38,16 @@ const useStyles = (imgurl: string) =>
 
 export interface TagPreviewProps {
   tag: TagInfo;
+
+  // the position of preview in the list
   index: number;
 }
 
+/**
+ * Shows a preview of a tag (no music played)
+ * @param {TagPreviewProps}
+ * @returns
+ */
 const TagPreview = ({ tag, index }: TagPreviewProps) => {
   const { setTagIndex } = useContext(AppContext);
   const { title, location, song, desc, imgurl } = tag;

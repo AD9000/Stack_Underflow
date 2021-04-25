@@ -1,7 +1,6 @@
-import React from "react";
-import { Container, makeStyles } from "@material-ui/core";
+import React, { useState } from "react";
+import { Button, Container, makeStyles } from "@material-ui/core";
 import { getToken } from "helpers/token";
-import { api } from "helpers/api";
 
 const useStyles = makeStyles({
   page: {
@@ -12,7 +11,7 @@ const useStyles = makeStyles({
     color: "white",
   },
   link: {
-    color: "#3481e1",
+    color: "white",
     margin: "2rem",
   },
   input: {
@@ -28,31 +27,26 @@ const useStyles = makeStyles({
 const MyProfile = () => {
   const classes = useStyles();
   const username = getToken("username") || "user";
-  const [password, _] = React.useState("");
+  const [password, setPassword] = useState("");
 
-  const [editingUser, setEditingUser] = React.useState(true);
-  const [editingPass, setEditingPass] = React.useState(true);
+  const [editingUser, setEditingUser] = useState(true);
+  const [editingPass, setEditingPass] = useState(true);
 
-  const [linkTextUser, setlinkTextUser] = React.useState("Change Username");
-  const [linkTextPass, setlinkTextPass] = React.useState("Change Password");
+  const [linkTextUser, setlinkTextUser] = useState("Change Username");
+  const [linkTextPass, setlinkTextPass] = useState("Change Password");
 
-  const [newUser, setNewUser] = React.useState("");
-  const [newPass, setNewPass] = React.useState("");
-
-  /* const changePassword = async () => {
-    const result = await fetch(`${api}changePassword/${username}?${newPass}`, {
-      method: "PUT",
-    }
-  } */
+  // const changePassword = async () => {
+  //   const result = await fetch(`${api}changePassword/${username}?${newPass}`, {
+  //     method: "PUT",
+  //   }
+  // }
 
   const handleEnableUser = () => {
-    console.log("handleEnableUser");
     setEditingUser(!editingUser);
     if (editingUser) setlinkTextUser("Save changes");
     else setlinkTextUser("Change Username");
   };
   const handleEnablePass = () => {
-    console.log("handleEnablePass");
     setEditingPass(!editingPass);
     if (editingPass) setlinkTextPass("Save changes");
     else setlinkTextPass("Change Password");
@@ -71,17 +65,32 @@ const MyProfile = () => {
             disabled={editingUser}
             className={classes.input}
           />
-          <a onClick={handleEnableUser} className={classes.link}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleEnableUser}
+            className={classes.link}
+          >
             <u>{linkTextUser}</u>
-          </a>
+          </Button>
         </div>
         <br />
         <div>
           <h3>Password</h3>
-          <input value={password} type="password" disabled={editingPass} />
-          <a onClick={handleEnablePass} className={classes.link}>
+          <input
+            value={password}
+            type="password"
+            disabled={editingPass}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleEnablePass}
+            className={classes.link}
+          >
             <u>{linkTextPass}</u>
-          </a>
+          </Button>
         </div>
       </div>
     </Container>

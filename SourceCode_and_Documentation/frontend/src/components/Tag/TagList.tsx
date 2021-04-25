@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { makeStyles, Theme } from "@material-ui/core";
 import { TagView } from "./TagView";
-import { AppContext } from "../Context";
+import { AppContext } from "context/AppContext";
 import { TagPreviewList } from "./TagPreviewList";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * Renders a list of tags, tagviews to be specific
+ * @returns {JSX.Element}
+ */
 const TagList = () => {
   const { tagIndex, tags } = useContext(AppContext);
   const classes = useStyles();

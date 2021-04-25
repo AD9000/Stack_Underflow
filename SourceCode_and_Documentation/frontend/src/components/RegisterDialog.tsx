@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { SpotifyLogin } from "./Spotify-Api/SpotifyLogin";
-import { api } from "../helpers/api";
+import { apiRegister, apiLogin } from "../helpers/api";
 import { storeToken } from "helpers/token";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,10 +41,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "column",
   },
-  horizontalFlex: {
-    display: "flex",
-    flexDirection: "row",
-  },
   text: {
     color: "white",
   },
@@ -53,36 +49,23 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridTemplateColumns: "auto auto",
   },
   closeBtn: {
-    /* 
-    position: 'absolute',
-    color: '#3481e1',
-    top: '0px',
-    left: '390px' */
     color: "#3481e1",
     float: "right",
   },
-  alert: {
-    backgroundColor: "white",
-    margin: "10px",
-    color: "#1aad72",
-  },
 }));
 
-/* const UIstyles = theme => ({
-    multilineColor:{
-        color:'red'
-    }
-}); */
-
-// Change name
-export default function RegisterDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [step, setStep] = React.useState(1);
-  // const [success, setSuccess] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirm, setPasswordConfirm] = React.useState("");
+/**
+ * Renders the form that the user can use to register an account
+ * with WorldPlay
+ * @returns {JSX.Element}
+ */
+const RegisterDialog = () => {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -96,7 +79,6 @@ export default function RegisterDialog() {
   const handleNext = () => {
     if (step === 1) {
       submitForm().then((success) => {
-        console.log(success);
         if (success) {
           setStep(step + 1);
         }
@@ -106,55 +88,41 @@ export default function RegisterDialog() {
     }
   };
 
-  const submitForm = async () => {
-    console.log(username, email, password, passwordConfirm);
-    if (
+  const checkForm = () => {
+    return (
       username.length === 0 ||
       email.length === 0 ||
       password.length === 0 ||
       passwordConfirm.length === 0 ||
       password !== passwordConfirm
-    ) {
-      console.log("Incorrect Input");
-      return false;
+    );
+  };
+
+  const submitForm = async () => {
+    if (!checkForm) {
+      alert("Incorrect Input. Please check your entry");
     }
-    const body = {
-      username: username,
-      password: password,
-    };
-    console.log(body);
-    const response = await fetch(`${api}registerUser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...body, email: email }),
-    });
+
+    const response = await apiRegister({ username, password, email });
+
     if (response.status === 200) {
-      console.log("Registered user");
-      fetch(`${api}login`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...body }),
-      });
+      // then also log the user in (temp?)
+      apiLogin({ username, password });
+
+      // add username into localstorage
       storeToken("username", username);
       return true;
-    } else {
-      const data = await response.json();
-      console.log(data);
     }
   };
 
-  const styles = useStyles();
+  const classes = useStyles();
 
   return (
     <div>
       <Button
         variant="contained"
         color="primary"
-        className={styles.btn}
+        className={classes.btn}
         onClick={handleClickOpen}
       >
         <b>Register</b>
@@ -163,27 +131,27 @@ export default function RegisterDialog() {
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
-        className={styles.blur}
+        className={classes.blur}
         maxWidth="sm"
         BackdropProps={{ style: { backgroundColor: "transparent" } }}
       >
         {step === 1 ? (
-          <div className={styles.dialog}>
+          <div className={classes.dialog}>
             <IconButton
               aria-label="close"
               onClick={handleClose}
-              className={styles.closeBtn}
+              className={classes.closeBtn}
             >
               <CloseIcon />
             </IconButton>
             <DialogTitle id="form-dialog-title">
-              <Typography className={styles.dialogTitle}>
+              <Typography className={classes.dialogTitle}>
                 <b>Register New Account</b>
               </Typography>
             </DialogTitle>
-            <DialogContent className={styles.dialogContent}>
-              <div className={styles.grid}>
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+            <DialogContent className={classes.dialogContent}>
+              <div className={classes.grid}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Username
                 </h3>
                 <TextField
@@ -191,11 +159,11 @@ export default function RegisterDialog() {
                   variant="outlined"
                   margin="dense"
                   id="username"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="username"
                   onBlur={(e) => setUsername(e.target.value)}
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Email
                 </h3>
                 <TextField
@@ -203,11 +171,11 @@ export default function RegisterDialog() {
                   variant="outlined"
                   margin="dense"
                   id="email"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="email"
                   onBlur={(e) => setEmail(e.target.value)}
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Password
                 </h3>
                 <TextField
@@ -215,12 +183,12 @@ export default function RegisterDialog() {
                   variant="outlined"
                   margin="dense"
                   id="password"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder={password}
                   onBlur={(e) => setPassword(e.target.value)}
                   type="password"
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Confirm Password
                 </h3>
                 <TextField
@@ -228,13 +196,13 @@ export default function RegisterDialog() {
                   variant="outlined"
                   margin="dense"
                   id="confirmPassword"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="confirm password"
                   onBlur={(e) => setPasswordConfirm(e.target.value)}
                   type="password"
                 />
               </div>
-              <p className={styles.text} style={{ textAlign: "center" }}>
+              <p className={classes.text} style={{ textAlign: "center" }}>
                 Already have an account?{" "}
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Sign In
@@ -242,7 +210,7 @@ export default function RegisterDialog() {
               </p>
             </DialogContent>
             <DialogActions>
-              <p className={styles.text}>
+              <p className={classes.text}>
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Help
                 </a>
@@ -250,7 +218,7 @@ export default function RegisterDialog() {
               <Button
                 variant="contained"
                 color="primary"
-                className={styles.btn}
+                className={classes.btn}
                 onClick={handleNext}
               >
                 <b style={{ fontSize: "large" }}>Next</b>
@@ -258,30 +226,30 @@ export default function RegisterDialog() {
             </DialogActions>
           </div>
         ) : (
-          <div className={styles.dialog}>
+          <div className={classes.dialog}>
             <IconButton
               aria-label="close"
               onClick={handleClose}
-              className={styles.closeBtn}
+              className={classes.closeBtn}
             >
               <CloseIcon />
             </IconButton>
             <DialogTitle id="form-dialog-title">
-              <Typography className={styles.dialogTitle}>
+              <Typography className={classes.dialogTitle}>
                 <b>Link Your Spotify Account</b>
               </Typography>
             </DialogTitle>
-            <DialogContent className={styles.dialogContent}>
+            <DialogContent className={classes.dialogContent}>
               <Button
                 variant="contained"
                 color="primary"
-                className={styles.btn}
+                className={classes.btn}
               >
                 <SpotifyLogin />
               </Button>
             </DialogContent>
             <DialogActions>
-              <p className={styles.text}>
+              <p className={classes.text}>
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Help
                 </a>
@@ -292,4 +260,6 @@ export default function RegisterDialog() {
       </Dialog>
     </div>
   );
-}
+};
+
+export { RegisterDialog };

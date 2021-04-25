@@ -23,21 +23,25 @@ export interface TagInfo {
   imgFile?: File; // thanks, backend
 }
 
-export interface BackendTag {
+export interface BackendTagBare {
   region: string;
-  username: string;
-  image: any;
   title: string;
   location: string;
   song_uri: string;
   caption: string;
 }
 
-export interface tpp extends TagInfo {
-  index: number;
-  sstate: Function;
+export interface BackendTag extends BackendTagBare {
+  username: string;
+  image: any;
 }
 
+/**
+ * Converts a Backend Tag interface (BackendTag)
+ * to a frontend based one (TagInfo)
+ * @param backendTag {BackendTag}:
+ * @returns {TagInfo}: The converted value
+ */
 const BackendTagToTagInfo = (backendTag: BackendTag) => {
   const { caption, image, location, region, song_uri, title } = backendTag;
 
@@ -47,7 +51,7 @@ const BackendTagToTagInfo = (backendTag: BackendTag) => {
   ];
   const tagInfo: TagInfo = {
     region,
-    imgurl: "",
+    imgurl: image as string,
     title,
     coords: latlngloc,
     song: {

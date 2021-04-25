@@ -11,14 +11,15 @@ const useStyles = makeStyles({
     height: "100%",
     backgroundColor: "#051c3f",
   },
-  nav: {
-    display: "sticky",
-  },
   content: {
     padding: "2rem 0",
   },
 });
 
+/**
+ * Renders the profile page, that shows user their tags and profile
+ * @returns {JSX.Element}
+ */
 const Profile = () => {
   const classes = useStyles();
   const state = String(useLocation().state);

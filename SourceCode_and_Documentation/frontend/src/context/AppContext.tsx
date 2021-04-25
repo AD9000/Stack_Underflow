@@ -1,6 +1,6 @@
 import { LatLngTuple } from "leaflet";
 import React from "react";
-import { TagInfo } from "./Interfaces";
+import { TagInfo } from "components/Interfaces";
 
 interface AppContextType {
   open: boolean;

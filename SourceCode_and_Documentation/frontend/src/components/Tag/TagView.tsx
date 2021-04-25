@@ -58,6 +58,12 @@ const useStyles = (imgurl: string) =>
     },
   }))();
 
+/**
+ * The main view for a tag, which renders the tag details,
+ * and lets the user play the song included
+ * @param {TagViewProps}
+ * @returns
+ */
 const TagView = ({
   title,
   username,

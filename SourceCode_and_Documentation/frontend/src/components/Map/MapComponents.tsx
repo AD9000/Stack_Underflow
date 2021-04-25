@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LatLngTuple } from "leaflet";
 import { TileLayer, Marker, useMap, Pane, ZoomControl } from "react-leaflet";
-import { AppContext } from "../Context";
+import { AppContext } from "context/AppContext";
 import { Animation } from "./Animate";
 import { MaxBounds } from "./MaxBounds";
-import { NewTagForm } from "../CreateTag/CreateTagForm";
+import { CreateTagForm } from "../CreateTag/CreateTagForm";
 import { CreateTagHook } from "../CreateTag/CreateTagHook";
 
 /**
@@ -20,7 +20,7 @@ const getPosition = () => {
   );
 };
 
-const mapStyle = "styles/v1/underflow/cknag3sw245zs17o66pbt4dgj";
+const mapStyle = "styles/v1/underflow/cknx9x14z23gj17qhyn0du8br";
 
 /**
  * This is where all of the layers and utilites used by the map
@@ -84,9 +84,7 @@ const Map = () => {
         style={{ position: "absolute", zIndex: -10, pointerEvents: "none" }}
       >
         <TileLayer
-          // noWrap={true}
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
-          // url={`https://api.mapbox.com/${mapStyle}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_KEY}`}
+          url={`https://api.mapbox.com/${mapStyle}/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_KEY}`}
           pane="map"
         />
       </Pane>
@@ -110,7 +108,7 @@ const Map = () => {
         setNewMarker={setNewMarker}
       />
       {createForm && (
-        <NewTagForm
+        <CreateTagForm
           createForm={createForm}
           handleClose={handleClose}
           newMarker={newMarker}

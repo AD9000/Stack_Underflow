@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Theme,
@@ -11,14 +11,13 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import PersonIcon from "@material-ui/icons/Person";
-import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { CreateTagButton } from "../CreateTag/CreateTagButton";
 import { NavBar } from "./NavBar";
-import { getToken } from "../../helpers/token";
-import { api } from "../../helpers/api";
+import { getToken } from "helpers/token";
+import { apiLogout } from "helpers/api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   whiteText: {
@@ -35,20 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       background: "rgba(255,255,255,0.2)",
     },
-  },
-  popover: {
-    marginTop: theme.spacing(2),
-    maxHeight: "55%",
-    display: "flex",
-    justifyContent: "center",
-    "& .MuiPopover-paper": {
-      maxWidth: "30rem",
-      borderRadius: "10px",
-    },
-  },
-  popoverContent: {
-    backgroundColor: "#0f214a",
-    color: "white",
   },
   btn: {
     margin: theme.spacing(1),
@@ -69,6 +54,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * The navbar as it is rendered on the dashboard. Its an extension of
+ * the Navbar component
+ * @returns {JSX.Element} DashBoardNav
+ */
 const DashboardNav = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [
@@ -92,33 +82,23 @@ const DashboardNav = () => {
   };
 
   const handleLogOut = async () => {
-    const username = localStorage.getItem("username");
-    const body = { username: username };
-    const response = await fetch(`${api}logout/${username}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    if (response.status === 200) {
-      localStorage.removeItem("username");
-      history.push("/");
-    } else {
-      const data = await response.json();
-      console.log("Error logging out:", data);
-    }
+    // no point in checking if logout fails,
+    // logout anyway
+    apiLogout();
+
+    // remove username
+    localStorage.removeItem("username");
+    history.push("/");
   };
 
-  function toPage(path: string, state: string) {
+  const toPage = (path: string, state: string) => {
     history.push({
       // Navigates to About page
       pathname: `/${path}`,
       state: state,
     });
     return;
-  }
+  };
 
   const username = getToken("username") || "user";
 

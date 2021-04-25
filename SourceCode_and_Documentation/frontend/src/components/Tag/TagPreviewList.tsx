@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+/**
+ * Renders a list of tag previews
+ * @param {TagPreviewListProps}
+ * @returns {JSX.Element}
+ */
 const TagPreviewList = ({ tags }: TagPreviewListProps) => {
   const classes = useStyles();
   return (

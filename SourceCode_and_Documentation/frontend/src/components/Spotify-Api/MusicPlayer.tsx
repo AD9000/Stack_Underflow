@@ -4,6 +4,11 @@ interface MusicPlayerProps {
   songUri: string;
 }
 
+/**
+ * Music player from spotify used to play songs
+ * @param {MusicPlayerProps}
+ * @returns {JSX.Element} The music player
+ */
 const MusicPlayer = ({ songUri }: MusicPlayerProps) => {
   const uri = songUri.split(":")[2];
   const url = `https://open.spotify.com/embed/track/${uri}`;
@@ -22,6 +27,7 @@ const MusicPlayer = ({ songUri }: MusicPlayerProps) => {
         src={url}
         width="280"
         height="70"
+        title="spotify-player"
         allow="encrypted-media"
       ></iframe>
     </div>
