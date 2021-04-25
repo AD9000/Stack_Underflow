@@ -23,5 +23,5 @@ class Tags(Base):
     caption = Column(String, nullable=False)
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
     time_edited = Column(DateTime(timezone=True), onupdate=func.now())
-    username = Column(String, ForeignKey('users.username'))
-    comments = relationship("Comments")
+    username = Column(String, ForeignKey('users.username'))\
+    
