@@ -3,7 +3,7 @@ import { Typography, Button, makeStyles, Theme } from "@material-ui/core";
 import "@fontsource/farro";
 import { HomeNav } from "../components/Navbar/HomeNav";
 import globe from "../assets/globe.png";
-import { RegisterDialog } from "../components/RegisterDialogue";
+import { RegisterDialog } from "../components/RegisterDialog";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -20,12 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: "white",
     fontFamily: "farro",
     fontWeight: "bold",
-  },
-  btn: {
-    textTransform: "none",
-    fontFamily: "farro",
-    fontSize: "x-large",
-    margin: "0.5rem",
   },
   secondaryBtn: {
     textTransform: "none",
@@ -51,14 +45,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "row",
   },
-  link: {
-    colour: "white",
-    backgroundColor: "white",
-  },
 }));
 
 const HomePage = () => {
-  const styles = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const toAbout = () =>
     history.push({
@@ -67,40 +57,42 @@ const HomePage = () => {
       state: "home",
     });
 
-  const checkLoggedIn = () => {
-    const isLoggedIn = localStorage.getItem("username");
-    if (isLoggedIn) {
-      history.push("/home");
-    }
-  };
-
   useEffect(() => {
+    const checkLoggedIn = () => {
+      const isLoggedIn = localStorage.getItem("username");
+      if (isLoggedIn) {
+        history.push("/home");
+      }
+    };
     checkLoggedIn();
-  }, []);
+  }, [history]);
 
   return (
-    <div className={styles.background}>
+    <div className={classes.background}>
       <HomeNav />
-      <div className={styles.intro}>
-        <div className={styles.introTextWrapper}>
+      <div className={classes.intro}>
+        <div className={classes.introTextWrapper}>
           <Typography
-            className={styles.whiteText}
+            className={classes.whiteText}
             style={{ fontSize: "xxx-large" }}
           >
             WorldPlay
           </Typography>
-          <Typography className={styles.whiteText}>
+          <Typography className={classes.whiteText}>
             Use your Spotify favourites to connect and share your stories with
             people all around the world.
           </Typography>
-          <Typography className={styles.whiteText} style={{ margin: "1rem 0" }}>
+          <Typography
+            className={classes.whiteText}
+            style={{ margin: "1rem 0" }}
+          >
             Register now for free!
           </Typography>
-          <div className={styles.horizontalFlex}>
+          <div className={classes.horizontalFlex}>
             <RegisterDialog />
             <Button
               color="primary"
-              className={styles.secondaryBtn}
+              className={classes.secondaryBtn}
               onClick={toAbout}
             >
               <b>More Info</b>

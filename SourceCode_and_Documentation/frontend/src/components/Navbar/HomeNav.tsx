@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { Button, Theme, makeStyles, Popover } from "@material-ui/core";
 import LoginButton from "../LoginButton";
 import reefPic from "../../assets/reef.jpeg";
-import { BackendTag, TagInfo } from "../Interfaces";
+import { TagInfo } from "../Interfaces";
 import { TagView } from "../Tag/TagView";
 import { NavBar } from "./NavBar";
-import { api } from "../../helpers/api";
 
 const tagjson: TagInfo[] = [
   {

@@ -50,7 +50,7 @@ const BackendTagToTagInfo = (backendTag: BackendTag) => {
   ];
   const tagInfo: TagInfo = {
     region,
-    imgurl: "",
+    imgurl: image as string,
     title,
     coords: latlngloc,
     song: {

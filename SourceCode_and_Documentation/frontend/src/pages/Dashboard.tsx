@@ -6,10 +6,8 @@ import { DashboardNav } from "../components/Navbar/DashboardNav";
 import { Sidebar } from "../components/Sidebar/Sidebar";
 import { BackendTag, TagInfo } from "../components/Interfaces";
 import reefPic from "../assets/reef.jpeg";
-import { searchSong } from "../components/Spotify-Api/spotifyApi";
 import { useHistory } from "react-router-dom";
-import { api, apiViewTags } from "../helpers/api";
-// import { TagCreationLayer } from "../components/TagCreate/TagCreationLayer";
+import { apiViewTags } from "../helpers/api";
 
 const tagjson: TagInfo[] = [
   {
@@ -100,16 +98,16 @@ const Dashboard = () => {
 
   const history = useHistory();
 
-  const checkLoggedIn = () => {
-    const isLoggedIn = localStorage.getItem("username");
-    if (!isLoggedIn) {
-      history.push("/");
-    }
-  };
-
   useEffect(() => {
-    console.log(tags);
+    const checkLoggedIn = () => {
+      const isLoggedIn = localStorage.getItem("username");
+      if (!isLoggedIn) {
+        history.push("/");
+      }
+    };
+
     checkLoggedIn();
+
     apiViewTags()
       .then((res) => res.json())
       .then((data) => {
@@ -125,7 +123,6 @@ const Dashboard = () => {
               caption,
             } = tagInfo;
             const cod = location.split(" ").map((l) => Number(l));
-            console.log(image);
 
             if (!cod || isNaN(cod[0]) || isNaN(cod?.[1])) {
               return null;
@@ -152,16 +149,6 @@ const Dashboard = () => {
 
         setTags([...updated, ...tagjson]);
       });
-    // const mark = tagjson.map((tag) => tag.coords);
-    // setMarkers(mark);
-
-    // setTags(tagjson);
-
-    // tagjson.map((tag) => {
-    //   searchSong(tag?.song?.name).then((res) => {
-    //     console.log(tag?.song?.name, " ", res);
-    //   });
-    // });
   }, []);
   return (
     <AppContext.Provider
@@ -202,7 +189,6 @@ const Dashboard = () => {
           }}
         >
           <Sidebar />
-          {/* <TagCreationLayer /> */}
         </div>
       </div>
     </AppContext.Provider>

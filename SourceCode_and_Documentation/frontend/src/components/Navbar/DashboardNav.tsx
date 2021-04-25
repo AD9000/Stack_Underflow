@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Theme,
@@ -34,20 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       background: "rgba(255,255,255,0.2)",
     },
-  },
-  popover: {
-    marginTop: theme.spacing(2),
-    maxHeight: "55%",
-    display: "flex",
-    justifyContent: "center",
-    "& .MuiPopover-paper": {
-      maxWidth: "30rem",
-      borderRadius: "10px",
-    },
-  },
-  popoverContent: {
-    backgroundColor: "#0f214a",
-    color: "white",
   },
   btn: {
     margin: theme.spacing(1),

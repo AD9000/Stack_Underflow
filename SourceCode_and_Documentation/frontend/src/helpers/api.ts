@@ -1,4 +1,4 @@
-import { BackendTag, BackendTagBare } from "components/Interfaces";
+import { BackendTagBare } from "components/Interfaces";
 import { getToken } from "./token";
 
 const port = 8000;

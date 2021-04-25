@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import "@fontsource/farro";
 import { useHistory } from "react-router";
-import { api, apiLogin } from "../helpers/api";
+import { apiLogin } from "../helpers/api";
 import { storeToken } from "../helpers/token";
 
 const useStyles = makeStyles({

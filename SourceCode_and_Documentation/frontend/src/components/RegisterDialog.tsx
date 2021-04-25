@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -41,10 +41,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "column",
   },
-  horizontalFlex: {
-    display: "flex",
-    flexDirection: "row",
-  },
   text: {
     color: "white",
   },
@@ -53,36 +49,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridTemplateColumns: "auto auto",
   },
   closeBtn: {
-    /* 
-    position: 'absolute',
-    color: '#3481e1',
-    top: '0px',
-    left: '390px' */
     color: "#3481e1",
     float: "right",
   },
-  alert: {
-    backgroundColor: "white",
-    margin: "10px",
-    color: "#1aad72",
-  },
 }));
-
-/* const UIstyles = theme => ({
-    multilineColor:{
-        color:'red'
-    }
-}); */
 
 // Change name
 const RegisterDialog = () => {
-  const [open, setOpen] = React.useState(false);
-  const [step, setStep] = React.useState(1);
-  // const [success, setSuccess] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirm, setPasswordConfirm] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -132,14 +111,14 @@ const RegisterDialog = () => {
     }
   };
 
-  const styles = useStyles();
+  const classes = useStyles();
 
   return (
     <div>
       <Button
         variant="contained"
         color="primary"
-        className={styles.btn}
+        className={classes.btn}
         onClick={handleClickOpen}
       >
         <b>Register</b>
@@ -148,27 +127,27 @@ const RegisterDialog = () => {
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
-        className={styles.blur}
+        className={classes.blur}
         maxWidth="sm"
         BackdropProps={{ style: { backgroundColor: "transparent" } }}
       >
         {step === 1 ? (
-          <div className={styles.dialog}>
+          <div className={classes.dialog}>
             <IconButton
               aria-label="close"
               onClick={handleClose}
-              className={styles.closeBtn}
+              className={classes.closeBtn}
             >
               <CloseIcon />
             </IconButton>
             <DialogTitle id="form-dialog-title">
-              <Typography className={styles.dialogTitle}>
+              <Typography className={classes.dialogTitle}>
                 <b>Register New Account</b>
               </Typography>
             </DialogTitle>
-            <DialogContent className={styles.dialogContent}>
-              <div className={styles.grid}>
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+            <DialogContent className={classes.dialogContent}>
+              <div className={classes.grid}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Username
                 </h3>
                 <TextField
@@ -176,11 +155,11 @@ const RegisterDialog = () => {
                   variant="outlined"
                   margin="dense"
                   id="username"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="username"
                   onBlur={(e) => setUsername(e.target.value)}
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Email
                 </h3>
                 <TextField
@@ -188,11 +167,11 @@ const RegisterDialog = () => {
                   variant="outlined"
                   margin="dense"
                   id="email"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="email"
                   onBlur={(e) => setEmail(e.target.value)}
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Password
                 </h3>
                 <TextField
@@ -200,12 +179,12 @@ const RegisterDialog = () => {
                   variant="outlined"
                   margin="dense"
                   id="password"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder={password}
                   onBlur={(e) => setPassword(e.target.value)}
                   type="password"
                 />
-                <h3 style={{ marginRight: "1rem" }} className={styles.text}>
+                <h3 style={{ marginRight: "1rem" }} className={classes.text}>
                   Confirm Password
                 </h3>
                 <TextField
@@ -213,13 +192,13 @@ const RegisterDialog = () => {
                   variant="outlined"
                   margin="dense"
                   id="confirmPassword"
-                  InputProps={{ className: styles.input }}
+                  InputProps={{ className: classes.input }}
                   // placeholder="confirm password"
                   onBlur={(e) => setPasswordConfirm(e.target.value)}
                   type="password"
                 />
               </div>
-              <p className={styles.text} style={{ textAlign: "center" }}>
+              <p className={classes.text} style={{ textAlign: "center" }}>
                 Already have an account?{" "}
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Sign In
@@ -227,7 +206,7 @@ const RegisterDialog = () => {
               </p>
             </DialogContent>
             <DialogActions>
-              <p className={styles.text}>
+              <p className={classes.text}>
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Help
                 </a>
@@ -235,7 +214,7 @@ const RegisterDialog = () => {
               <Button
                 variant="contained"
                 color="primary"
-                className={styles.btn}
+                className={classes.btn}
                 onClick={handleNext}
               >
                 <b style={{ fontSize: "large" }}>Next</b>
@@ -243,30 +222,30 @@ const RegisterDialog = () => {
             </DialogActions>
           </div>
         ) : (
-          <div className={styles.dialog}>
+          <div className={classes.dialog}>
             <IconButton
               aria-label="close"
               onClick={handleClose}
-              className={styles.closeBtn}
+              className={classes.closeBtn}
             >
               <CloseIcon />
             </IconButton>
             <DialogTitle id="form-dialog-title">
-              <Typography className={styles.dialogTitle}>
+              <Typography className={classes.dialogTitle}>
                 <b>Link Your Spotify Account</b>
               </Typography>
             </DialogTitle>
-            <DialogContent className={styles.dialogContent}>
+            <DialogContent className={classes.dialogContent}>
               <Button
                 variant="contained"
                 color="primary"
-                className={styles.btn}
+                className={classes.btn}
               >
                 <SpotifyLogin />
               </Button>
             </DialogContent>
             <DialogActions>
-              <p className={styles.text}>
+              <p className={classes.text}>
                 <a href="http://localhost:3000" style={{ color: "#3481e1" }}>
                   Help
                 </a>

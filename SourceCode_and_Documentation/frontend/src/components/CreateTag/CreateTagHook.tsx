@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useMapEvent } from "react-leaflet";
 import { AppContext } from "../Context/AppContext";
 
@@ -14,9 +14,6 @@ export interface CreateTagProps {
  */
 const CreateTagHook = ({ setMarkersUpdated, setNewMarker }: CreateTagProps) => {
   const { createTag } = useContext(AppContext);
-  useEffect(() => {
-    console.log("create tag update: ", createTag);
-  }, [createTag]);
 
   useMapEvent("click", (e) => {
     if (!createTag) {

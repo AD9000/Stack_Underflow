@@ -45,7 +45,13 @@ const ImageUpload = ({ setImage, setImageUrl }: DisplayImageProps) => {
           paddingLeft: "3.5rem",
         }}
       >
-        {preview && <img src={preview} style={{ maxHeight: "100px" }} />}
+        {preview && (
+          <img
+            src={preview}
+            alt="uploaded by the user"
+            style={{ maxHeight: "100px" }}
+          />
+        )}
         <input
           className={classes.text}
           type="file"
