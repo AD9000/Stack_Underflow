@@ -32,11 +32,11 @@ We follow a standard FastAPI backend structure
 
 ### database.py
 
-- file
+- contains SQLAlchemy parts that connects to a SQLite database (opening a file called [users.db](users.db) with the SQLite database)
 
 ### insert.sql
 
-- file
+- contains dummy data for backend testing and demo
 
 ### main.py
 
@@ -44,7 +44,8 @@ We follow a standard FastAPI backend structure
 
 ### models.py
 
-- file
+- contains database models (tables) of the application
+- currently only includes Users and Tags
 
 ### requirements.txt
 
