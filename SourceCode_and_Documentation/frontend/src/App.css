@@ -1,3 +1,11 @@
+html,
+body,
+#root {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +43,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.leaflet-control {
+  margin: 2.5rem 1.5rem !important;
 }
