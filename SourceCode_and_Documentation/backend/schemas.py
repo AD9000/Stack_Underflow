@@ -6,10 +6,9 @@ class UserBase(BaseModel):
     username: str
     email: str
 
-
+# Model used for user registration
 class UserRegister(UserBase):
     password: str
-
 
 class User(UserBase):
     logged_in: bool
@@ -17,12 +16,12 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
-
+# Model used for user login
 class UserLogin(BaseModel):
     username: str
     password: str
 
-
+# Model used for posting a tag
 class TagInfo(BaseModel):
     title: str
     region: str
