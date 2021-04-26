@@ -21,7 +21,7 @@ backend/
 
 We follow a standard FastAPI backend structure
 
-At a high level, some important files/folders
+Main.py is an important file that is required for the backend to function and users.db is the actual file that is constantly being changed via different endpoints
 
 ### Images/
 
