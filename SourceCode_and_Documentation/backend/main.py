@@ -4,16 +4,14 @@ import shutil
 import os.path
 import random
 from random import randrange
-from models import Users, Tags, Comments, Notifications
-from typing import Optional, List
+from models import Users, Tags
+from schemas import UserRegister, UserLogin, UserLogin, TagInfo
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Body, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
 from sqlalchemy import delete, insert, update, func, or_
 from sqlalchemy.orm.exc import NoResultFound
-from auth import generate_uid
 from datetime import datetime
 from starlette.responses import StreamingResponse
 
@@ -40,47 +38,6 @@ app.add_middleware(
 )
 
 models.Base.metadata.create_all(bind=engine)
-
-
-class UserBase(BaseModel):
-    username: str
-    email: str
-
-
-class UserRegister(UserBase):
-    password: str
-
-
-class User(UserBase):
-    logged_in: bool
-    # tags_owned: List[Tag] = []
-    class Config:
-        orm_mode = True
-
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-
-class TagInfo(BaseModel):
-    title: str
-    region: str
-    location: str
-    caption: str
-    song_uri: str  # url ?
-
-    # Pydantic vs UploadFile fix
-    # https://github.com/tiangolo/fastapi/issues/2257
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate_to_json
-
-    @classmethod
-    def validate_to_json(cls, value):
-        if isinstance(value, str):
-            return cls(**json.loads(value))
-        return value
 
 
 def get_db():
@@ -220,11 +177,10 @@ async def publishTag(
     tg.n_likes = 0
     tg.caption = tagInf.caption
     tg.song_uri = tagInf.song_uri
-    # tg.time_made = datetime.now()
-    # tg.time_edited = tg.time_made
-    tg.image = -1  # -1 if image isn't uploaded
+    # image = -1 if image isn't uploaded
+    tg.image = -1
     if img:
-        # Save to image to folder in backend
+        # Save image to folder at backend
         imageIndex = 0
         path = "Images/" + str(imageIndex)
         while os.path.exists(path):
@@ -285,19 +241,15 @@ async def editTag(
 
     if tag.title != tagInf.title:
         setattr(tag, "title", tagInf.title)
-        db.commit()
     if tag.region != tagInf.region:
         setattr(tag, "region", tagInf.region)
-        db.commit()
     if tag.location != tagInf.location:
         setattr(tag, "location", tagInf.location)
-        db.commit()
     if tag.caption != tagInf.caption:
         setattr(tag, "caption", tagInf.caption)
-        db.commit()
     if tag.song_uri != tagInf.song_uri:
         setattr(tag, "song_uri", tagInf.song_uri)
-        db.commit()
+    db.commit()
     if img:
         # Save to image to folder in backend
         imageIndex = 0
@@ -584,45 +536,6 @@ async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
     return {"User unliked this tag": tagID}
 
 
-# Comment on a tag
-@app.post("/commentOnTag/{tagID}")
-async def commentOnTag(
-    username: str, tagID: int, text: str, db: Session = Depends(get_db)
-):
-    try:
-        user = db.query(Users).filter(Users.username == username).one()
-        db.commit()
-    except NoResultFound:
-        raise HTTPException(status_code=404, detail="User does not exist")
-
-    if user.logged_in == False:
-        raise HTTPException(status_code=400, detail="User is offline")
-
-    try:
-        tag = db.query(Tags).filter(Tags.id == tagID).one()
-        db.commit()
-    except NoResultFound:
-        raise HTTPException(status_code=404, detail="Tag does not exist")
-
-    if text == None:
-        raise HTTPException(status_code=400, detail="Empty comment cannot be posted")
-
-    comment = Comments()
-    comment.tag_id = tagID
-    comment.author = username
-    comment.content = text
-    return {
-        "tag_id": comment.tag_id,
-        "author": comment.author,
-        "content": comment.content,
-        "time_posted": comment.time_posted,
-    }
-
-
-# Edit comment
-
-# Delete comment
-
 # Delete User - Not for functionality of website, just for deleting Users
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
@@ -677,28 +590,38 @@ async def changePassword(
     return {"password has been updated": newPassword}
 
 
+# Comment on a tag
 """
-# Link to Spotify
-@app.get("/linkSpotify/{username}")
-async def linkSpotify(username: str, db: Session = Depends(get_db)):
-    # Get Spotify login token
+@app.post("/commentOnTag/{tagID}")
+async def commentOnTag(
+    username: str, tagID: int, text: str, db: Session = Depends(get_db)
+):
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="User does not exist")
 
-    # Add Spotify token to user
-    return {"Spotify account has been linked to user successfully": username}
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User is offline")
+
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Tag does not exist")
+
+    if text == None:
+        raise HTTPException(status_code=400, detail="Empty comment cannot be posted")
+
+    comment = Comments()
+    comment.tag_id = tagID
+    comment.author = username
+    comment.content = text
+    return {
+        "tag_id": comment.tag_id,
+        "author": comment.author,
+        "content": comment.content,
+        "time_posted": comment.time_posted,
+    }
 """
-
-# View notifications in profile
-
-# TO DO:
-# - View notifications
-# - Edit comment
-# - Delete comment
-
-# - Generate Random Tag DONE
-# - View All My Tags 1
-# - View a tag DONE
-# - Filter for certain posts to appear 111 same
-# - Search for tags and music 111 same
-# - Reset forgotten password DONE
-# - Liking a post DONE
-# - Add message/comment to new tag DONE

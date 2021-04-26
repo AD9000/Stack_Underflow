@@ -2,7 +2,6 @@ import sqlalchemy
 from sqlalchemy import Boolean, Column, ForeignKey, Numeric, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship
 from database import Base
-#from datetime import datetime
 
 class Users(Base):
     __tablename__ = "users"
@@ -24,20 +23,5 @@ class Tags(Base):
     caption = Column(String, nullable=False)
     time_posted = Column(DateTime(timezone=True), server_default=func.now())
     time_edited = Column(DateTime(timezone=True), onupdate=func.now())
-    username = Column(String, ForeignKey('users.username'))
-    comments = relationship("Comments")
-
-class Comments(Base):
-    __tablename__ = "comments"
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True, nullable=False)
-    author = Column(String, ForeignKey('users.username'), nullable=False)
-    content = Column(String, nullable=False)
-    time_posted = Column(DateTime(timezone=True), server_default=func.now())
-
-class Notifications(Base):
-    __tablename__ = "notifications"
-    user = Column(String, ForeignKey('users.username'), primary_key=True, nullable=False)
-    content = Column(String, nullable=False)
-    time_received = Column(DateTime(timezone=True), server_default=func.now())
-
-
+    username = Column(String, ForeignKey('users.username'))\
+    
