@@ -1,21 +1,27 @@
 # Repository Structure - Backend
+
 A tree diagram of the repository is as follows:
+
 ```
 backend/
-├── Images
-│   └── 0.png
-├── README.md
 ├── database.py
+├── Images
+│   └── 0.png
 ├── insert.sql
 ├── main.py
 ├── models.py
+├── README.md
+├── RepositoryStructure.md
 ├── requirements.txt
+├── schemas.py
 └── users.db
 ```
 
 ## Details
 
 We follow a standard FastAPI backend structure
+
+At a high level, some important files/folders
 
 ### Images/
 
@@ -47,5 +53,3 @@ We follow a standard FastAPI backend structure
 ### users.db
 
 - The actual sqlite3 database used by the backend
-
-
