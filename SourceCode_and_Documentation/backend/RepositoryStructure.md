@@ -37,7 +37,7 @@ At a high level, some important files/folders
 
 ### main.py
 
-- file (oof)
+- contains all the endpoints that interacts with the database and the frontend
 
 ### models.py
 
@@ -53,3 +53,6 @@ At a high level, some important files/folders
 ### users.db
 
 - The actual sqlite3 database used by the backend
+
+## schemas.py
+- models that are used in the main.py file
