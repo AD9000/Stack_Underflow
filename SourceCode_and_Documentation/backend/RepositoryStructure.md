@@ -54,5 +54,5 @@ Main.py is an important file that is required for the backend to function and us
 
 - The actual sqlite3 database used by the backend
 
-## schemas.py
+### schemas.py
 - models that are used in the main.py file
