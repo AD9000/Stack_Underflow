@@ -536,41 +536,6 @@ async def unlikeTag(tagID: int, db: Session = Depends(get_db)):
     return {"User unliked this tag": tagID}
 
 
-# Comment on a tag
-@app.post("/commentOnTag/{tagID}")
-async def commentOnTag(
-    username: str, tagID: int, text: str, db: Session = Depends(get_db)
-):
-    try:
-        user = db.query(Users).filter(Users.username == username).one()
-        db.commit()
-    except NoResultFound:
-        raise HTTPException(status_code=404, detail="User does not exist")
-
-    if user.logged_in == False:
-        raise HTTPException(status_code=400, detail="User is offline")
-
-    try:
-        tag = db.query(Tags).filter(Tags.id == tagID).one()
-        db.commit()
-    except NoResultFound:
-        raise HTTPException(status_code=404, detail="Tag does not exist")
-
-    if text == None:
-        raise HTTPException(status_code=400, detail="Empty comment cannot be posted")
-
-    comment = Comments()
-    comment.tag_id = tagID
-    comment.author = username
-    comment.content = text
-    return {
-        "tag_id": comment.tag_id,
-        "author": comment.author,
-        "content": comment.content,
-        "time_posted": comment.time_posted,
-    }
-
-
 # Delete User - Not for functionality of website, just for deleting Users
 @app.delete("/deleteUser")
 async def deleteUser(userReg: UserRegister, db: Session = Depends(get_db)):
@@ -623,3 +588,40 @@ async def changePassword(
     setattr(user, "password", newPassword)
     db.commit()
     return {"password has been updated": newPassword}
+
+
+# Comment on a tag
+"""
+@app.post("/commentOnTag/{tagID}")
+async def commentOnTag(
+    username: str, tagID: int, text: str, db: Session = Depends(get_db)
+):
+    try:
+        user = db.query(Users).filter(Users.username == username).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="User does not exist")
+
+    if user.logged_in == False:
+        raise HTTPException(status_code=400, detail="User is offline")
+
+    try:
+        tag = db.query(Tags).filter(Tags.id == tagID).one()
+        db.commit()
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="Tag does not exist")
+
+    if text == None:
+        raise HTTPException(status_code=400, detail="Empty comment cannot be posted")
+
+    comment = Comments()
+    comment.tag_id = tagID
+    comment.author = username
+    comment.content = text
+    return {
+        "tag_id": comment.tag_id,
+        "author": comment.author,
+        "content": comment.content,
+        "time_posted": comment.time_posted,
+    }
+"""
