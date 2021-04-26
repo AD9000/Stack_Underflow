@@ -35,12 +35,6 @@ const MyProfile = () => {
   const [linkTextUser, setlinkTextUser] = useState("Change Username");
   const [linkTextPass, setlinkTextPass] = useState("Change Password");
 
-  // const changePassword = async () => {
-  //   const result = await fetch(`${api}changePassword/${username}?${newPass}`, {
-  //     method: "PUT",
-  //   }
-  // }
-
   const handleEnableUser = () => {
     setEditingUser(!editingUser);
     if (editingUser) setlinkTextUser("Save changes");
