@@ -1,7 +1,7 @@
 # Stack_Underflow
 An attempt at connecting maps & music~~ 
 
-Credits
+## Credits
 - Reinier de Leon
 - Jiaqi Zhu
 - Dimitri Tsardakas
